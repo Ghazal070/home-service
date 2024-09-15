@@ -21,11 +21,11 @@ public class BaseEntity <ID extends Serializable> implements  Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen")
     @SequenceGenerator(name = "seq_gen", sequenceName = "seq", allocationSize = 1)
-    private ID id;
+    protected ID id;
 
 
     @Override
     public String toString() {
-        return "BaseEntity: " +id +"- ";
+        return id +"- ";
     }
 }

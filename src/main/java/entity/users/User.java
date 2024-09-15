@@ -2,22 +2,25 @@ package entity.users;
 
 
 import entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
 public class User extends BaseEntity<Integer> {
 
     @Column
@@ -26,12 +29,8 @@ public class User extends BaseEntity<Integer> {
     @Column
     private String lastName;
 
-    @Column(unique = true)
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*$",message = "Please follow thit pattern: gh@to.com")
-    private String email;
-
-    @Column
-    private String password;
+    @Embedded
+    private  Profile profile;
 
     @Column
     private ZonedDateTime dateTimeSubmission;
@@ -40,8 +39,8 @@ public class User extends BaseEntity<Integer> {
     private Byte [] image;
 
 
-
-
-
-
+    @Override
+    public String toString() {
+        return id+"- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission + ", image=" + Arrays.toString(image);
+    }
 }

@@ -13,9 +13,8 @@ public abstract class User_ extends entity.BaseEntity_ {
 	public static final String FIRST_NAME = "firstName";
 	public static final String LAST_NAME = "lastName";
 	public static final String IMAGE = "image";
-	public static final String PASSWORD = "password";
+	public static final String PROFILE = "profile";
 	public static final String DATE_TIME_SUBMISSION = "dateTimeSubmission";
-	public static final String EMAIL = "email";
 
 	
 	/**
@@ -34,9 +33,9 @@ public abstract class User_ extends entity.BaseEntity_ {
 	public static volatile SingularAttribute<User, Byte[]> image;
 	
 	/**
-	 * @see entity.users.User#password
+	 * @see entity.users.User#profile
 	 **/
-	public static volatile SingularAttribute<User, String> password;
+	public static volatile SingularAttribute<User, Profile> profile;
 	
 	/**
 	 * @see entity.users.User#dateTimeSubmission
@@ -47,11 +46,6 @@ public abstract class User_ extends entity.BaseEntity_ {
 	 * @see entity.users.User
 	 **/
 	public static volatile EntityType<User> class_;
-	
-	/**
-	 * @see entity.users.User#email
-	 **/
-	public static volatile SingularAttribute<User, String> email;
 
 }
 
