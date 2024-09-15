@@ -23,7 +23,7 @@ public class SignupServiceImpl implements SignupService {
     @Override
     public User signup(UserSignupRequest userSignupRequest) {
         if (userSignupRequest.getRole()== Role.Customer){
-            BaseEntity user = userService.save(
+            userService.save(
                     Customer.builder().firstName(userSignupRequest.getFirstName())
                             .lastName(userSignupRequest.getLastName())
                             .profile(
@@ -32,7 +32,7 @@ public class SignupServiceImpl implements SignupService {
                             .dateTimeSubmission(ZonedDateTime.now())
                             .image(userSignupRequest.getImage())
                             .build()
-            );
+            )
         }
         return null;
     }
