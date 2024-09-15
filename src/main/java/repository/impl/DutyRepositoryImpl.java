@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty,Integer>
-        implements DutyRepository<Duty,Integer> {
+        implements DutyRepository{
 
     public DutyRepositoryImpl(EntityManager entityManager) {
         super(entityManager);

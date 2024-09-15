@@ -1,19 +1,11 @@
 package repository;
 
 import entity.BaseEntity;
+import entity.Duty;
 
 import java.io.Serializable;
 import java.util.List;
 
-public interface DutyRepository<T extends BaseEntity<ID>, ID extends Serializable> {
+public interface DutyRepository extends BaseEntityRepository<Duty,Integer>{
 
-    T save(T entity);
-    T update (T newEntity);
-    void delete (Integer id);
-    Boolean containById(Integer id);
-    T findById(ID id);
-    List<T> loadAll();
-    Boolean contain(T entity);
-    T findByUniqId(String uniqId);
-    Boolean deleteByUniqId(String uniqId);
 }
