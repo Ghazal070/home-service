@@ -39,7 +39,7 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(ID id) {
         entityManager.getTransaction().begin();
         T entity = entityManager.find(getEntityClass(), id);
         if (entity != null) entityManager.remove(entity);
@@ -55,11 +55,11 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         return contains;
     }
 
-    public T findById(Integer id) {
+    public T findById(ID id) {
         return entityManager.find(getEntityClass(), id);
     }
 
-    public Boolean containById(Integer id) {
+    public Boolean containById(ID id) {
         T entity = entityManager.find(getEntityClass(), id);
         return entity != null;
     }

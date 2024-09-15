@@ -6,12 +6,13 @@ import entity.Duty_;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import repository.BaseEntityRepository;
+import repository.DutyRepository;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty,Integer>
-        implements BaseEntityRepository<Duty,Integer> {
+        implements DutyRepository<Duty,Integer> {
 
     public DutyRepositoryImpl(EntityManager entityManager) {
         super(entityManager);

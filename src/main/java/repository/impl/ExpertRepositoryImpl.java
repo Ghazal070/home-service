@@ -3,8 +3,9 @@ package repository.impl;
 import entity.users.Expert;
 import entity.users.User;
 import jakarta.persistence.EntityManager;
+import repository.ExpertRepository;
 
-public class ExpertRepositoryImpl extends UserRepositoryImpl<Expert> {
+public class ExpertRepositoryImpl extends UserRepositoryImpl<Expert> implements ExpertRepository {
 
     public ExpertRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
