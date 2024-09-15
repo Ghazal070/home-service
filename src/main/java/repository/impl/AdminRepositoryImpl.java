@@ -1,6 +1,8 @@
 package repository.impl;
 
 import entity.users.Admin;
+
+import entity.users.Profile_;
 import jakarta.persistence.EntityManager;
 import repository.AdminRepository;
 
@@ -17,6 +19,6 @@ public class AdminRepositoryImpl extends UserRepositoryImpl<Admin> implements Ad
 
     @Override
     public String getUniqueFieldName() {
-        return null;
+        return Profile_.EMAIL;
     }
 }
