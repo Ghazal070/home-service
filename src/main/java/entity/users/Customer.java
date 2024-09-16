@@ -1,6 +1,7 @@
 package entity.users;
 
 
+import entity.users.User;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,10 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @DiscriminatorValue("Customer")
-public class Customer extends User{
+public class Customer extends User {
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

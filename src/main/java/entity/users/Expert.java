@@ -2,6 +2,7 @@ package entity.users;
 
 
 import entity.enumeration.ExpertStatus;
+import entity.users.User;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,13 +20,13 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @DiscriminatorValue("Expert")
-public class Expert extends User{
+public class Expert extends User {
 
     @Enumerated(EnumType.STRING)
     private ExpertStatus expertStatus;
 
     @Override
     public String toString() {
-        return "expertStatus=" + expertStatus;
+        return super.toString()+" expertStatus=" + expertStatus;
     }
 }

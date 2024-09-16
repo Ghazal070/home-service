@@ -1,7 +1,6 @@
 package repository.impl;
 
 import entity.users.Expert;
-import entity.users.User;
 import jakarta.persistence.EntityManager;
 import repository.ExpertRepository;
 

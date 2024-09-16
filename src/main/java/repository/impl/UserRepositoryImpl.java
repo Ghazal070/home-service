@@ -8,4 +8,5 @@ public abstract class UserRepositoryImpl<T extends User> extends BaseEntityRepos
     public UserRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
     }
+
 }

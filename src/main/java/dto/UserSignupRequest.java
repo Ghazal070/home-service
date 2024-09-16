@@ -15,7 +15,12 @@ public class UserSignupRequest {
     private String lastName;
     private String email;
     private String password;
-    private Byte [] image;
+    private String pathImage;
     private Role role;
 
+    @Override
+    public String toString() {
+        return "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' +", role=" + role +
+                ", pathImage='" + pathImage + '\'';
+    }
 }
