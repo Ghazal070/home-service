@@ -1,9 +1,9 @@
 package service;
 
 import dto.UserSignupRequest;
-import entity.users.User;
+import entity.users.Users;
 
 public interface SignupService {
 
-     User signup(UserSignupRequest userSignupRequest);
+     Users signup(UserSignupRequest userSignupRequest);
 }

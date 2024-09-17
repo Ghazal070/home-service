@@ -1,7 +1,7 @@
 package repository;
 
-import entity.users.User;
+import entity.users.Users;
 
-public interface UserRepository<T extends User> extends BaseEntityRepository<T,Integer>{
+public interface UserRepository<T extends Users> extends BaseEntityRepository<T,Integer>{
 
 }

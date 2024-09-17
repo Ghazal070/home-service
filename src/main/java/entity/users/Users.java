@@ -3,22 +3,17 @@ package entity.users;
 
 import entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 
 @Getter
 @Setter
@@ -28,15 +23,18 @@ import java.util.Arrays;
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
-public class User extends BaseEntity<Integer> {
+public class Users extends BaseEntity<Integer> {
 
     @Column
+    @Pattern(regexp = "^[a-zA-Z]{3,}$",message = "Name must contain only letters")
     private String firstName;
 
     @Column
+    @Pattern(regexp = "^[a-zA-Z]{3,}$",message = "Name must contain only letters")
     private String lastName;
 
     @Embedded
+    @Valid
     private Profile profile;
 
     @Column
@@ -47,20 +45,6 @@ public class User extends BaseEntity<Integer> {
     private Byte[] image;
 
 
-//    @SneakyThrows
-//    public void loadImage(String imagePath) {
-////        Path path = Paths.get(imagePath);
-////        byte[] imageBytes = Files.readAllBytes(path);
-////        Byte[] bytes = new Byte[imageBytes.length];
-////        for (int i = 0; i < imageBytes.length; i++) {
-////            this.image[i] = imageBytes[i];
-////        }
-//        BufferedImage image = ImageIO.read(new File(imagePath));
-//        ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-//        ImageIO.write(image, "jpg", outStreamObj);
-//        byte[] byteArray = outStreamObj.toByteArray();
-//
-//    }
     public void getBytes(String pathImage) {
         BufferedImage bImage = null;
         try {

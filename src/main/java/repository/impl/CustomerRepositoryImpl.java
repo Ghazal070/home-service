@@ -1,6 +1,7 @@
 package repository.impl;
 
 import entity.users.Customer;
+import entity.users.Profile_;
 import jakarta.persistence.EntityManager;
 import repository.CustomerRepository;
 
@@ -17,6 +18,6 @@ public class CustomerRepositoryImpl extends UserRepositoryImpl<Customer> impleme
 
     @Override
     public String getUniqueFieldName() {
-        return null;
+        return Profile_.EMAIL;
     }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 
 @StaticMetamodel(Customer.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
-public abstract class Customer_ extends entity.users.User_ {
+public abstract class Customer_ extends entity.users.Users_ {
 
 
 	

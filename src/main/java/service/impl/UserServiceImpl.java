@@ -1,29 +1,27 @@
 package service.impl;
 
-import entity.users.User;
-import lombok.SneakyThrows;
+import entity.users.Users;
 import repository.UserRepository;
-import repository.impl.BaseEntityRepositoryImpl;
 import service.UserService;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Random;
 
-public class UserServiceImpl<U extends UserRepository<T>,T extends User>
+public class UserServiceImpl<U extends UserRepository<T>,T extends Users>
         extends BaseEntityServiceImpl<U,T,Integer> implements UserService<T> {
+
 
     public UserServiceImpl(U repository) {
         super(repository);
     }
 
-    public void convertByteToImage(byte[] data,String firstNameId) {
+
+
+    public void convertByteToImage(byte[] data, String firstNameId) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage bImage2 = null;
         try {

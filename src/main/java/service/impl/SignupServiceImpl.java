@@ -1,28 +1,42 @@
 package service.impl;
 
 import dto.UserSignupRequest;
-import entity.users.User;
-import entity.users.factory.UserFactory;
+import entity.users.Customer;
+import entity.users.Expert;
+import entity.users.Users;
+import entity.users.userFactory.CustomerFactory;
+import entity.users.userFactory.ExpertFactory;
+import service.CustomerService;
+import service.ExpertService;
 import service.SignupService;
-import service.UserService;
 
 public class SignupServiceImpl implements SignupService {
 
-    private final UserService userService;
-    private final UserFactory userFactory;
+    private final ExpertService expertService;
+    private final CustomerService customerService;
 
-    public SignupServiceImpl(UserService userService, UserFactory userFactory) {
-        this.userService = userService;
-        this.userFactory = userFactory;
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService) {
+        this.expertService = expertService;
+        this.customerService = customerService;
     }
 
     @Override
-    public User signup(UserSignupRequest userSignupRequest) {
-        User user = userFactory.createUser(userSignupRequest);
-        if (user != null) {
-//            user = userService.save(user)
+    public Users signup(UserSignupRequest userSignupRequest) {
 
+        switch (userSignupRequest.getRole()){
+            case "Expert": {
+                ExpertFactory expertFactory = new ExpertFactory();
+                Expert expert = (Expert) expertFactory.createUser(userSignupRequest);
+                return expertService.save(expert);
+            }
+            case "Customer":{
+                CustomerFactory customerFactory =new CustomerFactory();
+                Customer customer = (Customer) customerFactory.createUser(userSignupRequest);
+                return customerService.save(customer);
+            }
+            default:throw new IllegalArgumentException("Only Expert or Customer can sign up");
         }
-        return user;
+
+
     }
 }

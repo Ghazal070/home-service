@@ -6,7 +6,7 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 
 @StaticMetamodel(Admin.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
-public abstract class Admin_ extends entity.users.User_ {
+public abstract class Admin_ extends entity.users.Users_ {
 
 
 	

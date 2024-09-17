@@ -8,7 +8,7 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 
 @StaticMetamodel(Expert.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
-public abstract class Expert_ extends entity.users.User_ {
+public abstract class Expert_ extends entity.users.Users_ {
 
 	public static final String EXPERT_STATUS = "expertStatus";
 

@@ -1,6 +1,9 @@
 package repository.impl;
 
 import entity.users.Expert;
+import entity.users.Expert_;
+import entity.users.Profile;
+import entity.users.Profile_;
 import jakarta.persistence.EntityManager;
 import repository.ExpertRepository;
 
@@ -17,6 +20,6 @@ public class ExpertRepositoryImpl extends UserRepositoryImpl<Expert> implements 
 
     @Override
     public String getUniqueFieldName() {
-        return null;
+        return Profile_.EMAIL;
     }
 }

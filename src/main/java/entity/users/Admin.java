@@ -5,7 +5,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -16,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @DiscriminatorValue("Admin")
-public class Admin extends User{
+public class Admin extends Users {
 
 
 }

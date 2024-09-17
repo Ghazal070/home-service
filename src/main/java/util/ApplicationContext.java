@@ -1,14 +1,24 @@
 package util;
 
 
-import entity.Duty;
+import entity.users.userFactory.UserFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.UserRepository;
+import repository.CustomerRepository;
+import repository.ExpertRepository;
+import repository.impl.CustomerRepositoryImpl;
+import repository.impl.ExpertRepositoryImpl;
 import repository.impl.UserRepositoryImpl;
+import service.CustomerService;
+import service.ExpertService;
+import service.SignupService;
+import service.impl.CustomerServiceImpl;
+import service.impl.ExpertServiceImpl;
+import service.impl.SignupServiceImpl;
+import service.impl.UserServiceImpl;
 
 
 public class ApplicationContext {
@@ -22,6 +32,12 @@ public class ApplicationContext {
         getEntityManager();
         getLogger();
         logger.info("ApplicationContext initialized");
+        CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
+        ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
+        CustomerService customerService =new CustomerServiceImpl(customerRepository);
+        ExpertService expertService =new ExpertServiceImpl(expertRepository);
+        SignupService signupService= new SignupServiceImpl(expertService,customerService);
+
 
 
     }

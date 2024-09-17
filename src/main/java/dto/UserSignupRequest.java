@@ -16,7 +16,7 @@ public class UserSignupRequest {
     private String email;
     private String password;
     private String pathImage;
-    private Role role;
+    private String role;
 
     @Override
     public String toString() {
