@@ -2,14 +2,8 @@ package entity.users;
 
 
 import entity.enumeration.ExpertStatus;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -23,6 +17,10 @@ public class Expert extends Users {
 
     @Enumerated(EnumType.STRING)
     private ExpertStatus expertStatus;
+
+    @Column
+    @Builder.Default
+    private Integer score = 0;
 
     @Override
     public String toString() {
