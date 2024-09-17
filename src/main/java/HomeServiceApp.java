@@ -1,6 +1,5 @@
 import com.github.javafaker.Faker;
 import dto.UserSignupRequest;
-import entity.enumeration.Role;
 import jakarta.persistence.EntityManager;
 import repository.CustomerRepository;
 import repository.ExpertRepository;
@@ -8,9 +7,11 @@ import repository.impl.CustomerRepositoryImpl;
 import repository.impl.ExpertRepositoryImpl;
 import service.CustomerService;
 import service.ExpertService;
+import service.PasswordEncode;
 import service.SignupService;
 import service.impl.CustomerServiceImpl;
 import service.impl.ExpertServiceImpl;
+import service.impl.PasswordEncodeImpl;
 import service.impl.SignupServiceImpl;
 import util.ApplicationContext;
 
@@ -20,14 +21,15 @@ public class HomeServiceApp {
 //        ApplicationContext.getLogger().info("start of project");
         EntityManager entityManager = ApplicationContext.getINSTANCE().getEntityManager();
         Faker faker = new Faker();
-        String pathImage = "src/main/resources/images/Tools_clipart.png";
+        String pathImage = "src/main/resources/images/Tools_clipart.jpg";
         //UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert", pathImage);
         UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
         CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
         CustomerService customerService = new CustomerServiceImpl(customerRepository);
         ExpertService expertService = new ExpertServiceImpl(expertRepository);
-        SignupService signupService = new SignupServiceImpl(expertService, customerService);
+        PasswordEncode passwordEncode = new PasswordEncodeImpl();
+        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode);
         signupService.signup(userSignupRequest);
 
 

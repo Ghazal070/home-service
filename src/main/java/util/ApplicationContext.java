@@ -1,7 +1,6 @@
 package util;
 
 
-import entity.users.userFactory.UserFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -11,14 +10,14 @@ import repository.CustomerRepository;
 import repository.ExpertRepository;
 import repository.impl.CustomerRepositoryImpl;
 import repository.impl.ExpertRepositoryImpl;
-import repository.impl.UserRepositoryImpl;
 import service.CustomerService;
 import service.ExpertService;
+import service.PasswordEncode;
 import service.SignupService;
 import service.impl.CustomerServiceImpl;
 import service.impl.ExpertServiceImpl;
+import service.impl.PasswordEncodeImpl;
 import service.impl.SignupServiceImpl;
-import service.impl.UserServiceImpl;
 
 
 public class ApplicationContext {
@@ -36,7 +35,8 @@ public class ApplicationContext {
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
         CustomerService customerService =new CustomerServiceImpl(customerRepository);
         ExpertService expertService =new ExpertServiceImpl(expertRepository);
-        SignupService signupService= new SignupServiceImpl(expertService,customerService);
+        PasswordEncode passwordEncode =new PasswordEncodeImpl();
+        SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode);
 
 
 

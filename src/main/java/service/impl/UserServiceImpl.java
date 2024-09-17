@@ -29,9 +29,9 @@ public class UserServiceImpl<U extends UserRepository<T>,T extends Users>
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        File file = new File("src/main/resources/images/" +firstNameId+ ".png");
+        File file = new File("src/main/resources/images/" +firstNameId+ ".jpg");
         try {
-            ImageIO.write(bImage2, "png",file);
+            ImageIO.write(bImage2, "jpg",file);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

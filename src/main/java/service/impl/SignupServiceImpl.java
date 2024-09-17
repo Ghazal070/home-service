@@ -8,16 +8,19 @@ import entity.users.userFactory.CustomerFactory;
 import entity.users.userFactory.ExpertFactory;
 import service.CustomerService;
 import service.ExpertService;
+import service.PasswordEncode;
 import service.SignupService;
 
 public class SignupServiceImpl implements SignupService {
 
     private final ExpertService expertService;
     private final CustomerService customerService;
+    private final PasswordEncode passwordEncode;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncode passwordEncode) {
         this.expertService = expertService;
         this.customerService = customerService;
+        this.passwordEncode = passwordEncode;
     }
 
     @Override
@@ -26,11 +29,17 @@ public class SignupServiceImpl implements SignupService {
         switch (userSignupRequest.getRole()){
             case "Expert": {
                 ExpertFactory expertFactory = new ExpertFactory();
+                userSignupRequest.setPassword(
+                        passwordEncode.encode(userSignupRequest.getPassword())
+                );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequest);
                 return expertService.save(expert);
             }
             case "Customer":{
                 CustomerFactory customerFactory =new CustomerFactory();
+                userSignupRequest.setPassword(
+                        passwordEncode.encode(userSignupRequest.getPassword())
+                );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequest);
                 return customerService.save(customer);
             }

@@ -4,7 +4,10 @@ package entity.users;
 import entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -42,6 +45,8 @@ public class Users extends BaseEntity<Integer> {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
+    @NotNull(message = "Profile image cannot be null")
+    @Size(max = 307200, message = "Profile image cannot exceed 300 KB")
     private Byte[] image;
 
 
@@ -54,7 +59,10 @@ public class Users extends BaseEntity<Integer> {
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            ImageIO.write(bImage, "png", bos );
+            String formatName = ImageIO.getImageReaders(bImage).next().getFormatName();
+            if (!formatName.equalsIgnoreCase("jpg"))
+                throw new ValidationException("format image must be jpg");
+            ImageIO.write(bImage, "jpg", bos );
         } catch (IOException e) {
             throw new RuntimeException("error in imageIO write");
         }
