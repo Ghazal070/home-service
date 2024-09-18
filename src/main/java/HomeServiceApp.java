@@ -22,7 +22,7 @@ public class HomeServiceApp {
 //        ApplicationContext.getLogger().info("start of project");
         EntityManager entityManager = ApplicationContext.getINSTANCE().getEntityManager();
         Faker faker = new Faker();
-        String pathImage = "src/main/resources/images/Tools_clipart.jpg";
+        String pathImage = "src/main/resources/images/Tools_clipart.png";
         //UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert", pathImage);
         UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
         CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);

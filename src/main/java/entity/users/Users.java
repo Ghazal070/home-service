@@ -12,6 +12,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,8 +47,8 @@ public class Users extends BaseEntity<Integer> {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "image_data")
-    //@NotNull(message = "Profile image cannot be null")
-    //@Size(max = 307200, message = "Profile image cannot exceed 300 KB")
+    @NotNull(message = "Profile image cannot be null")
+    @Size(max = 307200, message = "Profile image cannot exceed 300 KB")
     private Byte[] image;
 
 
@@ -58,13 +59,18 @@ public class Users extends BaseEntity<Integer> {
             if(bImage==null)
                 throw new ValidationException("in getBytes method bImage is null");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error reading the image file: " + e.getMessage(), e);
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-//            String formatName = ImageIO.getImageReaders(bImage).next().getFormatName();
-//            if (!formatName.equalsIgnoreCase("jpg"))
-//                throw new ValidationException("format image must be jpg");
+            ImageReader reader = ImageIO.getImageReadersByFormatName("jpg").next();
+            if (reader == null) {
+                throw new ValidationException("No image readers found for jpg format");
+            }
+            String formatName = reader.getFormatName();
+            if ((formatName.equalsIgnoreCase("jpg") || formatName.equalsIgnoreCase("JPEG"))==false) {
+                throw new ValidationException("format image must be jpg");
+            }
             ImageIO.write(bImage, "jpg", bos );
         } catch (IOException e) {
             throw new RuntimeException("error in imageIO write");
@@ -80,6 +86,6 @@ public class Users extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission +" ,image=" + image;
+        return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission;
     }
 }
