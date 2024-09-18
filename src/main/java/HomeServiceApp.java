@@ -32,7 +32,7 @@ public class HomeServiceApp {
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
         SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode);
         Users signup = signupService.signup(userSignupRequest);
-        customerService.convertByteToImage(signup.getImage(),signup.getFirstName());
+        //customerService.convertByteToImage(signup.getImage(),signup.getFirstName());
 
 
     }
