@@ -31,7 +31,7 @@ public class UserServiceImpl<U extends UserRepository<T>,T extends Users>
             dataByte[i] = data[i];
         }
         BufferedImage bImage2;
-        try(ByteArrayInputStream bis = new ByteArrayInputStream(dataByte);) {
+        try(ByteArrayInputStream bis = new ByteArrayInputStream(dataByte)) {
             bImage2 = ImageIO.read(bis);
         } catch (IOException e) {
             throw new RuntimeException(e);
