@@ -45,8 +45,9 @@ public class Users extends BaseEntity<Integer> {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @NotNull(message = "Profile image cannot be null")
-    @Size(max = 307200, message = "Profile image cannot exceed 300 KB")
+    @Column(name = "image_data")
+    //@NotNull(message = "Profile image cannot be null")
+    //@Size(max = 307200, message = "Profile image cannot exceed 300 KB")
     private Byte[] image;
 
 
@@ -54,19 +55,23 @@ public class Users extends BaseEntity<Integer> {
         BufferedImage bImage = null;
         try {
             bImage = ImageIO.read(new File(pathImage));
+            if(bImage==null)
+                throw new ValidationException("in getBytes method bImage is null");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            String formatName = ImageIO.getImageReaders(bImage).next().getFormatName();
-            if (!formatName.equalsIgnoreCase("jpg"))
-                throw new ValidationException("format image must be jpg");
+//            String formatName = ImageIO.getImageReaders(bImage).next().getFormatName();
+//            if (!formatName.equalsIgnoreCase("jpg"))
+//                throw new ValidationException("format image must be jpg");
             ImageIO.write(bImage, "jpg", bos );
         } catch (IOException e) {
             throw new RuntimeException("error in imageIO write");
         }
         byte[] byteArray = bos.toByteArray();
+        if(bos==null || bos.size()==0)
+            throw new ValidationException("in getBytes method bos is null");
         this.image = new Byte[byteArray.length];
         for (int i = 0; i < byteArray.length; i++) {
             this.image[i] = byteArray[i];
@@ -75,6 +80,6 @@ public class Users extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission;
+        return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission +" ,image=" + image;
     }
 }

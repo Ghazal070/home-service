@@ -1,5 +1,6 @@
 import com.github.javafaker.Faker;
 import dto.UserSignupRequest;
+import entity.users.Users;
 import jakarta.persistence.EntityManager;
 import repository.CustomerRepository;
 import repository.ExpertRepository;
@@ -30,7 +31,8 @@ public class HomeServiceApp {
         ExpertService expertService = new ExpertServiceImpl(expertRepository);
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
         SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode);
-        signupService.signup(userSignupRequest);
+        Users signup = signupService.signup(userSignupRequest);
+        customerService.convertByteToImage(signup.getImage(),signup.getFirstName());
 
 
     }

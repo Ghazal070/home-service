@@ -1,10 +1,12 @@
 package service.impl;
 
 import entity.users.Users;
+import exception.ValidationException;
 import repository.UserRepository;
 import service.UserService;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -21,10 +23,15 @@ public class UserServiceImpl<U extends UserRepository<T>,T extends Users>
 
 
 
-    public void convertByteToImage(byte[] data, String firstNameId) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        BufferedImage bImage2 = null;
-        try {
+    public void convertByteToImage(Byte[] data, String firstNameId) {
+        if(data == null || data.length==0)
+            throw new ValidationException("image is null");
+        byte [] dataByte = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            dataByte[i] = data[i];
+        }
+        BufferedImage bImage2;
+        try(ByteArrayInputStream bis = new ByteArrayInputStream(dataByte);) {
             bImage2 = ImageIO.read(bis);
         } catch (IOException e) {
             throw new RuntimeException(e);

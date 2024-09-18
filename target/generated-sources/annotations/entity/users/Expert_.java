@@ -10,8 +10,14 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 @Generated("org.hibernate.processor.HibernateProcessor")
 public abstract class Expert_ extends entity.users.Users_ {
 
+	public static final String SCORE = "score";
 	public static final String EXPERT_STATUS = "expertStatus";
 
+	
+	/**
+	 * @see entity.users.Expert#score
+	 **/
+	public static volatile SingularAttribute<Expert, Integer> score;
 	
 	/**
 	 * @see entity.users.Expert#expertStatus
