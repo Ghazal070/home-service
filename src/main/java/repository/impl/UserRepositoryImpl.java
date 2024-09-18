@@ -25,4 +25,18 @@ public abstract class UserRepositoryImpl<T extends Users> extends BaseEntityRepo
         return null;
     }
 
+    @Override
+    public Boolean updatePassword(String email, String newPassword) {
+        entityManager.getTransaction().begin();
+        String query = """
+                update %s p where p.profile.email= ?1 set p.profile.password =?2
+                """.formatted(getEntityClass().getName());
+        TypedQuery<T> typedQuery = entityManager.createQuery(query, getEntityClass());
+        typedQuery.setParameter(1, email);
+        typedQuery.setParameter(2, newPassword);
+        List<T> resultList = typedQuery.getResultList();
+        entityManager.getTransaction().commit();
+        if(!resultList.isEmpty()) return true;
+        return false;
+    }
 }

@@ -1,8 +1,10 @@
 package service.impl;
 
+import dto.UserChangePassword;
 import entity.users.Users;
 import exception.ValidationException;
 import repository.UserRepository;
+import service.PasswordEncode;
 import service.UserService;
 import util.AuthHolder;
 
@@ -15,10 +17,12 @@ import java.io.IOException;
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
+    protected final PasswordEncode passwordEncode;
 
-    public UserServiceImpl(U repository, AuthHolder authHolder) {
+    public UserServiceImpl(U repository, AuthHolder authHolder, PasswordEncode passwordEncode) {
         super(repository);
         this.authHolder = authHolder;
+        this.passwordEncode = passwordEncode;
     }
 
 
@@ -55,4 +59,25 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         return null;
     }
 
+    @Override
+    public Boolean updatePassword(UserChangePassword userChangePassword) {
+        if (userChangePassword!=null){
+            String oldPassword = userChangePassword.getOldPassword();
+            String newPassword = userChangePassword.getNewPassword();
+            T user = findById(authHolder.tokenId);
+            if (user!=null){
+                if((user.getProfile().getPassword()).equals(oldPassword)){
+                    String encode = passwordEncode.encode(newPassword);
+                    Boolean repoResponse = repository.updatePassword(authHolder.tokenName,encode);
+                    if (repoResponse){
+                        return true;
+                    }else throw new ValidationException("repo response is false");
+
+                }else throw new ValidationException("old password is not correct");
+            }else throw new ValidationException("user from token is null");
+
+        }
+
+        return null;
+    }
 }

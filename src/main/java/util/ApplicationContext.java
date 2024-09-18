@@ -34,9 +34,9 @@ public class ApplicationContext {
         CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
         AuthHolder authHolder = new AuthHolder();
-        CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder);
-        ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder);
-        PasswordEncode passwordEncode =new PasswordEncodeImpl();
+        PasswordEncode passwordEncode = new PasswordEncodeImpl();
+        CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder,passwordEncode);
+        ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder,passwordEncode);
         SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode, authHolder);
 
 
