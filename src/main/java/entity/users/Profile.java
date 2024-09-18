@@ -26,6 +26,6 @@ public class Profile {
 
     @Override
     public String toString() {
-        return "email='" + email + '\'' + ", password='" + password + '\'';
+        return "email='" + email +'\'';
     }
 }

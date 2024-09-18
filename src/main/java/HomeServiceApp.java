@@ -15,26 +15,39 @@ import service.impl.ExpertServiceImpl;
 import service.impl.PasswordEncodeImpl;
 import service.impl.SignupServiceImpl;
 import util.ApplicationContext;
+import util.AuthHolder;
 
 public class HomeServiceApp {
 
     public static void main(String[] args) {
 //        ApplicationContext.getLogger().info("start of project");
         EntityManager entityManager = ApplicationContext.getINSTANCE().getEntityManager();
-        Faker faker = new Faker();
-        String pathImage = "src/main/resources/images/less300.jpg";
-        //UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert", pathImage);
-        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
         CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
-        CustomerService customerService = new CustomerServiceImpl(customerRepository);
-        ExpertService expertService = new ExpertServiceImpl(expertRepository);
+        AuthHolder authHolder =new AuthHolder();
+        CustomerService customerService = new CustomerServiceImpl(customerRepository,authHolder);
+        ExpertService expertService = new ExpertServiceImpl(expertRepository,authHolder);
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
-        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode);
+        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
+        //signupTestMethod(customerService, signupService);
+        //loginTestMethod(customerService);
+
+
+
+    }
+
+    private static void loginTestMethod(CustomerService customerService) {
+        Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
+        System.out.println(login);
+    }
+
+    private static void signupTestMethod(CustomerService customerService, SignupService signupService) {
+        Faker faker = new Faker();
+        String pathImage = "src/main/resources/images/less300.jpg";
+        UserSignupRequest userSignupRequest0 = createSignupRequest(faker, "Expert", pathImage);
+        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
         Users signup = signupService.signup(userSignupRequest);
-        //customerService.convertByteToImage(signup.getImage(),signup.getFirstName());
-
-
+        customerService.convertByteToImage(signup.getImage(),signup.getFirstName());
     }
 
 

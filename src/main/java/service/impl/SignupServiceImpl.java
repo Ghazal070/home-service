@@ -10,17 +10,20 @@ import service.CustomerService;
 import service.ExpertService;
 import service.PasswordEncode;
 import service.SignupService;
+import util.AuthHolder;
 
 public class SignupServiceImpl implements SignupService {
 
     private final ExpertService expertService;
     private final CustomerService customerService;
     private final PasswordEncode passwordEncode;
+    private final AuthHolder authHolder;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncode passwordEncode) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncode passwordEncode, AuthHolder authHolder) {
         this.expertService = expertService;
         this.customerService = customerService;
         this.passwordEncode = passwordEncode;
+        this.authHolder = authHolder;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncode.encode(userSignupRequest.getPassword())
                 );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequest);
-                return expertService.save(expert);
+                expert = expertService.save(expert);
+                authHolder.tokenName=expert.getProfile().getEmail();
+                authHolder.tokenId=expert.getId();
+                return expert;
             }
             case "Customer":{
                 CustomerFactory customerFactory =new CustomerFactory();
@@ -41,7 +47,10 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncode.encode(userSignupRequest.getPassword())
                 );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequest);
-                return customerService.save(customer);
+                customer = customerService.save(customer);
+                authHolder.tokenId=customer.getId();
+                authHolder.tokenName=customer.getProfile().getEmail();
+                return customer;
             }
             default:throw new IllegalArgumentException("Only Expert or Customer can sign up");
         }

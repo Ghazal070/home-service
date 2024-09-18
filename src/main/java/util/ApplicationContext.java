@@ -33,10 +33,11 @@ public class ApplicationContext {
         logger.info("ApplicationContext initialized");
         CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
-        CustomerService customerService =new CustomerServiceImpl(customerRepository);
-        ExpertService expertService =new ExpertServiceImpl(expertRepository);
+        AuthHolder authHolder = new AuthHolder();
+        CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder);
+        ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder);
         PasswordEncode passwordEncode =new PasswordEncodeImpl();
-        SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode);
+        SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode, authHolder);
 
 
 

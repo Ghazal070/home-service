@@ -14,7 +14,7 @@ public abstract class Profile_ {
 
 	
 	/**
-	 * @see entity.users.Profile#password
+	 * @see entity.users.Profile#getPassword
 	 **/
 	public static volatile SingularAttribute<Profile, String> password;
 	
@@ -24,7 +24,7 @@ public abstract class Profile_ {
 	public static volatile EmbeddableType<Profile> class_;
 	
 	/**
-	 * @see entity.users.Profile#email
+	 * @see entity.users.Profile#getEmail
 	 **/
 	public static volatile SingularAttribute<Profile, String> email;
 
