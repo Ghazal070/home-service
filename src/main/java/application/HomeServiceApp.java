@@ -40,16 +40,56 @@ public class HomeServiceApp {
         //       signupTestMethod(customerService, signupService);
         loginTestMethod(customerService);
         //passwordUpdateTset(customerService);
-        List<DutyType> dutyTypeList = dutyTypeService.loadAll();
         //createDutyTypeFirstTime(adminService);
+        //loadAllDutyType(dutyTypeService);
+        //createDutyFirstTime(adminService);
+
+        adminCreateHouseholdAppliances(faker, adminService);
+        adminCreateCleaning(faker, adminService);
+
+
+
+    }
+
+    private static void adminCreateHouseholdAppliances(Faker faker, AdminService adminService) {
+        List<String> subDutyHouseholdAppliancesList = List.of(
+                "KitchenAppliances", "LaundrySupplies", "AudioVideoEquipment"
+        );
+        for (String sub:subDutyHouseholdAppliancesList) {
+            adminService.createDuty(
+                    DutyCreation.builder()
+                            .titleDutyType(sub)
+                            .parentTitle("HouseholdAppliances")
+                            .basePrice(faker.number().numberBetween(100_000, 1_000_000))
+                            .description(faker.lorem().characters(5, 20))
+                            .build()
+            );
+
+        }
+    }
+    private static void adminCreateCleaning(Faker faker, AdminService adminService) {
+        List<String> subDutyHouseholdAppliancesList = List.of(
+                "cleanHouse","LaundryIroning", "CarpetCleaning","SofaWashing","Spraying"
+        );
+        for (String sub:subDutyHouseholdAppliancesList) {
+            adminService.createDuty(
+                    DutyCreation.builder()
+                            .titleDutyType(sub)
+                            .parentTitle("Cleaning")
+                            .basePrice(faker.number().numberBetween(100_000, 1_000_000))
+                            .description(faker.lorem().characters(5, 20))
+                            .build()
+            );
+
+        }
+    }
+
+    private static void loadAllDutyType(DutyTypeService dutyTypeService) {
+        List<DutyType> dutyTypeList = dutyTypeService.loadAll();
         if (dutyTypeList != null && !dutyTypeList.isEmpty()) {
             System.out.println("DutyType List: ");
             dutyTypeList.forEach(System.out::println);
         }
-
-        createDutyFirstTime(adminService);
-
-
     }
 
     private static void createDutyFirstTime(AdminService adminService) {
@@ -64,7 +104,9 @@ public class HomeServiceApp {
     }
 
     private static void createDutyTypeFirstTime(AdminService adminService) {
-        List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning");
+        List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning",
+                "KitchenAppliances", "LaundrySupplies", "AudioVideoEquipment", "cleanHouse",
+                "LaundryIroning", "CarpetCleaning","SofaWashing","Spraying");
         for (String dutyType : dutyTypes) {
             adminService.createDutyType(dutyType);
 
@@ -84,7 +126,6 @@ public class HomeServiceApp {
     private static void loginTestMethod(CustomerService customerService) {
 //        Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
         Users login = customerService.login("sonja.hickle@yahoo.com", "ghazal99");
-        //System.out.println(login);
     }
 
     private static void signupTestMethod(CustomerService customerService, SignupService signupService) {
