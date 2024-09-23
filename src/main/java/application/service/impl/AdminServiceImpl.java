@@ -2,6 +2,7 @@ package application.service.impl;
 
 import application.entity.DutyType;
 import application.entity.users.Admin;
+import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import application.repository.AdminRepository;
 import application.service.AdminService;
@@ -25,6 +26,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                     .title(dutyTypeTitle)
                     .build());
         }
-        return null;
+        throw new ValidationException("dutyTypeTitle is not blank");
     }
 }
