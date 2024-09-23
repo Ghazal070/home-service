@@ -38,6 +38,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Duty createDuty(DutyCreation dutyCreation) {
+        //todo criteriaBuilder
         String titleDutyType = dutyCreation.getTitleDutyType();
         Duty parentDuty=null;
         DutyType dutyType = dutyTypeService.findByUniqId(titleDutyType);
@@ -54,16 +55,20 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         }
 
         if (StringUtils.isNotBlank(dutyCreation.getParentTitle())){
-             parentDuty= dutyService.findByUniqId(dutyCreation.getParentTitle());
+             parentDuty= dutyService.findByParentTitle(dutyCreation.getParentTitle());
         }
-        if(dutyType!=null && dutyTypeIsExist){
+        if(dutyType!=null && dutyTypeIsExist &&parentDuty!=null){
             return dutyService.save(Duty.builder()
                     .dutyType(dutyType)
                     .parent(parentDuty)
                     .basePrice(dutyCreation.getBasePrice())
                     .description(dutyCreation.getDescription())
                     .build());
-        }
-        else throw new ValidationException("title duty type must be from above list. for new duty type please createDutyType");
+        } else if (dutyType!=null && dutyTypeIsExist ) {
+            return dutyService.save(Duty.builder()
+                    .dutyType(dutyType)
+                    .build());
+
+        } else throw new ValidationException("title duty type must be from above list. for new duty type please createDutyType");
     }
 }

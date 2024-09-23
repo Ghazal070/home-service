@@ -32,10 +32,12 @@ public class Duty extends  BaseEntity<Integer> {
     @PrePersist
     @PreUpdate
     private  void validator(){
-        if (parent.getId() != null ){
-            if (basePrice==null || description==null){
-                ApplicationContext.getLogger().info("Parent Id is not null must not be null description and basePrice");
-                throw  new ValidationException("Parent Id is not null must not be null description and basePrice");
+        if (parent!=null){
+            if (parent.getId() != null) {
+                if (basePrice == null || description == null) {
+                    ApplicationContext.getLogger().info("Parent Id is not null must not be null description and basePrice");
+                    throw new ValidationException("Parent Id is not null must not be null description and basePrice");
+                }
             }
         }
     }
@@ -47,7 +49,8 @@ public class Duty extends  BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return id+"- " +"dutyType=" + dutyType + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'';
+        return parent!=null? id+"- " +"dutyType=" + dutyType + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'':
+                id+"- " +"dutyType=" + dutyType + ", parentId=" + "null"+ ", basePrice=" + basePrice + ", description='" + description + '\'';
 
     }
 }

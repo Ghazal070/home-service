@@ -41,26 +41,33 @@ public class HomeServiceApp {
         loginTestMethod(customerService);
         //passwordUpdateTset(customerService);
         List<DutyType> dutyTypeList = dutyTypeService.loadAll();
-        if (dutyTypeList != null && !dutyTypeList.isEmpty())
+        //createDutyTypeFirstTime(adminService);
+        if (dutyTypeList != null && !dutyTypeList.isEmpty()) {
             System.out.println("DutyType List: ");
             dutyTypeList.forEach(System.out::println);
+        }
 
-        Duty duty = adminService.createDuty(DutyCreation.builder()
-                .titleDutyType("KitchenAppliances")
-                .parentTitle("HouseholdAppliances")
-                .basePrice(100_0000)
-                .description(faker.lorem().characters(5, 20))
-                .build());
-        System.out.println(duty);
-        //createDutyTypeFirstTime(adminService);
+        createDutyFirstTime(adminService);
 
 
+    }
+
+    private static void createDutyFirstTime(AdminService adminService) {
+        List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning");
+        for (String dutyType : dutyTypes) {
+            adminService.createDuty(
+                    DutyCreation.builder()
+                            .titleDutyType(dutyType)
+                            .build()
+            );
+        }
     }
 
     private static void createDutyTypeFirstTime(AdminService adminService) {
         List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning");
         for (String dutyType : dutyTypes) {
             adminService.createDutyType(dutyType);
+
         }
     }
 
