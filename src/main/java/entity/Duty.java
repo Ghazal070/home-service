@@ -1,6 +1,6 @@
 package entity;
 
-import entity.enumeration.DutyType;
+
 import exception.ValidationException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,8 +18,9 @@ import java.util.logging.Logger;
 @SuperBuilder
 public class Duty extends  BaseEntity<Integer> {
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
+    @Column
+    @NotNull(message = "DutyType must not be null")
+    @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private DutyType dutyType;
 
     @Column

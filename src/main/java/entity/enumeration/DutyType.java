@@ -1,5 +1,6 @@
-package entity.enumeration;
-
-public enum DutyType {
-
-}
+//package entity.enumeration;
+//
+//public enum DutyType {
+//
+//    Decoration,BuildingFacilities,CargoVehicles,HouseholdAppliances,Cleaning
+//}
