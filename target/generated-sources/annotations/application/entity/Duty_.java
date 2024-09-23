@@ -10,8 +10,8 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 public abstract class Duty_ extends application.entity.BaseEntity_ {
 
 	public static final String DUTY_TYPE = "dutyType";
+	public static final String PARENT = "parent";
 	public static final String DESCRIPTION = "description";
-	public static final String PARENT_ID = "parentId";
 	public static final String BASE_PRICE = "basePrice";
 
 	
@@ -19,6 +19,11 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty#dutyType
 	 **/
 	public static volatile SingularAttribute<Duty, DutyType> dutyType;
+	
+	/**
+	 * @see application.entity.Duty#parent
+	 **/
+	public static volatile SingularAttribute<Duty, Duty> parent;
 	
 	/**
 	 * @see application.entity.Duty#description
@@ -29,11 +34,6 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty
 	 **/
 	public static volatile EntityType<Duty> class_;
-	
-	/**
-	 * @see application.entity.Duty#parentId
-	 **/
-	public static volatile SingularAttribute<Duty, Integer> parentId;
 	
 	/**
 	 * @see application.entity.Duty#basePrice

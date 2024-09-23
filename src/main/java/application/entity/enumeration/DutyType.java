@@ -2,5 +2,7 @@
 //
 //public enum DutyType {
 //
-//    Decoration,BuildingFacilities,CargoVehicles,HouseholdAppliances,Cleaning
+//    Decoration,BuildingFacilities,CargoVehicles,HouseholdAppliances,Cleaning,
+//    KitchenAppliances, LaundrySupplies, AudioVideoEquipment, cleanHouse,
+//    LaundryIroning, CarpetCleaning,SofaWashing,Spraying
 //}

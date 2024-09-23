@@ -20,8 +20,8 @@ public class Duty extends  BaseEntity<Integer> {
     @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private DutyType dutyType;
 
-    @Column
-    private Integer parentId;
+    @ManyToOne
+    private Duty parent;
 
     @Column
     private Integer basePrice;
@@ -32,7 +32,7 @@ public class Duty extends  BaseEntity<Integer> {
     @PrePersist
     @PreUpdate
     private  void validator(){
-        if (parentId != null ){
+        if (parent.getId() != null ){
             if (basePrice==null || description==null){
                 ApplicationContext.getLogger().info("Parent Id is not null must not be null description and basePrice");
                 throw  new ValidationException("Parent Id is not null must not be null description and basePrice");
@@ -47,7 +47,7 @@ public class Duty extends  BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return id+"- " +"dutyType=" + dutyType + ", parentId=" + parentId + ", basePrice=" + basePrice + ", description='" + description + '\'';
+        return id+"- " +"dutyType=" + dutyType + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'';
 
     }
 }
