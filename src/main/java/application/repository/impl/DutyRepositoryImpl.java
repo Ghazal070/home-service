@@ -8,6 +8,7 @@ import application.repository.DutyRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
@@ -79,6 +80,29 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         int updateCount = updateQuery.executeUpdate();
         entityManager.getTransaction().commit();
         return updateCount > 0;
+    }
+
+    @Override
+    public List<Duty> loadAllDutyWithChildren() {
+        String query = """
+                select d from Duty d order by case when d.parent.id is null then 1 else 2 end,d.parent.id
+                """;
+        TypedQuery<Duty> typedQuery = entityManager.createQuery(query, Duty.class);
+        List<Duty> duties = typedQuery.getResultList();
+        List<Duty> dutiesWithChildren = new ArrayList<>();
+        for (Duty duty : duties) {
+            if (duty.getParent() == null) {
+                dutiesWithChildren.add(duty);
+            }
+            if (duty.getParent() != null) {
+                for (Duty parent : dutiesWithChildren) {
+                    if (parent.getId() == duty.getParent().getId()) {
+                        parent.getSubDuty().add(duty);
+                    }
+                }
+            }
+        }
+        return dutiesWithChildren;
     }
 }
 

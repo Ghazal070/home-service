@@ -2,6 +2,7 @@ package application.entity;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.SetAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 
@@ -13,6 +14,7 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	public static final String DESCRIPTION = "description";
 	public static final String TITLE = "title";
 	public static final String BASE_PRICE = "basePrice";
+	public static final String SUB_DUTY = "subDuty";
 
 	
 	/**
@@ -39,6 +41,11 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty#basePrice
 	 **/
 	public static volatile SingularAttribute<Duty, Integer> basePrice;
+	
+	/**
+	 * @see application.entity.Duty#subDuty
+	 **/
+	public static volatile SetAttribute<Duty, Duty> subDuty;
 
 }
 

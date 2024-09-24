@@ -2,6 +2,7 @@ package application;
 
 import application.dto.DutyCreation;
 import application.dto.UpdateDuty;
+import application.entity.Duty;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -42,9 +43,20 @@ public class HomeServiceApp {
         //adminCreateDutyDontExitParentDuty(faker, adminService);
         //adminCreateDutyDuplicate(faker,adminService);
         //updatePriceOrDescriptionTest(dutyService);
+        //loadAllDuties(dutyService);
+        loadAllDutyWithChildrenTest(dutyService);
 
 
+    }
 
+    private static void loadAllDutyWithChildrenTest(DutyService dutyService) {
+        List<Duty> duties = dutyService.loadAllDutyWithChildren();
+        duties.forEach(System.out::println);
+    }
+
+    private static void loadAllDuties(DutyService dutyService) {
+        List<Duty> duties = dutyService.loadAll();
+        duties.forEach(System.out::println);
     }
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {

@@ -7,6 +7,8 @@ import application.service.DutyService;
 import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty, Integer> implements DutyService {
 
     public DutyServiceImpl(DutyRepository repository) {
@@ -25,5 +27,10 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
         } else throw new
 
                 ValidationException("Update duty is null");
+    }
+
+    @Override
+    public List<Duty> loadAllDutyWithChildren() {
+        return repository.loadAllDutyWithChildren();
     }
 }
