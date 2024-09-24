@@ -27,7 +27,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty,Integer>
 
     @Override
     public Duty findByParentTitle(String title) {
-        String query = "select d from Duty d where d.parent.dutyType.title = :title";
+        String query = "select d from Duty d where d.dutyType.title = :title";
         TypedQuery<Duty> typedQuery = entityManager.createQuery(query, Duty.class);
         typedQuery.setParameter("title",title);
         List<Duty> resultList = typedQuery.getResultList();

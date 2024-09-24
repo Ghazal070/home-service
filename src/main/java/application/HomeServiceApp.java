@@ -43,9 +43,8 @@ public class HomeServiceApp {
         //createDutyTypeFirstTime(adminService);
         //loadAllDutyType(dutyTypeService);
         //createDutyFirstTime(adminService);
-
-        adminCreateHouseholdAppliances(faker, adminService);
-        adminCreateCleaning(faker, adminService);
+        //adminCreateHouseholdAppliances(faker, adminService);
+        //adminCreateCleaning(faker, adminService);
 
 
 
@@ -61,7 +60,7 @@ public class HomeServiceApp {
                             .titleDutyType(sub)
                             .parentTitle("HouseholdAppliances")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
-                            .description(faker.lorem().characters(5, 20))
+                            .description(sub + "---" +faker.lorem().characters(5, 20))
                             .build()
             );
 
@@ -77,7 +76,7 @@ public class HomeServiceApp {
                             .titleDutyType(sub)
                             .parentTitle("Cleaning")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
-                            .description(faker.lorem().characters(5, 20))
+                            .description(sub + "---" +faker.lorem().characters(5, 20))
                             .build()
             );
 
@@ -124,8 +123,8 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-//        Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
-        Users login = customerService.login("sonja.hickle@yahoo.com", "ghazal99");
+        Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
+        //Users login = customerService.login("sonja.hickle@yahoo.com", "ghazal99");
     }
 
     private static void signupTestMethod(CustomerService customerService, SignupService signupService) {

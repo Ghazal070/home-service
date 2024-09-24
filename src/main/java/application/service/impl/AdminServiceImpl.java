@@ -54,7 +54,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
             }
         }
 
-        if (StringUtils.isNotBlank(dutyCreation.getParentTitle())){
+        if (StringUtils
+                .isNotBlank(dutyCreation.getParentTitle())){
              parentDuty= dutyService.findByParentTitle(dutyCreation.getParentTitle());
         }
         if(dutyType!=null && dutyTypeIsExist &&parentDuty!=null){
