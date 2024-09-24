@@ -1,10 +1,14 @@
 package application.entity.users;
 
 
+import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,6 +25,9 @@ public class Expert extends Users {
     @Column
     @Builder.Default
     private Integer score = 0;
+
+    @ManyToMany
+    private Set<Duty> duties = new HashSet<>();
 
     @Override
     public String toString() {

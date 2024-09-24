@@ -3,6 +3,7 @@ package application;
 import application.dto.DutyCreation;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
+import application.entity.enumeration.ExpertStatus;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -33,8 +34,9 @@ public class HomeServiceApp {
         DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
-        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService);
-        //signupTestMethod(customerService, signupService);
+        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
+        //signupCustomerTestMethod(customerService, signupService);
+        //signupExpertTestMethod(expertService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
@@ -44,7 +46,10 @@ public class HomeServiceApp {
         //adminCreateDutyDuplicate(faker,adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
-        loadAllDutyWithChildrenTest(dutyService);
+        //loadAllDutyWithChildrenTest(dutyService);
+        //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
+        //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(159));
+        //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(159));
 
 
     }
@@ -156,13 +161,19 @@ public class HomeServiceApp {
         //Users login = customerService.login("sonja.hickle@yahoo.com", "ghazal99");
     }
 
-    private static void signupTestMethod(CustomerService customerService, SignupService signupService) {
+    private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
         Faker faker = new Faker();
         String pathImage = "src/main/resources/images/less300.jpg";
-        UserSignupRequest userSignupRequest0 = createSignupRequest(faker, "Expert", pathImage);
         UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
         Users signup = signupService.signup(userSignupRequest);
         customerService.convertByteToImage(signup.getImage(), signup.getFirstName());
+    }
+    private static void signupExpertTestMethod(ExpertService expertService, SignupService signupService) {
+        Faker faker = new Faker();
+        String pathImage = "src/main/resources/images/less300.jpg";
+        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert", pathImage);
+        Users signup = signupService.signup(userSignupRequest);
+        expertService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
 
 

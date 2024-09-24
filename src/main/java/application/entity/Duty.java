@@ -1,6 +1,7 @@
 package application.entity;
 
 
+import application.entity.users.Expert;
 import application.exception.ValidationException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,9 @@ public class Duty extends BaseEntity<Integer> {
 
     @OneToMany(mappedBy = "parent")
     private Set<Duty> subDuty = new HashSet<>();
+
+    @ManyToMany(mappedBy = "duties")
+    private Set<Expert> experts = new HashSet<>();
 
     @PrePersist
     @PreUpdate

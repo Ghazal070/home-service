@@ -39,6 +39,7 @@ public class SignupServiceImpl implements SignupService {
                 expert = expertService.save(expert);
                 authHolder.tokenName=expert.getProfile().getEmail();
                 authHolder.tokenId=expert.getId();
+                //todo?? adminService.updateExpertStatus(expert); for request to admin to set expert status
                 return expert;
             }
             case "Customer":{

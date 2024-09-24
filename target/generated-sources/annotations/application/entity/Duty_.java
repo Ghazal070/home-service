@@ -1,5 +1,6 @@
 package application.entity;
 
+import application.entity.users.Expert;
 import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SetAttribute;
@@ -13,6 +14,7 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	public static final String PARENT = "parent";
 	public static final String DESCRIPTION = "description";
 	public static final String TITLE = "title";
+	public static final String EXPERTS = "experts";
 	public static final String BASE_PRICE = "basePrice";
 	public static final String SUB_DUTY = "subDuty";
 
@@ -36,6 +38,11 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty
 	 **/
 	public static volatile EntityType<Duty> class_;
+	
+	/**
+	 * @see application.entity.Duty#experts
+	 **/
+	public static volatile SetAttribute<Duty, Expert> experts;
 	
 	/**
 	 * @see application.entity.Duty#basePrice
