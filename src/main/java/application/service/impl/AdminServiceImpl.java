@@ -45,18 +45,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         String titleDutyType = dutyCreation.getTitleDutyType();
         Duty parentDuty=null;
         DutyType dutyType = dutyTypeService.findByUniqId(titleDutyType);
-//        List<DutyType> dutyTypes = dutyTypeService.loadAll();
-//        boolean dutyTypeIsExist = false;
-//        boolean dutyParentTitleIsExist = false;
-//        if (dutyTypes!=null && !dutyTypes.isEmpty()){
-//            for (int i = 0; i < dutyTypes.size(); i++) {
-//                if (dutyTypes.get(i).getTitle().equalsIgnoreCase(titleDutyType)){
-//                    dutyTypeIsExist=true;
-//                    break;
-//                }
-//            }
-//        }
-
         if (StringUtils
                 .isNotBlank(dutyCreation.getParentTitle())){
              parentDuty= dutyService.findByParentTitle(dutyCreation.getParentTitle());
