@@ -1,7 +1,7 @@
 package application;
 
 import application.dto.DutyCreation;
-import application.entity.Duty;
+import application.dto.UpdateDuty;
 import application.entity.DutyType;
 import application.repository.*;
 import application.repository.impl.*;
@@ -15,7 +15,6 @@ import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
 import application.util.AuthHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeServiceApp {
@@ -34,10 +33,10 @@ public class HomeServiceApp {
         DutyTypeRepository dutyTypeRepository = new DutyTypeRepositoryImpl(entityManager);
         DutyTypeService dutyTypeService = new DutyTypeServiceImpl(dutyTypeRepository);
         DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
-        DutyService dutyService = new DutyServiceImpl(dutyRepository);
+        DutyService dutyService = new DutyServiceImpl(dutyRepository, dutyTypeService);
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode, dutyTypeService, dutyService);
-        //       signupTestMethod(customerService, signupService);
+        //signupTestMethod(customerService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTset(customerService);
         //createDutyTypeFirstTime(adminService);
@@ -46,12 +45,22 @@ public class HomeServiceApp {
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
         //adminCreateDutyDontExitDuty(faker, adminService);
-        //createDutyTypeDuplicate(adminService);
+        //adminCreateDutyTypeDuplicate(adminService);
+        updatePriceOrDescriptionTest(dutyService);
 
 
     }
 
-    private static void createDutyTypeDuplicate(AdminService adminService) {
+    private static void updatePriceOrDescriptionTest(DutyService dutyService) {
+        UpdateDuty updateDuty = UpdateDuty.builder()
+                .title("SofaWashing")
+                .price(800_000)
+                //.description("SofaWashing++")
+                .build();
+        dutyService.updateDutyPriceOrDescription(updateDuty);
+    }
+
+    private static void adminCreateDutyTypeDuplicate(AdminService adminService) {
         String dutyType = "Spraying";
         adminService.createDutyType(dutyType);
 
