@@ -17,7 +17,8 @@ import application.util.ApplicationContext;
 public class Duty extends  BaseEntity<Integer> {
 
     @NotNull(message = "DutyType must not be null")
-    @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @OneToOne
+//            (cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private DutyType dutyType;
 
     @ManyToOne

@@ -38,15 +38,34 @@ public class HomeServiceApp {
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode, dutyTypeService, dutyService);
         //       signupTestMethod(customerService, signupService);
-        loginTestMethod(customerService);
+        //loginTestMethod(customerService);
         //passwordUpdateTset(customerService);
         //createDutyTypeFirstTime(adminService);
         //loadAllDutyType(dutyTypeService);
         //createDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
+        //adminCreateDutyDontExitDuty(faker, adminService);
+        //createDutyTypeDuplicate(adminService);
 
 
+    }
+
+    private static void createDutyTypeDuplicate(AdminService adminService) {
+        String dutyType = "Spraying";
+        adminService.createDutyType(dutyType);
+
+    }
+    private static void adminCreateDutyDontExitDuty(Faker faker, AdminService adminService) {
+        String sub = "WashMachine";
+        adminService.createDuty(
+                DutyCreation.builder()
+                        .titleDutyType(sub)
+                        .parentTitle("Cleaning")
+                        .basePrice(faker.number().numberBetween(100_000, 1_000_000))
+                        .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .build()
+        );
 
     }
 
@@ -54,29 +73,30 @@ public class HomeServiceApp {
         List<String> subDutyHouseholdAppliancesList = List.of(
                 "KitchenAppliances", "LaundrySupplies", "AudioVideoEquipment"
         );
-        for (String sub:subDutyHouseholdAppliancesList) {
+        for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
                     DutyCreation.builder()
                             .titleDutyType(sub)
                             .parentTitle("HouseholdAppliances")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
-                            .description(sub + "---" +faker.lorem().characters(5, 20))
+                            .description(sub + "---" + faker.lorem().characters(5, 20))
                             .build()
             );
 
         }
     }
+
     private static void adminCreateCleaning(Faker faker, AdminService adminService) {
         List<String> subDutyHouseholdAppliancesList = List.of(
-                "cleanHouse","LaundryIroning", "CarpetCleaning","SofaWashing","Spraying"
+                "cleanHouse", "LaundryIroning", "CarpetCleaning", "SofaWashing", "Spraying"
         );
-        for (String sub:subDutyHouseholdAppliancesList) {
+        for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
                     DutyCreation.builder()
                             .titleDutyType(sub)
                             .parentTitle("Cleaning")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
-                            .description(sub + "---" +faker.lorem().characters(5, 20))
+                            .description(sub + "---" + faker.lorem().characters(5, 20))
                             .build()
             );
 
@@ -86,7 +106,7 @@ public class HomeServiceApp {
     private static void loadAllDutyType(DutyTypeService dutyTypeService) {
         List<DutyType> dutyTypeList = dutyTypeService.loadAll();
         if (dutyTypeList != null && !dutyTypeList.isEmpty()) {
-            System.out.println("DutyType List: ");
+            System.out.println("DutyTypeList: ");
             dutyTypeList.forEach(System.out::println);
         }
     }
@@ -105,7 +125,7 @@ public class HomeServiceApp {
     private static void createDutyTypeFirstTime(AdminService adminService) {
         List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning",
                 "KitchenAppliances", "LaundrySupplies", "AudioVideoEquipment", "cleanHouse",
-                "LaundryIroning", "CarpetCleaning","SofaWashing","Spraying");
+                "LaundryIroning", "CarpetCleaning", "SofaWashing", "Spraying");
         for (String dutyType : dutyTypes) {
             adminService.createDutyType(dutyType);
 

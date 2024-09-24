@@ -28,12 +28,15 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public DutyType createDutyType(String dutyTypeTitle) {
-        if(StringUtils.isNotBlank(dutyTypeTitle)){
+        DutyType dutyType = dutyTypeService.findByUniqId(dutyTypeTitle);
+        if(dutyType==null && StringUtils.isNotBlank(dutyTypeTitle)){
             return dutyTypeService.save(DutyType.builder()
                     .title(dutyTypeTitle)
                     .build());
-        }
-        throw new ValidationException("dutyTypeTitle is not blank");
+        } else if (!StringUtils.isNotBlank(dutyTypeTitle)) {
+            throw new ValidationException("DutyTypeTitle is not blank");
+        }else
+            throw new ValidationException("DutyTypeTitle is Duplicate");
     }
 
     @Override
@@ -42,34 +45,34 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         String titleDutyType = dutyCreation.getTitleDutyType();
         Duty parentDuty=null;
         DutyType dutyType = dutyTypeService.findByUniqId(titleDutyType);
-        List<DutyType> dutyTypes = dutyTypeService.loadAll();
-        boolean dutyTypeIsExist = false;
-        boolean dutyParentTitleIsExist = false;
-        if (dutyTypes!=null && !dutyTypes.isEmpty()){
-            for (int i = 0; i < dutyTypes.size(); i++) {
-                if (dutyTypes.get(i).getTitle().equalsIgnoreCase(titleDutyType)){
-                    dutyTypeIsExist=true;
-                    break;
-                }
-            }
-        }
+//        List<DutyType> dutyTypes = dutyTypeService.loadAll();
+//        boolean dutyTypeIsExist = false;
+//        boolean dutyParentTitleIsExist = false;
+//        if (dutyTypes!=null && !dutyTypes.isEmpty()){
+//            for (int i = 0; i < dutyTypes.size(); i++) {
+//                if (dutyTypes.get(i).getTitle().equalsIgnoreCase(titleDutyType)){
+//                    dutyTypeIsExist=true;
+//                    break;
+//                }
+//            }
+//        }
 
         if (StringUtils
                 .isNotBlank(dutyCreation.getParentTitle())){
              parentDuty= dutyService.findByParentTitle(dutyCreation.getParentTitle());
         }
-        if(dutyType!=null && dutyTypeIsExist &&parentDuty!=null){
+        if(dutyType!=null && parentDuty!=null){
             return dutyService.save(Duty.builder()
                     .dutyType(dutyType)
                     .parent(parentDuty)
                     .basePrice(dutyCreation.getBasePrice())
                     .description(dutyCreation.getDescription())
                     .build());
-        } else if (dutyType!=null && dutyTypeIsExist ) {
+        } else if (dutyType!=null) {
             return dutyService.save(Duty.builder()
                     .dutyType(dutyType)
                     .build());
 
-        } else throw new ValidationException("title duty type must be from above list. for new duty type please createDutyType");
+        } else throw new ValidationException("This duty type does not exist.For new duty type please createDutyType");
     }
 }
