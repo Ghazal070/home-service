@@ -16,11 +16,9 @@ import application.util.ApplicationContext;
 @SuperBuilder
 public class Duty extends  BaseEntity<Integer> {
 
-    @NotNull(message = "DutyType must not be null")
-    @OneToOne
-//            (cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-    private DutyType dutyType;
-
+    @NotNull(message = "Title must not be null")
+    @Column(unique = true)
+    private  String title;
     @ManyToOne
     private Duty parent;
 
@@ -44,14 +42,14 @@ public class Duty extends  BaseEntity<Integer> {
     }
     @PostPersist
     private void createLog(){
-        ApplicationContext.getLogger().info("Duty " + this.dutyType + " is created");
+        ApplicationContext.getLogger().info("Duty " + this.title + " is created");
     }
 
 
     @Override
     public String toString() {
-        return parent!=null? id+"- " +"dutyType=" + dutyType + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'':
-                id+"- " +"dutyType=" + dutyType + ", parentId=" + "null"+ ", basePrice=" + basePrice + ", description='" + description + '\'';
+        return parent!=null? id+"- " +"title=" + title + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'':
+                id+"- " +"title=" + title + ", parentId=" + "null"+ ", basePrice=" + basePrice + ", description='" + description + '\'';
 
     }
 }

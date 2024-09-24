@@ -9,16 +9,11 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 @Generated("org.hibernate.processor.HibernateProcessor")
 public abstract class Duty_ extends application.entity.BaseEntity_ {
 
-	public static final String DUTY_TYPE = "dutyType";
 	public static final String PARENT = "parent";
 	public static final String DESCRIPTION = "description";
+	public static final String TITLE = "title";
 	public static final String BASE_PRICE = "basePrice";
 
-	
-	/**
-	 * @see application.entity.Duty#dutyType
-	 **/
-	public static volatile SingularAttribute<Duty, DutyType> dutyType;
 	
 	/**
 	 * @see application.entity.Duty#parent
@@ -29,6 +24,11 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty#description
 	 **/
 	public static volatile SingularAttribute<Duty, String> description;
+	
+	/**
+	 * @see application.entity.Duty#title
+	 **/
+	public static volatile SingularAttribute<Duty, String> title;
 	
 	/**
 	 * @see application.entity.Duty

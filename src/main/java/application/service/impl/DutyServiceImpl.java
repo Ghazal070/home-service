@@ -2,34 +2,22 @@ package application.service.impl;
 
 import application.dto.UpdateDuty;
 import application.entity.Duty;
-import application.entity.DutyType;
 import application.repository.DutyRepository;
 import application.service.DutyService;
-import application.service.DutyTypeService;
 import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty, Integer> implements DutyService {
-    private final DutyTypeService dutyTypeService;
 
-    public DutyServiceImpl(DutyRepository repository, DutyTypeService dutyTypeService) {
+    public DutyServiceImpl(DutyRepository repository) {
         super(repository);
-        this.dutyTypeService = dutyTypeService;
-    }
-
-    @Override
-    public Duty findByDutyTypeTitle(String title) {
-        if (StringUtils.isNotBlank(title)) {
-            return repository.findByDutyTypeTitle(title);
-        }
-        return null;
     }
 
     @Override
     public Boolean updateDutyPriceOrDescription(UpdateDuty updateDuty) {
         if (updateDuty != null) {
             if (StringUtils.isNotBlank(updateDuty.getTitle())) {
-                Duty duty = repository.findByDutyTypeTitle(updateDuty.getTitle());
+                Duty duty = repository.findByUniqId(updateDuty.getTitle());
                 if (duty != null) {
                     return repository.updateDutyPriceOrDescription(duty, updateDuty);
                 } else throw new ValidationException("Duty findBy title is null");

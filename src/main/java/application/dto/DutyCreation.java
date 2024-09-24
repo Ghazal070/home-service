@@ -22,7 +22,7 @@ public class DutyCreation {
     @NotBlank
     //todo from duty type table
 
-    private String titleDutyType;
+    private String title;
 
     private String parentTitle;
 

@@ -24,16 +24,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
 
     @Override
     public String getUniqueFieldName() {
-        return Duty_.ID;
-    }
-
-    @Override
-    public Duty findByDutyTypeTitle(String title) {
-        String sb = "select d from Duty d where d.dutyType.title = :title";
-        TypedQuery<Duty> typedQuery = entityManager.createQuery(sb, Duty.class);
-        typedQuery.setParameter("title", title);
-        List<Duty> resultList = typedQuery.getResultList();
-        return (resultList != null && !resultList.isEmpty()) ? resultList.get(0) : null;
+        return Duty_.TITLE;
     }
 
     @Override

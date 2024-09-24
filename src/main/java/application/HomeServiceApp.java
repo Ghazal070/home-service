@@ -2,7 +2,6 @@ package application;
 
 import application.dto.DutyCreation;
 import application.dto.UpdateDuty;
-import application.entity.DutyType;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -30,23 +29,20 @@ public class HomeServiceApp {
         CustomerService customerService = new CustomerServiceImpl(customerRepository, authHolder, passwordEncode);
         ExpertService expertService = new ExpertServiceImpl(expertRepository, authHolder, passwordEncode);
         SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
-        DutyTypeRepository dutyTypeRepository = new DutyTypeRepositoryImpl(entityManager);
-        DutyTypeService dutyTypeService = new DutyTypeServiceImpl(dutyTypeRepository);
         DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
-        DutyService dutyService = new DutyServiceImpl(dutyRepository, dutyTypeService);
+        DutyService dutyService = new DutyServiceImpl(dutyRepository);
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
-        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode, dutyTypeService, dutyService);
+        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService);
         //signupTestMethod(customerService, signupService);
         //loginTestMethod(customerService);
-        //passwordUpdateTset(customerService);
-        //createDutyTypeFirstTime(adminService);
-        //loadAllDutyType(dutyTypeService);
-        //createDutyFirstTime(adminService);
+        //passwordUpdateTest(customerService);
+        //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
-        //adminCreateDutyDontExitDuty(faker, adminService);
-        //adminCreateDutyTypeDuplicate(adminService);
-        updatePriceOrDescriptionTest(dutyService);
+        //adminCreateDutyDontExitParentDuty(faker, adminService);
+        //adminCreateDutyDuplicate(faker,adminService);
+        //updatePriceOrDescriptionTest(dutyService);
+
 
 
     }
@@ -54,23 +50,32 @@ public class HomeServiceApp {
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
                 .title("SofaWashing")
-                .price(800_000)
-                //.description("SofaWashing++")
+                .price(600_000)
+                .description("SofaWashing**")
                 .build();
         dutyService.updateDutyPriceOrDescription(updateDuty);
     }
-
-    private static void adminCreateDutyTypeDuplicate(AdminService adminService) {
-        String dutyType = "Spraying";
-        adminService.createDutyType(dutyType);
-
-    }
-    private static void adminCreateDutyDontExitDuty(Faker faker, AdminService adminService) {
-        String sub = "WashMachine";
+    private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
+        String sub = "cleanHouse";
+        String parentTitle = "Cleaning";
         adminService.createDuty(
                 DutyCreation.builder()
-                        .titleDutyType(sub)
-                        .parentTitle("Cleaning")
+                        .title(sub)
+                        .parentTitle(parentTitle)
+                        .basePrice(faker.number().numberBetween(100_000, 1_000_000))
+                        .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .build()
+        );
+
+    }
+
+    private static void adminCreateDutyDontExitParentDuty(Faker faker, AdminService adminService) {
+        String sub = "WashMachine";
+        String parentTitle = "Washing";
+        adminService.createDuty(
+                DutyCreation.builder()
+                        .title(sub)
+                        .parentTitle(parentTitle)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
                         .build()
@@ -85,7 +90,7 @@ public class HomeServiceApp {
         for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
                     DutyCreation.builder()
-                            .titleDutyType(sub)
+                            .title(sub)
                             .parentTitle("HouseholdAppliances")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
@@ -102,7 +107,7 @@ public class HomeServiceApp {
         for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
                     DutyCreation.builder()
-                            .titleDutyType(sub)
+                            .title(sub)
                             .parentTitle("Cleaning")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
@@ -112,39 +117,22 @@ public class HomeServiceApp {
         }
     }
 
-    private static void loadAllDutyType(DutyTypeService dutyTypeService) {
-        List<DutyType> dutyTypeList = dutyTypeService.loadAll();
-        if (dutyTypeList != null && !dutyTypeList.isEmpty()) {
-            System.out.println("DutyTypeList: ");
-            dutyTypeList.forEach(System.out::println);
-        }
-    }
 
-    private static void createDutyFirstTime(AdminService adminService) {
+    private static void adminCreateDutyFirstTime(AdminService adminService) {
         List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning");
-        for (String dutyType : dutyTypes) {
+        for (String title : dutyTypes) {
             adminService.createDuty(
                     DutyCreation.builder()
-                            .titleDutyType(dutyType)
+                            .title(title)
                             .build()
             );
         }
     }
 
-    private static void createDutyTypeFirstTime(AdminService adminService) {
-        List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning",
-                "KitchenAppliances", "LaundrySupplies", "AudioVideoEquipment", "cleanHouse",
-                "LaundryIroning", "CarpetCleaning", "SofaWashing", "Spraying");
-        for (String dutyType : dutyTypes) {
-            adminService.createDutyType(dutyType);
-
-        }
-    }
-
-    private static void passwordUpdateTset(CustomerService customerService) {
+    private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
 //                .oldPassword("lhsu7222")
-                .oldPassword("ddd12345")
+                .oldPassword("lhsu7222")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePassword);
