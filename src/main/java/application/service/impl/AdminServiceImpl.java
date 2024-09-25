@@ -69,7 +69,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
         }
-        return false;
+        else throw new ValidationException("Expert does not exist");
+
     }
 
     @Override

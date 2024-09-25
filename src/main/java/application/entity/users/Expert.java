@@ -1,6 +1,7 @@
 package application.entity.users;
 
 
+import application.entity.Credit;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import jakarta.persistence.*;
@@ -28,6 +29,9 @@ public class Expert extends Users {
 
     @ManyToMany
     private Set<Duty> duties = new HashSet<>();
+
+    @OneToOne
+    private Credit credit;
 
     @Override
     public String toString() {

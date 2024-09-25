@@ -48,8 +48,11 @@ public class HomeServiceApp {
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
         //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
+        //adminService.updateExpertStatus(expertService.findById(27), ExpertStatus.Accepted);
         //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(159));
+        //adminService.addDutyToExpert(expertService.findById(27), dutyService.findById(91));
         //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(159));
+
 
 
     }
