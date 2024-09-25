@@ -73,6 +73,7 @@ public class HomeServiceApp {
                 .title("SofaWashing")
                 .price(600_000)
                 .description("SofaWashing**")
+                .selectable(true)
                 .build();
         dutyService.updateDutyPriceOrDescription(updateDuty);
     }
@@ -85,6 +86,7 @@ public class HomeServiceApp {
                         .parentTitle(parentTitle)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .selectable(true)
                         .build()
         );
 
@@ -99,6 +101,7 @@ public class HomeServiceApp {
                         .parentTitle(parentTitle)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .selectable(true)
                         .build()
         );
 
@@ -115,6 +118,7 @@ public class HomeServiceApp {
                             .parentTitle("HouseholdAppliances")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
+                            .selectable(true)
                             .build()
             );
 
@@ -132,6 +136,7 @@ public class HomeServiceApp {
                             .parentTitle("Cleaning")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
+                            .selectable(true)
                             .build()
             );
 
@@ -145,6 +150,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(title)
+                            .selectable(false)
                             .build()
             );
         }

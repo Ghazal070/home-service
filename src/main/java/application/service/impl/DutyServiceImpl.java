@@ -21,7 +21,7 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
             if (StringUtils.isNotBlank(updateDuty.getTitle())) {
                 Duty duty = repository.findByUniqId(updateDuty.getTitle());
                 if (duty != null) {
-                    return repository.updateDutyPriceOrDescription(duty, updateDuty);
+                    return repository.updateDutyPriceOrDescriptionOrSelectable(duty, updateDuty);
                 } else throw new ValidationException("Duty findBy title is null");
             } else throw new ValidationException("Update duty title is null");
         } else throw new

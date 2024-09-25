@@ -6,6 +6,6 @@ import application.entity.Duty;
 import java.util.List;
 
 public interface DutyRepository extends BaseEntityRepository<Duty,Integer>{
-    Boolean updateDutyPriceOrDescription(Duty duty,UpdateDuty updateDuty);
+    Boolean updateDutyPriceOrDescriptionOrSelectable(Duty duty,UpdateDuty updateDuty);
     List<Duty> loadAllDutyWithChildren();
 }

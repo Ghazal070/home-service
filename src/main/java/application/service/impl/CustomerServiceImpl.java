@@ -31,6 +31,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         if (orderSubmission != null){
             String dutyTitle = orderSubmission.getDutyTitle();
             Duty duty = dutyService.findByUniqId(dutyTitle);
+            if (!duty.getSelectable())
+                throw new ValidationException("Duty selectable is false");
             Customer customer = repository.findById(authHolder.tokenId);
             if(duty!=null && customer !=null){
                 if (duty.getSelectable()){

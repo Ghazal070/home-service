@@ -39,8 +39,8 @@ public class Duty extends BaseEntity<Integer> {
     private Set<Expert> experts = new HashSet<>();
 
     @Column
-    @Builder.Default
-    private Boolean selectable =true;
+    @NotNull
+    private Boolean selectable;
 
     @PrePersist
     @PreUpdate

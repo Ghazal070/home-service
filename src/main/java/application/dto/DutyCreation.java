@@ -28,6 +28,7 @@ public class DutyCreation {
 
     private String description;
 
+    @NotNull
     private Boolean selectable;
 
     @PrePersist
