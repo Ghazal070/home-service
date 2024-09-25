@@ -1,6 +1,12 @@
 package application.util;
 
 
+import application.repository.DutyRepository;
+import application.repository.OrderRepository;
+import application.repository.impl.DutyRepositoryImpl;
+import application.repository.impl.OrderRepositoryImpl;
+import application.service.*;
+import application.service.impl.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -10,14 +16,6 @@ import application.repository.CustomerRepository;
 import application.repository.ExpertRepository;
 import application.repository.impl.CustomerRepositoryImpl;
 import application.repository.impl.ExpertRepositoryImpl;
-import application.service.CustomerService;
-import application.service.ExpertService;
-import application.service.PasswordEncode;
-import application.service.SignupService;
-import application.service.impl.CustomerServiceImpl;
-import application.service.impl.ExpertServiceImpl;
-import application.service.impl.PasswordEncodeImpl;
-import application.service.impl.SignupServiceImpl;
 
 
 public class ApplicationContext {
@@ -35,7 +33,11 @@ public class ApplicationContext {
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
         AuthHolder authHolder = new AuthHolder();
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
-        CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder,passwordEncode);
+        DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
+        DutyService dutyService = new DutyServiceImpl(dutyRepository);
+        OrderRepository orderRepository =new OrderRepositoryImpl(entityManager);
+        OrderService orderService = new OrderServiceImpl(orderRepository);
+        CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder,passwordEncode, dutyService, authHolder, orderService);
         ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder,passwordEncode);
         SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode, authHolder);
 

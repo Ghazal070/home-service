@@ -13,4 +13,5 @@ public class UpdateDuty {
     private String title;
     private Integer price;
     private String description;
+    private Boolean selectable;
 }

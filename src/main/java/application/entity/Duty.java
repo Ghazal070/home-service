@@ -38,6 +38,10 @@ public class Duty extends BaseEntity<Integer> {
     @ManyToMany(mappedBy = "duties")
     private Set<Expert> experts = new HashSet<>();
 
+    @Column
+    @Builder.Default
+    private Boolean selectable =true;
+
     @PrePersist
     @PreUpdate
     private void validator() {

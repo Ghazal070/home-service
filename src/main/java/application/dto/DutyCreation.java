@@ -20,16 +20,15 @@ public class DutyCreation {
 
     @NotNull
     @NotBlank
-    //todo from duty type table
-
     private String title;
 
     private String parentTitle;
 
-
     private Integer basePrice;
 
     private String description;
+
+    private Boolean selectable;
 
     @PrePersist
     @PreUpdate
