@@ -1,5 +1,6 @@
 package application.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -11,9 +12,17 @@ public class UserSignupRequest {
 
     private String firstName;
     private String lastName;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String pathImage;
+
+    @NotNull
     private String role;
 
     @Override

@@ -35,7 +35,7 @@ public class HomeServiceApp {
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
-        //signupCustomerTestMethod(customerService, signupService);
+        signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
