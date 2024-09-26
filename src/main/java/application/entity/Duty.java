@@ -63,12 +63,8 @@ public class Duty extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        if (parent != null && !subDuty.isEmpty()) {
-            return id + "- " + "title=" + title + ", parentId=" + parent.getId() + ", subDuty=" + subDuty + ", basePrice=" + basePrice + ", description='" + description + '\'';
-        } else if (parent != null)
-            return id + "- " + "title=" + title + ", parentId=" + parent.getId() + ", basePrice=" + basePrice + ", description='" + description + '\'';
-        else if (parent == null && !subDuty.isEmpty()) {
-            return id + "- " + "title=" + title + ", subDuty=" + subDuty;
-        } else return id + "- " + "title=" + title;
+        if (parent != null ) {
+            return id + "- " + "title=" + title + ", parentId=" + parent.getId() + ", subDuty=" + subDuty + ", basePrice=" + basePrice + ", description='" + description + '\''+ ", selectable=" + selectable;
+        } else return id + "- " + "title=" + title + ", selectable=" + selectable+ ", subDuty=" + subDuty;
     }
 }

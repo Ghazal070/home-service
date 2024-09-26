@@ -12,6 +12,7 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 public abstract class Duty_ extends application.entity.BaseEntity_ {
 
 	public static final String PARENT = "parent";
+	public static final String SELECTABLE = "selectable";
 	public static final String DESCRIPTION = "description";
 	public static final String TITLE = "title";
 	public static final String EXPERTS = "experts";
@@ -23,6 +24,11 @@ public abstract class Duty_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Duty#parent
 	 **/
 	public static volatile SingularAttribute<Duty, Duty> parent;
+	
+	/**
+	 * @see application.entity.Duty#selectable
+	 **/
+	public static volatile SingularAttribute<Duty, Boolean> selectable;
 	
 	/**
 	 * @see application.entity.Duty#description

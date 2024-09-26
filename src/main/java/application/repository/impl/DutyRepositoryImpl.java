@@ -1,5 +1,6 @@
 package application.repository.impl;
 
+import application.dto.DutyResponseChildren;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
 import application.entity.Duty_;
@@ -8,8 +9,7 @@ import application.repository.DutyRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         implements DutyRepository {
@@ -30,7 +30,9 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
 
     @Override
     public Boolean updateDutyPriceOrDescriptionOrSelectable(Duty duty, UpdateDuty updateDuty) {
+
         StringBuilder queryBuilder = new StringBuilder("update Duty d set ");
+        entityManager.getTransaction().begin();
         boolean needsComma = false;
         if (updateDuty.getPrice() != null) {
             queryBuilder.append("d.basePrice = :price");
@@ -43,14 +45,13 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
             queryBuilder.append("d.description = :description");
             needsComma = true;
         }
-
         if (updateDuty.getSelectable() != null) {
             if (needsComma) {
                 queryBuilder.append(", ");
             }
             queryBuilder.append("d.selectable = :selectable");
         }
-        queryBuilder.append(" WHERE d.id = :id");
+        queryBuilder.append(" where d.id = :id");
 
         Query updateQuery = entityManager.createQuery(queryBuilder.toString());
 
@@ -71,26 +72,33 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
 
 
     @Override
-    public List<Duty> loadAllDutyWithChildren() {
+    public List<DutyResponseChildren> loadAllDutyWithChildren() {
         String query = """
                 select d from Duty d order by case when d.parent.id is null then 1 else 2 end,d.parent.id
                 """;
         TypedQuery<Duty> typedQuery = entityManager.createQuery(query, Duty.class);
         List<Duty> duties = typedQuery.getResultList();
-        List<Duty> dutiesWithChildren = new ArrayList<>();
+        Map<Integer, DutyResponseChildren> dutyResponseChildrenMap = new HashMap<>();
+        List<DutyResponseChildren> rootDuties = new ArrayList<>();
         for (Duty duty : duties) {
+            DutyResponseChildren responseChildren = DutyResponseChildren.builder()
+                    .id(duty.getId())
+                    .title(duty.getTitle())
+                    .selectable(duty.getSelectable())
+                    .subDuty(new HashSet<>())
+                    .build();
+            dutyResponseChildrenMap.put(duty.getId(), responseChildren);
             if (duty.getParent() == null) {
-                dutiesWithChildren.add(duty);
-            }
-            if (duty.getParent() != null) {
-                for (Duty parent : dutiesWithChildren) {
-                    if (parent.getId() == duty.getParent().getId()) {
-                        parent.getSubDuty().add(duty);
-                    }
+                rootDuties.add(responseChildren);
+            } else {
+                DutyResponseChildren parentResponse = dutyResponseChildrenMap.get(duty.getParent().getId());
+                if (parentResponse != null) {
+                    parentResponse.getSubDuty().add(responseChildren);
                 }
             }
         }
-        return dutiesWithChildren;
+
+        return rootDuties;
     }
 }
 

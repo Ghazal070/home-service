@@ -1,5 +1,6 @@
 package application.service.impl;
 
+import application.dto.DutyResponseChildren;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
 import application.repository.DutyRepository;
@@ -30,7 +31,7 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     }
 
     @Override
-    public List<Duty> loadAllDutyWithChildren() {
+    public List<DutyResponseChildren> loadAllDutyWithChildren() {
         return repository.loadAllDutyWithChildren();
     }
 }

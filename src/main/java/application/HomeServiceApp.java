@@ -1,15 +1,12 @@
 package application;
 
-import application.dto.DutyCreation;
-import application.dto.UpdateDuty;
+import application.dto.*;
 import application.entity.Duty;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
 import application.service.impl.*;
 import com.github.javafaker.Faker;
-import application.dto.UserChangePassword;
-import application.dto.UserSignupRequest;
 import application.entity.users.Users;
 import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
@@ -47,7 +44,7 @@ public class HomeServiceApp {
         //adminCreateDutyDuplicate(faker,adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
-        //loadAllDutyWithChildrenTest(dutyService);
+        loadAllDutyWithChildrenTest(dutyService);
         //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
         //adminService.updateExpertStatus(expertService.findById(27), ExpertStatus.Accepted);
         //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(159));
@@ -59,7 +56,7 @@ public class HomeServiceApp {
     }
 
     private static void loadAllDutyWithChildrenTest(DutyService dutyService) {
-        List<Duty> duties = dutyService.loadAllDutyWithChildren();
+        List<DutyResponseChildren> duties = dutyService.loadAllDutyWithChildren();
         duties.forEach(System.out::println);
     }
 
@@ -71,8 +68,8 @@ public class HomeServiceApp {
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
                 .title("SofaWashing")
-                .price(600_000)
-                .description("SofaWashing**")
+                .price(800_000)
+                .description("SofaWashing****")
                 .selectable(true)
                 .build();
         dutyService.updateDutyPriceOrDescription(updateDuty);
@@ -158,7 +155,6 @@ public class HomeServiceApp {
 
     private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
-//                .oldPassword("lhsu7222")
                 .oldPassword("lhsu7222")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);

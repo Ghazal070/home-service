@@ -3,6 +3,7 @@ package application.entity.users;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import lombok.*;
 public class Profile {
 
     @Column(unique = true)
+    //@Email
     @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z]+(?:.[a-zA-Z]+)*$",message = "Please follow this pattern: gh@to.com")
     private String email;
 
