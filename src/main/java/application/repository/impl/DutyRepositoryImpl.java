@@ -29,23 +29,39 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
     }
 
     @Override
-    public Boolean updateDutyPriceOrDescription(Duty duty, UpdateDuty updateDuty) {
-        entityManager.getTransaction().begin();
-        Query updateQuery = null;
-        StringBuilder sb = new StringBuilder("update Duty d set ");
-        if (updateDuty.getPrice() != null && updateDuty.getDescription() == null) {
-            sb.append("d.basePrice=:price where d.id=:id");
-            updateQuery = entityManager.createQuery(String.valueOf(sb));
+    public Boolean updateDutyPriceOrDescriptionOrSelectable(Duty duty, UpdateDuty updateDuty) {
+        StringBuilder queryBuilder = new StringBuilder("update Duty d set ");
+        boolean needsComma = false;
+        if (updateDuty.getPrice() != null) {
+            queryBuilder.append("d.basePrice = :price");
+            needsComma = true;
+        }
+        if (updateDuty.getDescription() != null) {
+            if (needsComma) {
+                queryBuilder.append(", ");
+            }
+            queryBuilder.append("d.description = :description");
+            needsComma = true;
+        }
+
+        if (updateDuty.getSelectable() != null) {
+            if (needsComma) {
+                queryBuilder.append(", ");
+            }
+            queryBuilder.append("d.selectable = :selectable");
+        }
+        queryBuilder.append(" WHERE d.id = :id");
+
+        Query updateQuery = entityManager.createQuery(queryBuilder.toString());
+
+        if (updateDuty.getPrice() != null) {
             updateQuery.setParameter("price", updateDuty.getPrice());
-        } else if (updateDuty.getPrice() == null && updateDuty.getDescription() != null) {
-            sb.append("d.description= :description  where d.id=:id");
-            updateQuery = entityManager.createQuery(String.valueOf(sb));
+        }
+        if (updateDuty.getDescription() != null) {
             updateQuery.setParameter("description", updateDuty.getDescription());
-        } else if (updateDuty.getDescription() != null && updateDuty.getPrice() != null) {
-            sb.append("d.description= :description, d.basePrice = :price where d.id= :id");
-            updateQuery = entityManager.createQuery(String.valueOf(sb));
-            updateQuery.setParameter("description", updateDuty.getDescription());
-            updateQuery.setParameter("price", updateDuty.getPrice());
+        }
+        if (updateDuty.getSelectable() != null) {
+            updateQuery.setParameter("selectable", updateDuty.getSelectable());
         }
         updateQuery.setParameter("id", duty.getId());
         int result = updateQuery.executeUpdate();
@@ -53,34 +69,6 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         return result > 0;
     }
 
-    public Boolean updateDutyPriceOrDescriptionRefactor(Duty duty, UpdateDuty updateDuty) {
-        Boolean result = false;
-        entityManager.getTransaction().begin();
-        StringBuilder sb = new StringBuilder("update Duty d set ");
-        boolean firstPart = true;
-        if (updateDuty.getPrice() != null) {
-            sb.append("d.basePrice = :price");
-            firstPart = false;
-        }
-        if (updateDuty.getDescription() != null) {
-            if (!firstPart) {
-                sb.append(", ");
-            }
-            sb.append("d.description = :description");
-        }
-        sb.append(" where d.id = :id");
-        Query updateQuery = entityManager.createQuery(sb.toString());
-        if (updateDuty.getPrice() != null) {
-            updateQuery.setParameter("price", updateDuty.getPrice());
-        }
-        if (updateDuty.getDescription() != null) {
-            updateQuery.setParameter("description", updateDuty.getDescription());
-        }
-        updateQuery.setParameter("id", duty.getId());
-        int updateCount = updateQuery.executeUpdate();
-        entityManager.getTransaction().commit();
-        return updateCount > 0;
-    }
 
     @Override
     public List<Duty> loadAllDutyWithChildren() {

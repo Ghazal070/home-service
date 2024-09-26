@@ -3,7 +3,6 @@ package application;
 import application.dto.DutyCreation;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
-import application.entity.enumeration.ExpertStatus;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -28,11 +27,13 @@ public class HomeServiceApp {
         ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
         AuthHolder authHolder = new AuthHolder();
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
-        CustomerService customerService = new CustomerServiceImpl(customerRepository, authHolder, passwordEncode);
-        ExpertService expertService = new ExpertServiceImpl(expertRepository, authHolder, passwordEncode);
-        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
         DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
+        OrderRepository orderRepository =new OrderRepositoryImpl(entityManager);
+        OrderService orderService = new OrderServiceImpl(orderRepository);
+        CustomerService customerService = new CustomerServiceImpl(customerRepository, authHolder, passwordEncode, dutyService, authHolder, orderService);
+        ExpertService expertService = new ExpertServiceImpl(expertRepository, authHolder, passwordEncode);
+        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
         AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
         signupCustomerTestMethod(customerService, signupService);
@@ -48,8 +49,11 @@ public class HomeServiceApp {
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
         //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
+        //adminService.updateExpertStatus(expertService.findById(27), ExpertStatus.Accepted);
         //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(159));
+        //adminService.addDutyToExpert(expertService.findById(27), dutyService.findById(91));
         //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(159));
+
 
 
     }
@@ -69,6 +73,7 @@ public class HomeServiceApp {
                 .title("SofaWashing")
                 .price(600_000)
                 .description("SofaWashing**")
+                .selectable(true)
                 .build();
         dutyService.updateDutyPriceOrDescription(updateDuty);
     }
@@ -81,6 +86,7 @@ public class HomeServiceApp {
                         .parentTitle(parentTitle)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .selectable(true)
                         .build()
         );
 
@@ -95,6 +101,7 @@ public class HomeServiceApp {
                         .parentTitle(parentTitle)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
+                        .selectable(true)
                         .build()
         );
 
@@ -111,6 +118,7 @@ public class HomeServiceApp {
                             .parentTitle("HouseholdAppliances")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
+                            .selectable(true)
                             .build()
             );
 
@@ -128,6 +136,7 @@ public class HomeServiceApp {
                             .parentTitle("Cleaning")
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
+                            .selectable(true)
                             .build()
             );
 
@@ -141,6 +150,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(title)
+                            .selectable(false)
                             .build()
             );
         }

@@ -49,12 +49,14 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                     .parent(parentDuty)
                     .basePrice(dutyCreation.getBasePrice())
                     .description(dutyCreation.getDescription())
+                    .selectable(dutyCreation.getSelectable())
                     .build();
         } else if (dutyCreation.getParentTitle() != null && parentDuty == null) {
             throw new ValidationException("This parent duty is not exist");
         } else {
             buildDuty = Duty.builder()
                     .title(titleDuty)
+                    .selectable(dutyCreation.getSelectable())
                     .build();
         }
         return dutyService.save(buildDuty);
@@ -69,7 +71,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
         }
-        return false;
+        else throw new ValidationException("Expert does not exist");
+
     }
 
     @Override
@@ -77,6 +80,10 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
+        if (!duty.getSelectable()){
+            throw new ValidationException("Duty selectable is false");
+        }
+
         if (!expertService.havePermissionExpertToServices(expert)) {
             updateExpertStatus(expert, ExpertStatus.Accepted);
         }
