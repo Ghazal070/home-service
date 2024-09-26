@@ -70,8 +70,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 expertService.update(expert);
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
-        }
-        else throw new ValidationException("Expert does not exist");
+        } else throw new ValidationException("Expert does not exist");
 
     }
 
@@ -80,7 +79,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
-        if (!duty.getSelectable()){
+        if (!duty.getSelectable()) {
             throw new ValidationException("Duty selectable is false");
         }
 
@@ -110,19 +109,16 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
-        if (expertService.havePermissionExpertToServices(expert)) {
-            Set<Duty> duties = expert.getDuties();
-            if (duties != null && !duties.isEmpty()) {
-                //todo?? stream convert to id check id equal has better performance?
-                for (Duty existDuty : duties) {
-                    if (existDuty.equals(duty)) {
-                        removeDuty = duties.remove(duty);
-                    }
+        Set<Duty> duties = expert.getDuties();
+        if (duties != null && !duties.isEmpty()) {
+            for (Duty existDuty : duties) {
+                if (existDuty.equals(duty)) {
+                    removeDuty = duties.remove(duty);
                 }
-                if (!removeDuty)throw new ValidationException("Duty does not exist in set expert");
             }
-            expertService.update(expert);
-        }
+            if (!removeDuty) throw new ValidationException("Duty does not exist in set expert");
+        }else throw new ValidationException("Duty set is empty");
+        expertService.update(expert);
         return removeDuty;
     }
 }

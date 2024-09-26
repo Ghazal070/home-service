@@ -2,6 +2,7 @@ package application;
 
 import application.dto.*;
 import application.entity.Duty;
+import application.entity.enumeration.ExpertStatus;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -44,12 +45,10 @@ public class HomeServiceApp {
         //adminCreateDutyDuplicate(faker,adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
-        loadAllDutyWithChildrenTest(dutyService);
+        //loadAllDutyWithChildrenTest(dutyService);
         //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
-        //adminService.updateExpertStatus(expertService.findById(27), ExpertStatus.Accepted);
-        //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(159));
-        //adminService.addDutyToExpert(expertService.findById(27), dutyService.findById(91));
-        //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(159));
+        //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(178));
+        //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(178));
 
 
 
