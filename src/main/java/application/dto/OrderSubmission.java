@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 
@@ -27,7 +28,7 @@ public class OrderSubmission {
     private Integer priceOrder;
 
     @NotNull(message = "dateTimeOrder must not be null")
-    private ZonedDateTime dateTimeOrder;
+    private LocalDateTime dateTimeOrder;
 
     @NotNull(message = "address order must not be null")
     private String address;

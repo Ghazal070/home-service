@@ -3,6 +3,7 @@ package application.service.impl;
 import application.dto.OrderSubmission;
 import application.entity.Duty;
 import application.entity.Order;
+import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.repository.CustomerRepository;
 import application.service.CustomerService;
@@ -36,15 +37,18 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
             Customer customer = repository.findById(authHolder.tokenId);
             if(duty!=null && customer !=null){
                 if (duty.getSelectable()){
-                    Order order = Order.builder()
-                            .customer(customer)
-                            .description(orderSubmission.getDescription())
-                            .address(orderSubmission.getAddress())
-                            .priceOrder(orderSubmission.getPriceOrder())
-                            .duty(duty)
-                            .dateTimeOrder(orderSubmission.getDateTimeOrder())
-                            .build();
-                    return orderService.save(order);
+                    if (duty.getBasePrice()<= orderSubmission.getPriceOrder()){
+                        Order order = Order.builder()
+                                .customer(customer)
+                                .description(orderSubmission.getDescription())
+                                .address(orderSubmission.getAddress())
+                                .priceOrder(orderSubmission.getPriceOrder())
+                                .duty(duty)
+                                .orderStatus(OrderStatus.ExpertOfferWanting)
+                                .dateTimeOrder(orderSubmission.getDateTimeOrder())
+                                .build();
+                        return orderService.save(order);
+                    }else throw new ValidationException("Duty base price greater than your order");
                 }else throw new ValidationException("Duty is not selectable");
             }else throw new ValidationException("Title duty must be from Duty List or auth holder is null");
 

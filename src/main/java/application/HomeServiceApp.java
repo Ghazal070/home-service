@@ -2,6 +2,7 @@ package application;
 
 import application.dto.*;
 import application.entity.Duty;
+import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.repository.*;
 import application.repository.impl.*;
@@ -13,6 +14,7 @@ import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
 import application.util.AuthHolder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class HomeServiceApp {
@@ -36,7 +38,7 @@ public class HomeServiceApp {
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        //loginTestMethod(customerService);
+        loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
@@ -50,8 +52,24 @@ public class HomeServiceApp {
         //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(178));
         //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(178));
 
+        //loginTestMethod(customerService);
+        //loadAllDuties(dutyService);
+        //orderSubmitTest(faker, customerService);
 
 
+    }
+
+    private static void orderSubmitTest(Faker faker, CustomerService customerService) {
+
+        Order cleanHouse = customerService.orderSubmit(
+                OrderSubmission.builder()
+                        .dutyTitle("cleanHouse")
+                        .priceOrder(200_000)
+                        .dateTimeOrder(LocalDateTime.of(2024, 9, 30, 10, 25))
+                        .address(faker.address().streetAddress())
+                        .description("cleanHouse---" + faker.lorem().characters(5, 20))
+                        .build()
+        );
     }
 
     private static void loadAllDutyWithChildrenTest(DutyService dutyService) {

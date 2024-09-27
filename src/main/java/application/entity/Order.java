@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Past;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "orders-home-service")
 @SuperBuilder
 
 public class Order extends BaseEntity<Integer> {
@@ -34,12 +36,12 @@ public class Order extends BaseEntity<Integer> {
     @Column
     @Future
     @NotNull
-    private ZonedDateTime dateTimeOrder;
+    private LocalDateTime dateTimeOrder;
 
     @Column
     private String address;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private OrderStatus orderStatus = OrderStatus.ExpertOfferWanting;
 
@@ -54,5 +56,9 @@ public class Order extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "order")
     private Set<Offer> offers;
 
-
+    @Override
+    public String toString() {
+        return "id='" + id +"description='" + description + '\'' + ", priceOrder=" + priceOrder + ", dateTimeOrder=" + dateTimeOrder + ", address='" + address + '\''
+                + ", orderStatus=" + orderStatus + ", customer=" + customer + ", duty=" + duty;
+    }
 }

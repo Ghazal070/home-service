@@ -5,7 +5,7 @@ import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @StaticMetamodel(Offer.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
@@ -32,12 +32,12 @@ public abstract class Offer_ extends application.entity.BaseEntity_ {
 	/**
 	 * @see application.entity.Offer#dateTimeStartWork
 	 **/
-	public static volatile SingularAttribute<Offer, ZonedDateTime> dateTimeStartWork;
+	public static volatile SingularAttribute<Offer, LocalDateTime> dateTimeStartWork;
 	
 	/**
 	 * @see application.entity.Offer#dateTimeOffer
 	 **/
-	public static volatile SingularAttribute<Offer, ZonedDateTime> dateTimeOffer;
+	public static volatile SingularAttribute<Offer, LocalDateTime> dateTimeOffer;
 	
 	/**
 	 * @see application.entity.Offer#lengthDays

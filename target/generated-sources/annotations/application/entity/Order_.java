@@ -7,7 +7,7 @@ import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SetAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @StaticMetamodel(Order.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
@@ -41,7 +41,7 @@ public abstract class Order_ extends application.entity.BaseEntity_ {
 	/**
 	 * @see application.entity.Order#dateTimeOrder
 	 **/
-	public static volatile SingularAttribute<Order, ZonedDateTime> dateTimeOrder;
+	public static volatile SingularAttribute<Order, LocalDateTime> dateTimeOrder;
 	
 	/**
 	 * @see application.entity.Order#description

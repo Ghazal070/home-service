@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -38,12 +39,12 @@ public class Offer extends BaseEntity<Integer>{
 
     @Column
     @NotNull
-    private ZonedDateTime dateTimeOffer;
+    private LocalDateTime dateTimeOffer;
 
     @Column
     @Future
     @NotNull
-    private ZonedDateTime dateTimeStartWork;
+    private LocalDateTime dateTimeStartWork;
 
 
     @Column
