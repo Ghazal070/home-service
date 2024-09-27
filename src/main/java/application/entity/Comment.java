@@ -21,6 +21,10 @@ public class Comment extends BaseEntity<Integer> {
     @ManyToOne
     private Order order;
 
+    //todo onetoone score
+
+    
+
     @Column
     private String content;
 

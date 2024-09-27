@@ -31,6 +31,8 @@ public class SignupServiceImpl implements SignupService {
 
         switch (userSignupRequest.getRole()){
             case "Expert": {
+                //todo email unique check first in if
+                //todo expertFactory from application context
                 ExpertFactory expertFactory = new ExpertFactory();
                 userSignupRequest.setPassword(
                         passwordEncode.encode(userSignupRequest.getPassword())
@@ -40,6 +42,7 @@ public class SignupServiceImpl implements SignupService {
                 authHolder.tokenName=expert.getProfile().getEmail();
                 authHolder.tokenId=expert.getId();
                 //todo?? adminService.updateExpertStatus(expert); for request to admin to set expert status
+                //todo notification
                 return expert;
             }
             case "Customer":{

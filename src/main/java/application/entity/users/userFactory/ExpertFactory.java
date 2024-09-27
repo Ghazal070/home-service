@@ -23,7 +23,8 @@ public class ExpertFactory implements UserFactory {
                 .dateTimeSubmission(ZonedDateTime.now())
                 .expertStatus(ExpertStatus.New)
                 .build();
-        expert.getBytes(userSignupRequest.getPathImage());
+        expert.getBytes(userSignupRequest.getInputStreamReader());
+        //todo inputStream in dto
         return expert;
     }
 }

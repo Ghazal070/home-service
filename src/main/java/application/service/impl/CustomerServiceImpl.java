@@ -29,6 +29,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     @Override
     public Order orderSubmit(OrderSubmission orderSubmission) {
+        //todo get id for dto
+        //query base on selectable
         if (orderSubmission != null){
             String dutyTitle = orderSubmission.getDutyTitle();
             Duty duty = dutyService.findByUniqId(dutyTitle);

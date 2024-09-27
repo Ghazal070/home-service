@@ -11,6 +11,7 @@ import java.util.List;
 public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializable>
         implements BaseEntityRepository<T, ID> {
     protected final EntityManager entityManager;
+    //todo interface for entity manager
 
     public BaseEntityRepositoryImpl(EntityManager entityManager) {
 

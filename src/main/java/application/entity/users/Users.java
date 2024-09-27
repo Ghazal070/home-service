@@ -95,4 +95,5 @@ public class Users extends BaseEntity<Integer> {
             return "";
         }
     }
+    //todo getter setter in interface for my self after project
 }

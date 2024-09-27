@@ -35,6 +35,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         Duty parentDuty = null;
         Duty buildDuty;
         Duty duty = dutyService.findByUniqId(titleDuty);
+        //todo exist duty boolean instead of load duty
         if (StringUtils
                 .isNotBlank(dutyCreation.getParentTitle())) {
             parentDuty = dutyService.findByUniqId(dutyCreation.getParentTitle());
@@ -42,7 +43,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (duty != null) {
             throw new ValidationException("Title for duty is exist");
         }
-
         if (parentDuty != null) {
             buildDuty = Duty.builder()
                     .title(titleDuty)
@@ -52,6 +52,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                     .selectable(dutyCreation.getSelectable())
                     .build();
         } else if (dutyCreation.getParentTitle() != null && parentDuty == null) {
+            //todo optinal instead of ==null
             throw new ValidationException("This parent duty is not exist");
         } else {
             buildDuty = Duty.builder()
@@ -59,12 +60,14 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                     .selectable(dutyCreation.getSelectable())
                     .build();
         }
+        //todo parentTitle+title is uniq
         return dutyService.save(buildDuty);
     }
 
     @Override
     public Boolean updateExpertStatus(Expert expert, ExpertStatus expertStatus) {
         if (expert != null) {
+            //todo only accept no get  expertStatus
             if (expert.getExpertStatus().equals(ExpertStatus.New)) {
                 expert.setExpertStatus(expertStatus);
                 expertService.update(expert);
@@ -76,6 +79,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Boolean addDutyToExpert(Expert expert, Duty duty) {
+        //todo dto for find duty and expert
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
@@ -89,6 +93,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (expertService.havePermissionExpertToServices(expert)) {
             Set<Duty> duties = expert.getDuties();
             if (duties != null && !duties.isEmpty()) {
+                //todo set is uiq dont check duplicate
+
                 for (Duty existDuty : duties) {
                     if (existDuty.equals(duty)) {
                         throw new ValidationException("Duty is duplicate and exist in set expert");
@@ -110,6 +116,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
             throw new ValidationException("Expert or duty is null");
         }
         Set<Duty> duties = expert.getDuties();
+        //todo remove with query no for
         if (duties != null && !duties.isEmpty()) {
             for (Duty existDuty : duties) {
                 if (existDuty.equals(duty)) {

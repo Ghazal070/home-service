@@ -1,7 +1,10 @@
 package application.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
+import java.io.InputStreamReader;
 
 @Getter
 @Setter
@@ -17,17 +20,18 @@ public class UserSignupRequest {
     private String email;
 
     @NotNull
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{8}$", message = "Password must be include 8 characters long and contain at least one letter and one number")
     private String password;
 
     @NotNull
-    private String pathImage;
+//    private String pathImage;
+    private InputStreamReader inputStreamReader;
 
     @NotNull
     private String role;
 
     @Override
     public String toString() {
-        return "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' +", role=" + role +
-                ", pathImage='" + pathImage + '\'';
+        return "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' +", role=" + role;
     }
 }
