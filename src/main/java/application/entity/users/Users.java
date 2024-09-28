@@ -13,9 +13,8 @@ import lombok.experimental.SuperBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -41,7 +40,7 @@ public class Users extends BaseEntity<Integer> {
     private Profile profile;
 
     @Column
-    private ZonedDateTime dateTimeSubmission;
+    private LocalDateTime dateTimeSubmission;
 
 
 
@@ -53,47 +52,49 @@ public class Users extends BaseEntity<Integer> {
     private Byte[] image;
 
 
-    public void getBytes(String pathImage) {
-        File imageFile = new File(pathImage);
-        String fileExtension = getFileExtension(imageFile);
-        if (!(fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg"))) {
-            throw new ValidationException("Format image must be jpg");
-        }
-        BufferedImage bImage = null;
+    public void setImage(InputStream inputStream) {
+//        if (!isJpgStream(inputStream)) {
+//            throw new ValidationException("Input stream does not contain a valid JPG image");
+//        }
+        BufferedImage bImage;
         try {
-            bImage = ImageIO.read(new File(pathImage));
-            if (bImage == null)
+            inputStream = new ByteArrayInputStream(inputStream.readAllBytes());
+            bImage = ImageIO.read(inputStream);
+            if (bImage == null) {
                 throw new ValidationException("in getBytes method bImage is null");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Error reading the image file: " + e.getMessage(), e);
         }
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ImageIO.write(bImage, "jpg", bos);
             byte[] byteArray = bos.toByteArray();
-            if (bos == null || bos.size() == 0)
-                throw new ValidationException("in getBytes method bos is null");
+            if (byteArray.length == 0) {
+                throw new ValidationException("in getBytes method byteArray is empty");
+            }
             this.image = new Byte[byteArray.length];
             for (int i = 0; i < byteArray.length; i++) {
                 this.image[i] = byteArray[i];
             }
         } catch (IOException e) {
-            throw new RuntimeException("error in imageIO write");
+            throw new RuntimeException("Error in ImageIO write: " + e.getMessage(), e);
         }
-
+    }
+    private boolean isJpgStream(InputStream inputStream) {
+            byte[] header = new byte[2];
+        try {
+            if (inputStream.read(header) != 2) {
+                return false;
+            }
+            return header[0] == (byte) 0xFF && header[1] == (byte) 0xD8;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override
     public String toString() {
         return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission;
-    }
-    private String getFileExtension(File file) {
-        String name = file.getName();
-        int dotIndex = name.lastIndexOf('.');
-        if (dotIndex > 0 && dotIndex < name.length() - 1) {
-            return name.substring(dotIndex + 1);
-        } else {
-            return "";
-        }
     }
     //todo getter setter in interface for my self after project
 }

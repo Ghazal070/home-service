@@ -5,6 +5,7 @@ import application.entity.users.Customer;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class CustomerFactory implements UserFactory {
@@ -17,9 +18,9 @@ public class CustomerFactory implements UserFactory {
                         Profile.builder()
                                 .email(userSignupRequest.getEmail())
                                 .password(userSignupRequest.getPassword()).build())
-                .dateTimeSubmission(ZonedDateTime.now())
+                .dateTimeSubmission(LocalDateTime.now())
                 .build();
-        customer.getBytes(userSignupRequest.getPathImage());
+        customer.setImage(userSignupRequest.getInputStream());
         return customer;
     }
 }

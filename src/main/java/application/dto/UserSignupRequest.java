@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @Getter
@@ -24,8 +25,7 @@ public class UserSignupRequest {
     private String password;
 
     @NotNull
-//    private String pathImage;
-    private InputStreamReader inputStreamReader;
+    private InputStream inputStream;
 
     @NotNull
     private String role;

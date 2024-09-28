@@ -6,6 +6,7 @@ import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class ExpertFactory implements UserFactory {
@@ -20,10 +21,10 @@ public class ExpertFactory implements UserFactory {
                                 .password(userSignupRequest.getPassword())
                                 .build()
                 )
-                .dateTimeSubmission(ZonedDateTime.now())
+                .dateTimeSubmission(LocalDateTime.now())
                 .expertStatus(ExpertStatus.New)
                 .build();
-        expert.getBytes(userSignupRequest.getInputStreamReader());
+        expert.setImage(userSignupRequest.getInputStream());
         //todo inputStream in dto
         return expert;
     }

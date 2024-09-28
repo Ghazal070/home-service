@@ -14,6 +14,9 @@ import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
 import application.util.AuthHolder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class HomeServiceApp {
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        loginTestMethod(customerService);
+        //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
@@ -186,29 +189,33 @@ public class HomeServiceApp {
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
         Faker faker = new Faker();
-        String pathImage = "src/main/resources/images/less300.jpg";
-        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer", pathImage);
+        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer");
         Users signup = signupService.signup(userSignupRequest);
         customerService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
     private static void signupExpertTestMethod(ExpertService expertService, SignupService signupService) {
         Faker faker = new Faker();
-        String pathImage = "src/main/resources/images/less300.jpg";
-        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert", pathImage);
+        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert");
         Users signup = signupService.signup(userSignupRequest);
         expertService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
 
 
-    private static UserSignupRequest createSignupRequest(Faker faker, String role, String pathImage) {
-        UserSignupRequest signupRequest = UserSignupRequest.builder()
-                .firstName(faker.name().firstName())
-                .lastName(faker.name().lastName())
-                .email(faker.internet().emailAddress())
-                .password(faker.lorem().characters(4) + faker.number().numberBetween(1000, 9999))
-                .pathImage(pathImage)
-                .role(role)
-                .build();
+    private static UserSignupRequest createSignupRequest(Faker faker, String role){
+        UserSignupRequest signupRequest;
+        try {
+            signupRequest = UserSignupRequest.builder()
+                    .firstName(faker.name().firstName())
+                    .lastName(faker.name().lastName())
+                    .email(faker.internet().emailAddress())
+                    .password(faker.lorem().characters(4) + faker.number().numberBetween(1000, 9999))
+                    .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
+                    //todo ?? is it ok newFile input stream?? i in old version get string path and ostad farahani said is false
+                    .role(role)
+                    .build();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Error in File Input Stream in main");
+        }
         return signupRequest;
     }
 }
