@@ -25,7 +25,7 @@ public class ExpertFactory implements UserFactory {
                 .expertStatus(ExpertStatus.New)
                 .build();
         expert.setImage(userSignupRequest.getInputStream());
-        //todo inputStream in dto
+        //done inputStream in dto
         return expert;
     }
 }

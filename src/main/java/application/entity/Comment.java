@@ -4,6 +4,7 @@ package application.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Comment extends BaseEntity<Integer> {
 
-    @ManyToOne
-    private Order order;
+    @OneToOne
+    private Offer offer;
 
-    //todo onetoone score
-
-    
+    //done oneToOne score
 
     @Column
     private String content;
