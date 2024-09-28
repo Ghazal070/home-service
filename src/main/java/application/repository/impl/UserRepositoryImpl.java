@@ -2,7 +2,6 @@ package application.repository.impl;
 
 import application.entity.users.Users;
 import application.repository.DatabaseAccess;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import application.repository.UserRepository;
@@ -39,5 +38,17 @@ public abstract class UserRepositoryImpl<T extends Users> extends BaseEntityRepo
         int result = updateQuery.executeUpdate();
         databaseAccess.commitTransaction();
         return result>0;
+    }
+    @Override
+    public Boolean containByUniqField(String uniqField) {
+        String query = """  
+            select p from %s p where p.profile.%s = ?1  
+            """.formatted(getEntityClass().getName(), getUniqueFieldName());
+        TypedQuery<T> typedQuery = databaseAccess.createQuery(query);
+        typedQuery.setParameter(1, uniqField);
+        List<T> count = typedQuery.getResultList();
+        if (count==null && count.isEmpty())
+            return true;
+        return false;
     }
 }

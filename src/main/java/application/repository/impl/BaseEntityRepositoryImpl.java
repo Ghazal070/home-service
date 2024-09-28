@@ -2,7 +2,6 @@ package application.repository.impl;
 
 import application.entity.BaseEntity;
 import application.repository.DatabaseAccess;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import application.repository.BaseEntityRepository;
 
@@ -62,14 +61,19 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         T entity = databaseAccess.find(getEntityClass(), id);
         return entity != null;
     }
+    @Override
     public Boolean containByUniqField(String uniqField) {
-        String query = """
-                select count(p) from %s p where p.%s= ?1
-                """.formatted(getEntityClass().getName(), getUniqueFieldName());
-        Long result = (Long) databaseAccess.createQuery(query)
-                .setParameter(1, uniqField)
-                .getSingleResult();
-        return result>0;
+        String query = """  
+            select p from %s p where p.%s = ?1  
+            """.formatted(getEntityClass().getName(), getUniqueFieldName());
+        TypedQuery<T> typedQuery = databaseAccess.createQuery(query);
+        typedQuery.setParameter(1, uniqField);
+        List<T> count = typedQuery.getResultList();
+        if (count!=null && !count.isEmpty()){
+            return true;
+        }
+        return false;
+        //todo?? Long?? nashod count = typedQuery.getSingleResult();
     }
 
 

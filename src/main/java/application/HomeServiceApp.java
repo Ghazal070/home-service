@@ -3,7 +3,8 @@ package application;
 import application.dto.*;
 import application.entity.Duty;
 import application.entity.Order;
-import application.entity.enumeration.ExpertStatus;
+import application.entity.users.userFactory.CustomerFactory;
+import application.entity.users.userFactory.ExpertFactory;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -14,7 +15,6 @@ import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
 import application.util.AuthHolder;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -35,19 +35,21 @@ public class HomeServiceApp {
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
         OrderRepository orderRepository = new OrderRepositoryImpl(databaseAccess);
         OrderService orderService = new OrderServiceImpl(orderRepository);
+        ExpertFactory expertFactory = new ExpertFactory();
+        CustomerFactory customerFactory = new CustomerFactory();
         CustomerService customerService = new CustomerServiceImpl(customerRepository, authHolder, passwordEncode, dutyService, authHolder, orderService);
         ExpertService expertService = new ExpertServiceImpl(expertRepository, authHolder, passwordEncode);
-        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
+        SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder, expertFactory, customerFactory);
         AdminRepository adminRepository = new AdminRepositoryImpl(databaseAccess);
         AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode, dutyService, expertService);
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        loginTestMethod(customerService);
+        //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
-        //adminCreateDutyDuplicate(faker,adminService);
+        adminCreateDutyDuplicate(faker,adminService);
         //adminCreateDutyDontExitParentDuty(faker, adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
@@ -55,7 +57,7 @@ public class HomeServiceApp {
         //adminService.updateExpertStatus(expertService.findById(103), ExpertStatus.Accepted);
         //adminService.addDutyToExpert(expertService.findById(103), dutyService.findById(127));
         //adminService.removeDutyFromExpert(expertService.findById(103), dutyService.findById(127));
-        orderSubmitTest(faker, customerService);
+        //orderSubmitTest(faker, customerService);
 
 
     }
@@ -64,7 +66,7 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
-                        .dutyTitle("cleanHouse")
+                        .id(1)
                         .priceOrder(700_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 9, 30, 10, 25))
                         .address(faker.address().streetAddress())
@@ -85,7 +87,7 @@ public class HomeServiceApp {
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
-                .title("SofaWashing")
+                .dutyId(157)
                 .price(800_000)
                 .description("SofaWashing****")
                 .selectable(true)
@@ -95,11 +97,11 @@ public class HomeServiceApp {
 
     private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
         String sub = "cleanHouse";
-        String parentTitle = "Cleaning";
+        Integer parentId = 201;
         adminService.createDuty(
                 DutyCreation.builder()
                         .title(sub)
-                        .parentTitle(parentTitle)
+                        .parentId(parentId)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
                         .selectable(true)
@@ -110,11 +112,11 @@ public class HomeServiceApp {
 
     private static void adminCreateDutyDontExitParentDuty(Faker faker, AdminService adminService) {
         String sub = "WashMachine";
-        String parentTitle = "Washing";
+        Integer parentId = 200;
         adminService.createDuty(
                 DutyCreation.builder()
                         .title(sub)
-                        .parentTitle(parentTitle)
+                        .parentId(parentId)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(sub + "---" + faker.lorem().characters(5, 20))
                         .selectable(true)
@@ -131,7 +133,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentTitle("HouseholdAppliances")
+                            .parentId(200)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -149,7 +151,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentTitle("Cleaning")
+                            .parentId(201)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -174,7 +176,7 @@ public class HomeServiceApp {
 
     private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
-                .oldPassword("za6b8637")
+                .oldPassword("tb8y6430")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePassword);
@@ -182,8 +184,8 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        //Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
-        Users login = customerService.login("douglas.jacobs@hotmail.com", "za6b8637");
+        Users login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
+        //Users login = customerService.login("douglas.jacobs@hotmail.com", "za6b8637");
     }
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
@@ -210,7 +212,6 @@ public class HomeServiceApp {
                     .email(faker.internet().emailAddress())
                     .password(faker.lorem().characters(4) + faker.number().numberBetween(1000, 9999))
                     .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
-                    //todo ?? is it ok newFile input stream?? i in old version get string path and ostad farahani said is false
                     .role(role)
                     .build();
         } catch (FileNotFoundException e) {

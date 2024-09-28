@@ -9,4 +9,5 @@ import java.util.List;
 public interface DutyRepository extends BaseEntityRepository<Duty,Integer>{
     Boolean updateDutyPriceOrDescriptionOrSelectable(Duty duty,UpdateDuty updateDuty);
     List<DutyResponseChildren> loadAllDutyWithChildren();
+    Boolean containByUniqField(String title, Integer parentId);
 }

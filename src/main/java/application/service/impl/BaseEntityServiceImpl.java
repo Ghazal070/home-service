@@ -94,6 +94,10 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
         return repository.deleteByUniqId(uniqId);
     }
 
+    @Override
+    public Boolean containByUniqField(String uniqField) {
+        return repository.containByUniqField(uniqField);
+    }
 
     private void validate(T entity) {
         Set<ConstraintViolation<T>> violations = validator.validate(entity);

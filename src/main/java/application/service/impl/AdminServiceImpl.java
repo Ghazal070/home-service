@@ -14,6 +14,7 @@ import application.service.AdminService;
 import application.service.PasswordEncode;
 import application.util.AuthHolder;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
@@ -31,42 +32,50 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Duty createDuty(DutyCreation dutyCreation) {
-        Duty parentDuty = null;
-        Duty buildDuty;
+        //done parentTitle+title is uniq
         //done exist duty boolean instead of load duty
-        if (dutyCreation.getParentId() != null ) {
-            parentDuty = dutyService.findById(dutyCreation.getParentId());
+        //done optional instead of ==null
+        Optional<Duty> optionalParentDuty = dutyCreation.getParentId() != null ?
+                Optional.of(dutyService.findById(dutyCreation.getParentId())) : Optional.empty();
+        if (dutyCreation.getParentId() != null && !optionalParentDuty.isPresent()) {
+            throw new ValidationException("This parent duty does not exist.");
         }
-        if (dutyService.containById(dutyCreation.getId()) != null) {
-            throw new ValidationException("Title for duty is exist");
+        if (optionalParentDuty.isPresent()) {
+            Duty parentDuty = optionalParentDuty.get();
+            if (!dutyService.containByUniqField(dutyCreation.getTitle(),parentDuty.getId())) {
+                throw new ValidationException("Title for duty already exists for this parent duty.");
+            }
+            return createDutyWithParent(dutyCreation, parentDuty);
         }
-        if (parentDuty != null) {
-            buildDuty = Duty.builder()
-                    .title(titleDuty)
-                    .parent(parentDuty)
-                    .basePrice(dutyCreation.getBasePrice())
-                    .description(dutyCreation.getDescription())
-                    .selectable(dutyCreation.getSelectable())
-                    .build();
-        } else if (dutyCreation.getParentTitle() != null && parentDuty == null) {
-            //todo optinal instead of ==null
-            throw new ValidationException("This parent duty is not exist");
-        } else {
-            buildDuty = Duty.builder()
-                    .title(titleDuty)
-                    .selectable(dutyCreation.getSelectable())
-                    .build();
-        }
-        //todo parentTitle+title is uniq
+        return createDutyWithoutParent(dutyCreation);
+    }
+
+    private Duty createDutyWithParent(DutyCreation dutyCreation, Duty parentDuty) {
+        Duty buildDuty = Duty.builder()
+                .title(dutyCreation.getTitle())
+                .parent(parentDuty)
+                .basePrice(dutyCreation.getBasePrice())
+                .description(dutyCreation.getDescription())
+                .selectable(dutyCreation.getSelectable())
+                .build();
+        return dutyService.save(buildDuty);
+    }
+
+    private Duty createDutyWithoutParent(DutyCreation dutyCreation) {
+        Duty buildDuty = Duty.builder()
+                .title(dutyCreation.getTitle())
+                .selectable(dutyCreation.getSelectable())
+                .build();
         return dutyService.save(buildDuty);
     }
 
     @Override
-    public Boolean updateExpertStatus(Expert expert, ExpertStatus expertStatus) {
-        if (expert != null) {
-            //todo only accept no get  expertStatus
+    public Boolean updateExpertStatus(Integer expertId) {
+        if (expertId != null) {
+            //done only ExpertStatus.Accepted no get all expertStatus
+            Expert expert = expertService.findById(expertId);
             if (expert.getExpertStatus().equals(ExpertStatus.New)) {
-                expert.setExpertStatus(expertStatus);
+                expert.setExpertStatus(ExpertStatus.Accepted);
                 expertService.update(expert);
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
@@ -75,54 +84,39 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     }
 
     @Override
-    public Boolean addDutyToExpert(Expert expert, Duty duty) {
-        //todo dto for find duty and expert
+    public Boolean addDutyToExpert(Integer expertId, Integer dutyId) {
+        //done--- find duty and expert
+        Expert expert = expertService.findById(expertId);
+        Duty duty = dutyService.findById(dutyId);
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
         if (!duty.getSelectable()) {
             throw new ValidationException("Duty selectable is false");
         }
-
-        if (!expertService.havePermissionExpertToServices(expert)) {
-            updateExpertStatus(expert, ExpertStatus.Accepted);
-        }
         if (expertService.havePermissionExpertToServices(expert)) {
             Set<Duty> duties = expert.getDuties();
-            if (duties != null && !duties.isEmpty()) {
-                //todo set is uiq dont check duplicate
-
-                for (Duty existDuty : duties) {
-                    if (existDuty.equals(duty)) {
-                        throw new ValidationException("Duty is duplicate and exist in set expert");
-                    }
-                }
+            if (duties.add(duty)) {
+                expertService.update(expert);
+                return true;
             }
-            boolean addDuty = duties.add(duty);
-            expertService.update(expert);
-            return addDuty;
-        }
+        } else throw new ValidationException("Duty is no selectable");
         return false;
-
     }
 
     @Override
-    public Boolean removeDutyFromExpert(Expert expert, Duty duty) {
-        boolean removeDuty = false;
+    public Boolean removeDutyFromExpert(Integer expertId, Integer dutyId) {
+        //done remove with query no for
+        Expert expert = expertService.findById(expertId);
+        Duty duty = dutyService.findById(dutyId);
         if (expert == null || duty == null) {
             throw new ValidationException("Expert or duty is null");
         }
         Set<Duty> duties = expert.getDuties();
-        //todo remove with query no for
         if (duties != null && !duties.isEmpty()) {
-            for (Duty existDuty : duties) {
-                if (existDuty.equals(duty)) {
-                    removeDuty = duties.remove(duty);
-                }
-            }
-            if (!removeDuty) throw new ValidationException("Duty does not exist in set expert");
-        }else throw new ValidationException("Duty set is empty");
+            if (!duties.remove(duty)) throw new ValidationException("Duty does not exist in set expert");
+        } else throw new ValidationException("Duty set is empty");
         expertService.update(expert);
-        return removeDuty;
+        return true;
     }
 }

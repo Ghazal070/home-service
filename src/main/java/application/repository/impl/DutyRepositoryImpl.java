@@ -5,7 +5,6 @@ import application.dto.UpdateDuty;
 import application.entity.Duty;
 import application.entity.Duty_;
 import application.repository.DatabaseAccess;
-import jakarta.persistence.EntityManager;
 import application.repository.DutyRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -100,6 +99,21 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         }
 
         return rootDuties;
+    }
+    @Override
+    public Boolean containByUniqField(String title, Integer parentId) {
+        String query = """  
+        select count(p) from %s p where p.title = :title and p.parent.id = :parentId  
+    """.formatted(getEntityClass().getName());
+
+        TypedQuery<Duty> typedQuery = databaseAccess.createQuery(query);
+        typedQuery.setParameter("title", title);
+        typedQuery.setParameter("parentId", parentId);
+        List<Duty> duty = typedQuery.getResultList();
+        if (duty!=null && !duty.isEmpty()){
+            return true;
+        }
+        return false;
     }
 }
 

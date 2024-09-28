@@ -19,6 +19,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final DutyService dutyService;
     private final AuthHolder authHolder;
     private final OrderService orderService;
+
     public CustomerServiceImpl(CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, AuthHolder authHolder1, OrderService orderService) {
         super(repository, authHolder, passwordEncode);
         this.dutyService = dutyService;
@@ -29,31 +30,25 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     @Override
     public Order orderSubmit(OrderSubmission orderSubmission) {
-        //todo get id for dto
-        //query base on selectable
-        if (orderSubmission != null){
-            String dutyTitle = orderSubmission.getDutyTitle();
-            Duty duty = dutyService.findByUniqId(dutyTitle);
-            if (!duty.getSelectable())
-                throw new ValidationException("Duty selectable is false");
+        //done get id for duty in dto
+        if (orderSubmission != null) {
+            Duty duty = dutyService.findById(orderSubmission.getId());
             Customer customer = repository.findById(authHolder.tokenId);
-            if(duty!=null && customer !=null){
-                if (duty.getSelectable()){
-                    if (duty.getBasePrice()<= orderSubmission.getPriceOrder()){
-                        Order order = Order.builder()
-                                .customer(customer)
-                                .description(orderSubmission.getDescription())
-                                .address(orderSubmission.getAddress())
-                                .priceOrder(orderSubmission.getPriceOrder())
-                                .duty(duty)
-                                .orderStatus(OrderStatus.ExpertOfferWanting)
-                                .dateTimeOrder(orderSubmission.getDateTimeOrder())
-                                .build();
-                        return orderService.save(order);
-                    }else throw new ValidationException("Duty base price greater than your order");
-                }else throw new ValidationException("Duty is not selectable");
-            }else throw new ValidationException("Title duty must be from Duty List or auth holder is null");
-
-        }else throw  new ValidationException("OrderSubmission is null");
+            if (duty != null && customer != null && duty.getSelectable()) {
+                if (duty.getBasePrice() <= orderSubmission.getPriceOrder()) {
+                    Order order = Order.builder()
+                            .customer(customer)
+                            .description(orderSubmission.getDescription())
+                            .address(orderSubmission.getAddress())
+                            .priceOrder(orderSubmission.getPriceOrder())
+                            .duty(duty)
+                            .orderStatus(OrderStatus.ExpertOfferWanting)
+                            .dateTimeOrder(orderSubmission.getDateTimeOrder())
+                            .build();
+                    return orderService.save(order);
+                } else throw new ValidationException("Duty base price greater than your order");
+            } else
+                throw new ValidationException("Title duty must be from Duty and be selectable List or auth holder is null");
+        } else throw new ValidationException("OrderSubmission is null");
     }
 }

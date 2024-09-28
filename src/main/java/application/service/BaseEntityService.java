@@ -16,5 +16,6 @@ public interface BaseEntityService<T extends BaseEntity<ID>,ID extends Serializa
     Boolean contain(T entity);
     T findByUniqId(String uniqId);
     Boolean deleteByUniqId(String uniqId);
+    Boolean containByUniqField(String uniqField);
 
 }

@@ -8,7 +8,7 @@ import application.entity.users.Expert;
 
 public interface AdminService extends UserService<Admin>{
     Duty createDuty(DutyCreation dutyCreation);
-    Boolean updateExpertStatus(Expert expert, ExpertStatus expertStatus);
-    Boolean addDutyToExpert(Expert expert,Duty duty);
-    Boolean removeDutyFromExpert(Expert expert,Duty duty);
+    Boolean updateExpertStatus(Integer expertId);
+    Boolean addDutyToExpert(Integer expertId, Integer dutyId);
+    Boolean removeDutyFromExpert(Integer expertId, Integer dutyId);
 }

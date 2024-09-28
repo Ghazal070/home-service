@@ -7,5 +7,9 @@ public class PasswordEncodeImpl implements PasswordEncode {
     public String encode(String password) {
         return password;
     }
-    //todo check encodePassword= oldPassword
+    @Override
+    public Boolean isEqualEncodeDecodePass(String oldPassword,String newPassword){
+        return true;
+    }
+    //done simple method check encodePassword= oldPassword
 }

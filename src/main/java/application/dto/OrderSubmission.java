@@ -33,6 +33,6 @@ public class OrderSubmission {
     @NotNull(message = "address order must not be null")
     private String address;
 
-    private String dutyTitle;
+    private Integer id;
 
 }

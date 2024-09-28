@@ -9,6 +9,7 @@ import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty, Integer> implements DutyService {
 
@@ -19,21 +20,24 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     @Override
     public Boolean updateDutyPriceOrDescription(UpdateDuty updateDuty) {
         if (updateDuty != null) {
-            if (StringUtils.isNotBlank(updateDuty.getTitle())) {
-                //todo check in duty
-                Duty duty = repository.findByUniqId(updateDuty.getTitle());
-                if (duty != null) {
-                    //todo optonal null
-                    return repository.updateDutyPriceOrDescriptionOrSelectable(duty, updateDuty);
-                } else throw new ValidationException("Duty findBy title is null");
-            } else throw new ValidationException("Update duty title is null");
-        } else throw new
-
-                ValidationException("Update duty is null");
+            //done id not null check in dto
+            //done use optional
+            Optional<Duty> optionalDuty = Optional.ofNullable(repository.findById(updateDuty.getDutyId()));
+            if (!optionalDuty.isPresent()) {
+                throw new ValidationException("Duty with ID " + updateDuty.getDutyId() + " not found.");
+            }
+            Duty duty = optionalDuty.get();
+            return repository.updateDutyPriceOrDescriptionOrSelectable(duty, updateDuty);
+        } else throw new ValidationException("Update duty is null");
     }
 
     @Override
     public List<DutyResponseChildren> loadAllDutyWithChildren() {
         return repository.loadAllDutyWithChildren();
+    }
+
+    @Override
+    public Boolean containByUniqField(String title, Integer parentId){
+        return repository.containByUniqField(title,parentId);
     }
 }

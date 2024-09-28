@@ -1,6 +1,8 @@
 package application.util;
 
 
+import application.entity.users.userFactory.CustomerFactory;
+import application.entity.users.userFactory.ExpertFactory;
 import application.repository.*;
 import application.repository.impl.*;
 import application.service.*;
@@ -25,6 +27,8 @@ public class ApplicationContext {
         getLogger();
         logger.info("ApplicationContext initialized");
         databaseAccess = new JpaDatabaseAccess(entityManager);
+        ExpertFactory expertFactory = new ExpertFactory();
+        CustomerFactory customerFactory =new CustomerFactory();
         CustomerRepository customerRepository = new CustomerRepositoryImpl(databaseAccess);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(databaseAccess);
         AuthHolder authHolder = new AuthHolder();
@@ -35,7 +39,7 @@ public class ApplicationContext {
         OrderService orderService = new OrderServiceImpl(orderRepository);
         CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder,passwordEncode, dutyService, authHolder, orderService);
         ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder,passwordEncode);
-        SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode, authHolder);
+        SignupService signupService= new SignupServiceImpl(expertService,customerService, passwordEncode, authHolder, expertFactory, customerFactory);
 
 
 
