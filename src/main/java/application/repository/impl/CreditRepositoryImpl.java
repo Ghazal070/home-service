@@ -6,12 +6,13 @@ import application.entity.Credit;
 import application.entity.Credit_;
 import application.repository.CommentRepository;
 import application.repository.CreditRepository;
+import application.repository.DatabaseAccess;
 import jakarta.persistence.EntityManager;
 
 public class CreditRepositoryImpl extends BaseEntityRepositoryImpl<Credit, Integer>
         implements CreditRepository {
-    public CreditRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
+    public CreditRepositoryImpl(DatabaseAccess<Credit, Integer> databaseAccess) {
+        super(databaseAccess);
     }
 
     @Override

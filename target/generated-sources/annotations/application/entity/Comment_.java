@@ -9,9 +9,14 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 @Generated("org.hibernate.processor.HibernateProcessor")
 public abstract class Comment_ extends application.entity.BaseEntity_ {
 
+	public static final String OFFER = "offer";
 	public static final String CONTENT = "content";
-	public static final String ORDER = "order";
 
+	
+	/**
+	 * @see application.entity.Comment#offer
+	 **/
+	public static volatile SingularAttribute<Comment, Offer> offer;
 	
 	/**
 	 * @see application.entity.Comment
@@ -22,11 +27,6 @@ public abstract class Comment_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Comment#content
 	 **/
 	public static volatile SingularAttribute<Comment, String> content;
-	
-	/**
-	 * @see application.entity.Comment#order
-	 **/
-	public static volatile SingularAttribute<Comment, Order> order;
 
 }
 

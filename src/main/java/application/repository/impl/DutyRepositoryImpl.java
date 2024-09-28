@@ -4,6 +4,7 @@ import application.dto.DutyResponseChildren;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
 import application.entity.Duty_;
+import application.repository.DatabaseAccess;
 import jakarta.persistence.EntityManager;
 import application.repository.DutyRepository;
 import jakarta.persistence.Query;
@@ -14,8 +15,8 @@ import java.util.*;
 public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         implements DutyRepository {
 
-    public DutyRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
+    public DutyRepositoryImpl(DatabaseAccess<Duty, Integer> databaseAccess) {
+        super(databaseAccess);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
     public Boolean updateDutyPriceOrDescriptionOrSelectable(Duty duty, UpdateDuty updateDuty) {
 
         StringBuilder queryBuilder = new StringBuilder("update Duty d set ");
-        entityManager.getTransaction().begin();
+        databaseAccess.beginTransaction();
         boolean needsComma = false;
         if (updateDuty.getPrice() != null) {
             queryBuilder.append("d.basePrice = :price");
@@ -53,7 +54,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         }
         queryBuilder.append(" where d.id = :id");
 
-        Query updateQuery = entityManager.createQuery(queryBuilder.toString());
+        Query updateQuery = databaseAccess.updateQuery(queryBuilder.toString());
 
         if (updateDuty.getPrice() != null) {
             updateQuery.setParameter("price", updateDuty.getPrice());
@@ -66,7 +67,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         }
         updateQuery.setParameter("id", duty.getId());
         int result = updateQuery.executeUpdate();
-        entityManager.getTransaction().commit();
+        databaseAccess.commitTransaction();
         return result > 0;
     }
 
@@ -76,7 +77,7 @@ public class DutyRepositoryImpl extends BaseEntityRepositoryImpl<Duty, Integer>
         String query = """
                 select d from Duty d order by case when d.parent.id is null then 1 else 2 end,d.parent.id
                 """;
-        TypedQuery<Duty> typedQuery = entityManager.createQuery(query, Duty.class);
+        TypedQuery<Duty> typedQuery = databaseAccess.createQuery(query);
         List<Duty> duties = typedQuery.getResultList();
         Map<Integer, DutyResponseChildren> dutyResponseChildrenMap = new HashMap<>();
         List<DutyResponseChildren> rootDuties = new ArrayList<>();

@@ -1,6 +1,7 @@
 package application.repository.impl;
 
 import application.entity.BaseEntity;
+import application.repository.DatabaseAccess;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import application.repository.BaseEntityRepository;
@@ -10,57 +11,55 @@ import java.util.List;
 
 public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializable>
         implements BaseEntityRepository<T, ID> {
-    protected final EntityManager entityManager;
-    //todo interface for entity manager
+    protected final DatabaseAccess<T,ID> databaseAccess;
 
-    public BaseEntityRepositoryImpl(EntityManager entityManager) {
-
-        this.entityManager = entityManager;
+    public BaseEntityRepositoryImpl(DatabaseAccess<T,ID> databaseAccess) {
+        this.databaseAccess = databaseAccess;
     }
 
     @Override
     public T save(T entity) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+        databaseAccess.beginTransaction();
+        databaseAccess.persist(entity);
+        databaseAccess.commitTransaction();
         return entity;
     }
 
 
     @Override
     public T update(T newEntity) {
-        entityManager.getTransaction().begin();
+        databaseAccess.beginTransaction();
         T mergeEntity = null;
         if (newEntity.getId() == null) throw new RuntimeException("NewEntity Cant Update...Id is null");
-        else mergeEntity = entityManager.merge(newEntity);
-        entityManager.getTransaction().commit();
+        else mergeEntity = databaseAccess.merge(newEntity);
+        databaseAccess.commitTransaction();
         return mergeEntity;
     }
 
 
     @Override
     public void delete(ID id) {
-        entityManager.getTransaction().begin();
-        T entity = entityManager.find(getEntityClass(), id);
-        if (entity != null) entityManager.remove(entity);
+        databaseAccess.beginTransaction();
+        T entity = databaseAccess.find(getEntityClass(), id);
+        if (entity != null) databaseAccess.remove(entity);
         else throw new RuntimeException("Error in removing application.entity: Entity with ID " + id + " is null.");
-        entityManager.getTransaction().commit();
+        databaseAccess.commitTransaction();
     }
 
     @Override
     public Boolean contain(T entity) {
-        entityManager.getTransaction().begin();
-        boolean contains = entityManager.contains(entity);
-        entityManager.getTransaction().commit();
+        databaseAccess.beginTransaction();
+        boolean contains = databaseAccess.contains(entity);
+        databaseAccess.commitTransaction();
         return contains;
     }
 
     public T findById(ID id) {
-        return entityManager.find(getEntityClass(), id);
+        return databaseAccess.find(getEntityClass(), id);
     }
 
     public Boolean containById(ID id) {
-        T entity = entityManager.find(getEntityClass(), id);
+        T entity = databaseAccess.find(getEntityClass(), id);
         return entity != null;
     }
 
@@ -70,7 +69,7 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         String query = """
                 from %s a
                 """.formatted(getEntityClass().getName());
-        allRecord = entityManager.createQuery(query).getResultList();
+        allRecord = databaseAccess.createQuery(query).getResultList();
         return allRecord;
     }
 
@@ -78,7 +77,7 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         String query = """
                 from %s p where p.%s= ?1
                 """.formatted(getEntityClass().getName(), getUniqueFieldName());
-        TypedQuery<T> typedQuery = entityManager.createQuery(query, getEntityClass());
+        TypedQuery<T> typedQuery = databaseAccess.createQuery(query);
         List<T> resultList = typedQuery.setParameter(1, uniqId).getResultList();
         if (!resultList.isEmpty()) return resultList.get(0);
         return null;
@@ -86,19 +85,19 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
 
     @Override
     public Boolean deleteByUniqId(String uniqId) {
-        entityManager.getTransaction().begin();
+        databaseAccess.beginTransaction();
         String query = """
                 from %s p where p.%s= ?1
                 """.formatted(getEntityClass().getName(), getUniqueFieldName());
-        TypedQuery<T> typedQuery = entityManager.createQuery(query, getEntityClass());
+        TypedQuery<T> typedQuery = databaseAccess.createQuery(query);
         List<T> resultList = typedQuery.setParameter(1, uniqId).getResultList();
         if (!resultList.isEmpty()) {
             T entity = resultList.get(0);
-            entityManager.remove(entity);
-            entityManager.getTransaction().commit();
+            databaseAccess.remove(entity);
+            databaseAccess.commitTransaction();
             return true;
         } else {
-            entityManager.getTransaction().rollback();
+            databaseAccess.rollbackTransaction();
             return false;
         }
     }

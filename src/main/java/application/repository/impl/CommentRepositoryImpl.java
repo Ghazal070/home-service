@@ -3,12 +3,14 @@ package application.repository.impl;
 import application.entity.Comment;
 import application.entity.Comment_;
 import application.repository.CommentRepository;
+import application.repository.DatabaseAccess;
 import jakarta.persistence.EntityManager;
 
 public class CommentRepositoryImpl extends BaseEntityRepositoryImpl<Comment, Integer>
         implements CommentRepository {
-    public CommentRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
+
+    public CommentRepositoryImpl(DatabaseAccess<Comment, Integer> databaseAccess) {
+        super(databaseAccess);
     }
 
     @Override

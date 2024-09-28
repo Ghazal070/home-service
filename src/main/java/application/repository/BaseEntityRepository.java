@@ -14,6 +14,6 @@ public interface BaseEntityRepository <T extends BaseEntity<ID>, ID extends Seri
     T findById(ID id);
     List<T> loadAll();
     Boolean contain(T entity);
-    T findByUniqId(String uniqId);
-    Boolean deleteByUniqId(String uniqId);
+    T findByUniqId(String uniqueFieldValue);
+    Boolean deleteByUniqId(String uniqueFieldValue);
 }

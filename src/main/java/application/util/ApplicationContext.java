@@ -1,10 +1,8 @@
 package application.util;
 
 
-import application.repository.DutyRepository;
-import application.repository.OrderRepository;
-import application.repository.impl.DutyRepositoryImpl;
-import application.repository.impl.OrderRepositoryImpl;
+import application.repository.*;
+import application.repository.impl.*;
 import application.service.*;
 import application.service.impl.*;
 import jakarta.persistence.EntityManager;
@@ -12,16 +10,13 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import application.repository.CustomerRepository;
-import application.repository.ExpertRepository;
-import application.repository.impl.CustomerRepositoryImpl;
-import application.repository.impl.ExpertRepositoryImpl;
 
 
 public class ApplicationContext {
     private static Logger logger;
     private static ApplicationContext INSTANCE;
     private EntityManager entityManager;
+    private DatabaseAccess databaseAccess;
     private EntityManagerFactory entityManagerFactory;
 
 
@@ -29,13 +24,14 @@ public class ApplicationContext {
         getEntityManager();
         getLogger();
         logger.info("ApplicationContext initialized");
-        CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
-        ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
+        databaseAccess = new JpaDatabaseAccess(entityManager);
+        CustomerRepository customerRepository = new CustomerRepositoryImpl(databaseAccess);
+        ExpertRepository expertRepository = new ExpertRepositoryImpl(databaseAccess);
         AuthHolder authHolder = new AuthHolder();
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
-        DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
+        DutyRepository dutyRepository = new DutyRepositoryImpl(databaseAccess);
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
-        OrderRepository orderRepository =new OrderRepositoryImpl(entityManager);
+        OrderRepository orderRepository =new OrderRepositoryImpl(databaseAccess);
         OrderService orderService = new OrderServiceImpl(orderRepository);
         CustomerService customerService =new CustomerServiceImpl(customerRepository,authHolder,passwordEncode, dutyService, authHolder, orderService);
         ExpertService expertService =new ExpertServiceImpl(expertRepository,authHolder,passwordEncode);

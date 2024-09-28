@@ -1,6 +1,7 @@
 package application.repository.impl;
 
 import application.entity.users.Users;
+import application.repository.DatabaseAccess;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -9,8 +10,8 @@ import application.repository.UserRepository;
 import java.util.List;
 
 public abstract class UserRepositoryImpl<T extends Users> extends BaseEntityRepositoryImpl<T,Integer> implements UserRepository<T> {
-    public UserRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
+    public UserRepositoryImpl(DatabaseAccess<T, Integer> databaseAccess) {
+        super(databaseAccess);
     }
 
     @Override
@@ -18,7 +19,7 @@ public abstract class UserRepositoryImpl<T extends Users> extends BaseEntityRepo
         String query = """
                 from %s p where p.profile.email= ?1 and p.profile.password= ?2
                 """.formatted(getEntityClass().getName());
-        TypedQuery<T> typedQuery = entityManager.createQuery(query, getEntityClass());
+        TypedQuery<T> typedQuery = databaseAccess.createQuery(query);
         typedQuery.setParameter(1, username);
         typedQuery.setParameter(2, password);
         List<T> resultList = typedQuery.getResultList();
@@ -28,15 +29,15 @@ public abstract class UserRepositoryImpl<T extends Users> extends BaseEntityRepo
 
     @Override
     public Boolean updatePassword(String email, String newPassword) {
-        entityManager.getTransaction().begin();
+        databaseAccess.beginTransaction();
         String query = """
                 update %s p set p.profile.password =?2 where p.profile.email= ?1
                 """.formatted(getEntityClass().getName());
-        Query updateQuery = entityManager.createQuery(query);
+        Query updateQuery = databaseAccess.updateQuery(query);
         updateQuery.setParameter(1, email);
         updateQuery.setParameter(2, newPassword);
         int result = updateQuery.executeUpdate();
-        entityManager.getTransaction().commit();
+        databaseAccess.commitTransaction();
         return result>0;
     }
 }

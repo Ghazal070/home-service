@@ -75,9 +75,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
 
                 }else throw new ValidationException("old password is not correct");
             }else throw new ValidationException("user from token is null");
-
         }
-
         return null;
     }
 }

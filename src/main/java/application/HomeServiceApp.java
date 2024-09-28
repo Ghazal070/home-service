@@ -26,38 +26,36 @@ public class HomeServiceApp {
 //        ApplicationContext.getLogger().info("start of project");
         Faker faker = new Faker();
         EntityManager entityManager = ApplicationContext.getINSTANCE().getEntityManager();
-        CustomerRepository customerRepository = new CustomerRepositoryImpl(entityManager);
-        ExpertRepository expertRepository = new ExpertRepositoryImpl(entityManager);
+        DatabaseAccess databaseAccess = new JpaDatabaseAccess(entityManager);
+        CustomerRepository customerRepository = new CustomerRepositoryImpl(databaseAccess);
+        ExpertRepository expertRepository = new ExpertRepositoryImpl(databaseAccess);
         AuthHolder authHolder = new AuthHolder();
         PasswordEncode passwordEncode = new PasswordEncodeImpl();
-        DutyRepository dutyRepository = new DutyRepositoryImpl(entityManager);
+        DutyRepository dutyRepository = new DutyRepositoryImpl(databaseAccess);
         DutyService dutyService = new DutyServiceImpl(dutyRepository);
-        OrderRepository orderRepository =new OrderRepositoryImpl(entityManager);
+        OrderRepository orderRepository = new OrderRepositoryImpl(databaseAccess);
         OrderService orderService = new OrderServiceImpl(orderRepository);
         CustomerService customerService = new CustomerServiceImpl(customerRepository, authHolder, passwordEncode, dutyService, authHolder, orderService);
         ExpertService expertService = new ExpertServiceImpl(expertRepository, authHolder, passwordEncode);
         SignupService signupService = new SignupServiceImpl(expertService, customerService, passwordEncode, authHolder);
-        AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
-        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode,dutyService, expertService);
+        AdminRepository adminRepository = new AdminRepositoryImpl(databaseAccess);
+        AdminService adminService = new AdminServiceImpl(adminRepository, authHolder, passwordEncode, dutyService, expertService);
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        //loginTestMethod(customerService);
+        loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
-        //adminCreateDutyDontExitParentDuty(faker, adminService);
         //adminCreateDutyDuplicate(faker,adminService);
+        //adminCreateDutyDontExitParentDuty(faker, adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
-        //adminService.updateExpertStatus(expertService.findById(171), ExpertStatus.Accepted);
-        //adminService.addDutyToExpert(expertService.findById(170), dutyService.findById(178));
-        //adminService.removeDutyFromExpert(expertService.findById(170), dutyService.findById(178));
-
-        //loginTestMethod(customerService);
-        //loadAllDuties(dutyService);
-        //orderSubmitTest(faker, customerService);
+        //adminService.updateExpertStatus(expertService.findById(103), ExpertStatus.Accepted);
+        //adminService.addDutyToExpert(expertService.findById(103), dutyService.findById(127));
+        //adminService.removeDutyFromExpert(expertService.findById(103), dutyService.findById(127));
+        orderSubmitTest(faker, customerService);
 
 
     }
@@ -67,7 +65,7 @@ public class HomeServiceApp {
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
                         .dutyTitle("cleanHouse")
-                        .priceOrder(200_000)
+                        .priceOrder(700_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 9, 30, 10, 25))
                         .address(faker.address().streetAddress())
                         .description("cleanHouse---" + faker.lorem().characters(5, 20))
@@ -94,6 +92,7 @@ public class HomeServiceApp {
                 .build();
         dutyService.updateDutyPriceOrDescription(updateDuty);
     }
+
     private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
         String sub = "cleanHouse";
         String parentTitle = "Cleaning";
@@ -175,7 +174,7 @@ public class HomeServiceApp {
 
     private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
-                .oldPassword("lhsu7222")
+                .oldPassword("za6b8637")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePassword);
@@ -183,8 +182,8 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
-        //Users login = customerService.login("sonja.hickle@yahoo.com", "ghazal99");
+        //Users login = customerService.login("oscar.towne@gmail.com", "lhsu7222");
+        Users login = customerService.login("douglas.jacobs@hotmail.com", "za6b8637");
     }
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
@@ -193,6 +192,7 @@ public class HomeServiceApp {
         Users signup = signupService.signup(userSignupRequest);
         customerService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
+
     private static void signupExpertTestMethod(ExpertService expertService, SignupService signupService) {
         Faker faker = new Faker();
         UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert");
@@ -201,7 +201,7 @@ public class HomeServiceApp {
     }
 
 
-    private static UserSignupRequest createSignupRequest(Faker faker, String role){
+    private static UserSignupRequest createSignupRequest(Faker faker, String role) {
         UserSignupRequest signupRequest;
         try {
             signupRequest = UserSignupRequest.builder()
