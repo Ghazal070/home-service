@@ -62,6 +62,16 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         T entity = databaseAccess.find(getEntityClass(), id);
         return entity != null;
     }
+    public Boolean containByUniqField(String uniqField) {
+        String query = """
+                select count(p) from %s p where p.%s= ?1
+                """.formatted(getEntityClass().getName(), getUniqueFieldName());
+        Long result = (Long) databaseAccess.createQuery(query)
+                .setParameter(1, uniqField)
+                .getSingleResult();
+        return result>0;
+    }
+
 
     @Override
     public List<T> loadAll() {

@@ -16,4 +16,5 @@ public interface BaseEntityRepository <T extends BaseEntity<ID>, ID extends Seri
     Boolean contain(T entity);
     T findByUniqId(String uniqueFieldValue);
     Boolean deleteByUniqId(String uniqueFieldValue);
+    Boolean containByUniqField(String uniqField);
 }

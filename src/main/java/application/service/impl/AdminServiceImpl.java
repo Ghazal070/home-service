@@ -31,16 +31,13 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Duty createDuty(DutyCreation dutyCreation) {
-        String titleDuty = dutyCreation.getTitle();
         Duty parentDuty = null;
         Duty buildDuty;
-        Duty duty = dutyService.findByUniqId(titleDuty);
-        //todo exist duty boolean instead of load duty
-        if (StringUtils
-                .isNotBlank(dutyCreation.getParentTitle())) {
-            parentDuty = dutyService.findByUniqId(dutyCreation.getParentTitle());
+        //done exist duty boolean instead of load duty
+        if (dutyCreation.getParentId() != null ) {
+            parentDuty = dutyService.findById(dutyCreation.getParentId());
         }
-        if (duty != null) {
+        if (dutyService.containById(dutyCreation.getId()) != null) {
             throw new ValidationException("Title for duty is exist");
         }
         if (parentDuty != null) {

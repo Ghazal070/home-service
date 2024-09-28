@@ -22,7 +22,7 @@ public class DutyCreation {
     @NotBlank
     private String title;
 
-    private String parentTitle;
+    private Integer parentId;
 
     private Integer basePrice;
 
@@ -34,7 +34,7 @@ public class DutyCreation {
     @PrePersist
     @PreUpdate
     private  void validator(){
-        if (parentTitle != null ){
+        if (parentId != null ){
             if (basePrice==null || description==null){
                 ApplicationContext.getLogger().info("Parent Id is not null must not be null description and basePrice");
                 throw  new ValidationException("Parent Id is not null must not be null description and basePrice");
