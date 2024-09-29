@@ -36,8 +36,10 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         //done exist duty boolean instead of load duty
         //done optional instead of ==null
         Optional<Duty> optionalParentDuty = dutyCreation.getParentId() != null ?
-                Optional.of(dutyService.findById(dutyCreation.getParentId())) : Optional.empty();
-        if (dutyCreation.getParentId() != null && !optionalParentDuty.isPresent()) {
+                Optional.of(
+                        dutyService.findById(dutyCreation.getParentId())
+                ) : Optional.empty();
+        if (dutyCreation.getParentId() != null && optionalParentDuty.isEmpty()) {
             throw new ValidationException("This parent duty does not exist.");
         }
         if (optionalParentDuty.isPresent()) {

@@ -49,14 +49,14 @@ public class HomeServiceApp {
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
-        adminCreateDutyDuplicate(faker,adminService);
+        //adminCreateDutyDuplicate(faker,adminService);
         //adminCreateDutyDontExitParentDuty(faker, adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
-        //adminService.updateExpertStatus(expertService.findById(103), ExpertStatus.Accepted);
-        //adminService.addDutyToExpert(expertService.findById(103), dutyService.findById(127));
-        //adminService.removeDutyFromExpert(expertService.findById(103), dutyService.findById(127));
+        //adminService.updateExpertStatus(135);
+        //adminService.addDutyToExpert(135, 148);
+        //adminService.removeDutyFromExpert(135,148);
         //orderSubmitTest(faker, customerService);
 
 
@@ -66,7 +66,7 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
-                        .id(1)
+                        .id(145)
                         .priceOrder(700_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 9, 30, 10, 25))
                         .address(faker.address().streetAddress())
@@ -87,7 +87,7 @@ public class HomeServiceApp {
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
-                .dutyId(157)
+                .dutyId(147)
                 .price(800_000)
                 .description("SofaWashing****")
                 .selectable(true)
@@ -97,7 +97,7 @@ public class HomeServiceApp {
 
     private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
         String sub = "cleanHouse";
-        Integer parentId = 201;
+        Integer parentId = 140;
         adminService.createDuty(
                 DutyCreation.builder()
                         .title(sub)
@@ -112,7 +112,7 @@ public class HomeServiceApp {
 
     private static void adminCreateDutyDontExitParentDuty(Faker faker, AdminService adminService) {
         String sub = "WashMachine";
-        Integer parentId = 200;
+        Integer parentId = 250;
         adminService.createDuty(
                 DutyCreation.builder()
                         .title(sub)
@@ -133,7 +133,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentId(200)
+                            .parentId(139)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -151,7 +151,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentId(201)
+                            .parentId(140)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -176,7 +176,7 @@ public class HomeServiceApp {
 
     private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
-                .oldPassword("tb8y6430")
+                .oldPassword("hdh87560")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePassword);
@@ -184,8 +184,8 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        Users login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
-        //Users login = customerService.login("douglas.jacobs@hotmail.com", "za6b8637");
+        //Users login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
+        Users login = customerService.login("manuel.huels@yahoo.com", "hdh87560");
     }
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
