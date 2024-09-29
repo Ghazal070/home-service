@@ -1,20 +1,13 @@
 package application.repository;
 
 import application.entity.BaseEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.util.List;
 
-public interface BaseEntityRepository <T extends BaseEntity<ID>, ID extends Serializable> {
+@Repository
+public interface BaseEntityRepository <T extends BaseEntity<ID>, ID extends Serializable> extends JpaRepository<T,ID> {
 
-    T save(T entity);
-    T update (T newEntity);
-    void delete (ID id);
-    Boolean containById(ID id);
-    T findById(ID id);
-    List<T> loadAll();
-    Boolean contain(T entity);
-    T findByUniqId(String uniqueFieldValue);
-    Boolean deleteByUniqId(String uniqueFieldValue);
-    Boolean containByUniqField(String uniqField);
 }

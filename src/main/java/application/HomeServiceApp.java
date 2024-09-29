@@ -14,16 +14,27 @@ import application.entity.users.Users;
 import jakarta.persistence.EntityManager;
 import application.util.ApplicationContext;
 import application.util.AuthHolder;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@SpringBootApplication
 public class HomeServiceApp {
 
     public static void main(String[] args) {
-//        ApplicationContext.getLogger().info("start of project");
+        //extracted();
+        SpringApplication.run(HomeServiceApp.class,args);
+
+
+
+    }
+
+    private static void extracted() {
+        //        ApplicationContext.getLogger().info("start of project");
         Faker faker = new Faker();
         EntityManager entityManager = ApplicationContext.getINSTANCE().getEntityManager();
         DatabaseAccess databaseAccess = new JpaDatabaseAccess(entityManager);
@@ -58,8 +69,6 @@ public class HomeServiceApp {
         //adminService.addDutyToExpert(135, 148);
         //adminService.removeDutyFromExpert(135,148);
         //orderSubmitTest(faker, customerService);
-
-
     }
 
     private static void orderSubmitTest(Faker faker, CustomerService customerService) {
