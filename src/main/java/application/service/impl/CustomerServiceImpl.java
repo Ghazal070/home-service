@@ -12,36 +12,39 @@ import application.service.OrderService;
 import application.service.PasswordEncode;
 import application.util.AuthHolder;
 import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 
+@Service
 public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Customer> implements CustomerService {
 
     private final DutyService dutyService;
     private final AuthHolder authHolder;
     private final OrderService orderService;
 
-    public CustomerServiceImpl(CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, AuthHolder authHolder1, OrderService orderService) {
-        super(repository, authHolder, passwordEncode);
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, AuthHolder authHolder1, OrderService orderService) {
+        super(validator, repository, authHolder, passwordEncode);
         this.dutyService = dutyService;
         this.authHolder = authHolder1;
         this.orderService = orderService;
     }
 
-
     @Override
     public Order orderSubmit(OrderSubmission orderSubmission) {
         //done get id for duty in dto
         if (orderSubmission != null) {
-            Duty duty = dutyService.findById(orderSubmission.getId());
-            Customer customer = repository.findById(authHolder.tokenId);
-            if (duty != null && customer != null && duty.getSelectable()) {
-                if (duty.getBasePrice() <= orderSubmission.getPriceOrder()) {
+            Optional<Duty> duty = dutyService.findById(orderSubmission.getId());
+            Optional<Customer> customer = repository.findById(authHolder.tokenId);
+            if (duty.isPresent() && customer.isPresent() && duty.get().getSelectable()) {
+                if (duty.get().getBasePrice() <= orderSubmission.getPriceOrder()) {
                     Order order = Order.builder()
-                            .customer(customer)
+                            .customer(customer.get())
                             .description(orderSubmission.getDescription())
                             .address(orderSubmission.getAddress())
                             .priceOrder(orderSubmission.getPriceOrder())
-                            .duty(duty)
+                            .duty(duty.get())
                             .orderStatus(OrderStatus.ExpertOfferWanting)
                             .dateTimeOrder(orderSubmission.getDateTimeOrder())
                             .build();

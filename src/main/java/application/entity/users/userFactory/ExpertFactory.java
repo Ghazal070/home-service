@@ -5,10 +5,12 @@ import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
+@Component
 public class ExpertFactory implements UserFactory {
     @Override
     public Users createUser(UserSignupRequest userSignupRequest) {

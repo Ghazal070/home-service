@@ -8,5 +8,6 @@ public interface UserService<T extends Users> extends BaseEntityService<T,Intege
     void convertByteToImage(Byte[] data,String firstNameId);
     Users login(String email, String password);
     Boolean updatePassword(UserChangePassword userChangePassword);
+    Boolean containByUniqField(String uniqField);
 
 }

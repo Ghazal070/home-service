@@ -8,8 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import application.util.ApplicationContext;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,15 +48,9 @@ public class Duty extends BaseEntity<Integer> {
     private void validator() {
         if (selectable) {
             if (basePrice == null || description == null) {
-                ApplicationContext.getLogger().info("Parent Id is not null must not be null description and basePrice");
                 throw new ValidationException("Parent Id is not null must not be null description and basePrice");
             }
         }
-    }
-
-    @PostPersist
-    private void createLog() {
-        ApplicationContext.getLogger().info("Duty " + this.title + " is created");
     }
 
 

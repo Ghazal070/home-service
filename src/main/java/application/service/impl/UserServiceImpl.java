@@ -7,24 +7,27 @@ import application.repository.UserRepository;
 import application.service.PasswordEncode;
 import application.service.UserService;
 import application.util.AuthHolder;
+import jakarta.validation.Validator;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
+
 
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
     protected final PasswordEncode passwordEncode;
 
-    public UserServiceImpl(U repository, AuthHolder authHolder, PasswordEncode passwordEncode) {
-        super(repository);
+    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncode passwordEncode) {
+        super(validator, repository);
         this.authHolder = authHolder;
         this.passwordEncode = passwordEncode;
     }
-
 
     public void convertByteToImage(Byte[] data, String firstNameId) {
         if (data == null || data.length == 0)
@@ -51,10 +54,10 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     @Override
     public Users login(String email, String password) {
         if (!email.isBlank() && !password.isBlank()) {
-            Users loginUser = repository.login(email, password);
-            authHolder.tokenId = loginUser.getId();
-            authHolder.tokenName = loginUser.getProfile().getEmail();
-            return loginUser;
+            Optional<Users> loginUser = repository.login(email, password);
+            authHolder.tokenId = loginUser.get().getId();
+            authHolder.tokenName = loginUser.get().getProfile().getEmail();
+            return loginUser.get();
         }
         return null;
     }
@@ -64,18 +67,20 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         if (userChangePassword!=null){
             String oldPassword = userChangePassword.getOldPassword();
             String newPassword = userChangePassword.getNewPassword();
-            T user = findById(authHolder.tokenId);
-            if (user!=null){
+            Optional<T> user = findById(authHolder.tokenId);
+            if (user.isPresent()){
                 if(passwordEncode.isEqualEncodeDecodePass(oldPassword,newPassword)){
                     String encode = passwordEncode.encode(newPassword);
-                    Boolean repoResponse = repository.updatePassword(authHolder.tokenName,encode);
-                    if (repoResponse){
-                        return true;
-                    }else throw new ValidationException("repo response is false");
-
+                    int repoResponse = repository.updatePassword(authHolder.tokenName, encode);
+                    return repoResponse>0;
                 }else throw new ValidationException("old password is not correct");
             }else throw new ValidationException("user from token is null");
         }
         return null;
+    }
+
+    @Override
+    public Boolean containByUniqField(String uniqField) {
+        return repository.containByUniqField(uniqField);
     }
 }

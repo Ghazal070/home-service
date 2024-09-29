@@ -12,7 +12,9 @@ import application.service.PasswordEncode;
 import application.service.SignupService;
 import application.util.AuthHolder;
 import jakarta.validation.ValidationException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SignupServiceImpl implements SignupService {
 
     private final ExpertService expertService;

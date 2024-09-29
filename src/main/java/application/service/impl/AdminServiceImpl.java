@@ -8,15 +8,21 @@ import application.entity.users.Expert;
 import application.service.DutyService;
 import application.service.ExpertService;
 import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import application.repository.AdminRepository;
 import application.service.AdminService;
 import application.service.PasswordEncode;
 import application.util.AuthHolder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
+import static application.entity.Order_.duty;
+
+@Service
 public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         implements AdminService {
 
@@ -24,8 +30,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     private final DutyService dutyService;
     private final ExpertService expertService;
 
-    public AdminServiceImpl(AdminRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, ExpertService expertService) {
-        super(repository, authHolder, passwordEncode);
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, ExpertService expertService) {
+        super(validator, repository, authHolder, passwordEncode);
         this.dutyService = dutyService;
         this.expertService = expertService;
     }
@@ -36,15 +42,13 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         //done exist duty boolean instead of load duty
         //done optional instead of ==null
         Optional<Duty> optionalParentDuty = dutyCreation.getParentId() != null ?
-                Optional.of(
-                        dutyService.findById(dutyCreation.getParentId())
-                ) : Optional.empty();
+                dutyService.findById(dutyCreation.getParentId()) : Optional.empty();
         if (dutyCreation.getParentId() != null && optionalParentDuty.isEmpty()) {
             throw new ValidationException("This parent duty does not exist.");
         }
         if (optionalParentDuty.isPresent()) {
             Duty parentDuty = optionalParentDuty.get();
-            if (!dutyService.containByUniqField(dutyCreation.getTitle(),parentDuty.getId())) {
+            if (dutyService.containByUniqField(dutyCreation.getTitle(),parentDuty.getId())) {
                 throw new ValidationException("Title for duty already exists for this parent duty.");
             }
             return createDutyWithParent(dutyCreation, parentDuty);
@@ -75,10 +79,10 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     public Boolean updateExpertStatus(Integer expertId) {
         if (expertId != null) {
             //done only ExpertStatus.Accepted no get all expertStatus
-            Expert expert = expertService.findById(expertId);
-            if (expert.getExpertStatus().equals(ExpertStatus.New)) {
-                expert.setExpertStatus(ExpertStatus.Accepted);
-                expertService.update(expert);
+            Optional<Expert> expert = expertService.findById(expertId);
+            if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
+                expert.get().setExpertStatus(ExpertStatus.Accepted);
+                expertService.update(expert.get());
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
         } else throw new ValidationException("Expert does not exist");
@@ -88,18 +92,18 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     @Override
     public Boolean addDutyToExpert(Integer expertId, Integer dutyId) {
         //done--- find duty and expert
-        Expert expert = expertService.findById(expertId);
-        Duty duty = dutyService.findById(dutyId);
-        if (expert == null || duty == null) {
+        Optional<Expert> expert = expertService.findById(expertId);
+        Optional<Duty> duty = dutyService.findById(dutyId);
+        if (expert.isEmpty() || duty.isEmpty()) {
             throw new ValidationException("Expert or duty is null");
         }
-        if (!duty.getSelectable()) {
+        if (!duty.get().getSelectable()) {
             throw new ValidationException("Duty selectable is false");
         }
-        if (expertService.havePermissionExpertToServices(expert)) {
-            Set<Duty> duties = expert.getDuties();
-            if (duties.add(duty)) {
-                expertService.update(expert);
+        if (expertService.havePermissionExpertToServices(expert.get())) {
+            Set<Duty> duties = expert.get().getDuties();
+            if (duties.add(duty.get())) {
+                expertService.update(expert.get());
                 return true;
             }
         } else throw new ValidationException("Duty is no selectable");
@@ -109,16 +113,16 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     @Override
     public Boolean removeDutyFromExpert(Integer expertId, Integer dutyId) {
         //done remove with query no for
-        Expert expert = expertService.findById(expertId);
-        Duty duty = dutyService.findById(dutyId);
-        if (expert == null || duty == null) {
+        Optional<Expert> expert = expertService.findById(expertId);
+        Optional<Duty> duty = dutyService.findById(dutyId);
+        if (expert.isEmpty() || duty.isEmpty()) {
             throw new ValidationException("Expert or duty is null");
         }
-        Set<Duty> duties = expert.getDuties();
+        Set<Duty> duties = expert.get().getDuties();
         if (duties != null && !duties.isEmpty()) {
-            if (!duties.remove(duty)) throw new ValidationException("Duty does not exist in set expert");
+            if (!duties.remove(duty.get())) throw new ValidationException("Duty does not exist in set expert");
         } else throw new ValidationException("Duty set is empty");
-        expertService.update(expert);
+        expertService.update(expert.get());
         return true;
     }
 }

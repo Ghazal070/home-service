@@ -20,7 +20,7 @@ public interface DutyRepository extends BaseEntityRepository<Duty,Integer>{
     int updateDutyPriceOrDescriptionOrSelectable(Integer dutyId,Integer price,String description,Boolean selectable);
 
    @Query("select d from Duty d order by case when d.parent.id is null then 1 else 2 end,d.parent.id")
-    List<DutyResponseChildren> loadAllDutyWithChildren();
+    List<Duty> loadAllDutyWithChildren();
 
     @Query("select count(d)>0 from Duty d where d.title=:title and d.parent.id=:parentId ")
     Boolean containByUniqField(String title, Integer parentId);

@@ -1,15 +1,14 @@
 package application.service.impl;
 
-import application.entity.Duty;
 import application.entity.Order;
-import application.repository.DutyRepository;
 import application.repository.OrderRepository;
-import application.service.DutyService;
 import application.service.OrderService;
+import jakarta.validation.Validator;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderServiceImpl extends BaseEntityServiceImpl<OrderRepository, Order, Integer> implements OrderService {
-
-    public OrderServiceImpl(OrderRepository repository) {
-        super(repository);
+    public OrderServiceImpl(Validator validator, OrderRepository repository) {
+        super(validator, repository);
     }
 }

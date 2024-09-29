@@ -6,15 +6,16 @@ import application.entity.Duty;
 import application.repository.DutyRepository;
 import application.service.DutyService;
 import jakarta.validation.ValidationException;
-import org.apache.commons.lang3.StringUtils;
+import jakarta.validation.Validator;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+@Service
 public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty, Integer> implements DutyService {
 
-    public DutyServiceImpl(DutyRepository repository) {
-        super(repository);
+    public DutyServiceImpl(Validator validator, DutyRepository repository) {
+        super(validator, repository);
     }
 
     @Override
@@ -22,18 +23,39 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
         if (updateDuty != null) {
             //done id not null check in dto
             //done use optional
-            Optional<Duty> optionalDuty = Optional.ofNullable(repository.findById(updateDuty.getDutyId()));
-            if (!optionalDuty.isPresent()) {
+            Optional<Duty> duty = repository.findById(updateDuty.getDutyId());
+            if (duty.isEmpty()) {
                 throw new ValidationException("Duty with ID " + updateDuty.getDutyId() + " not found.");
             }
-            Duty duty = optionalDuty.get();
-            return repository.updateDutyPriceOrDescriptionOrSelectable(duty, updateDuty);
+            int countUpdate = repository.updateDutyPriceOrDescriptionOrSelectable(updateDuty.getDutyId(), updateDuty.getPrice()
+                    , updateDuty.getDescription(), updateDuty.getSelectable());
+            return countUpdate>0;
         } else throw new ValidationException("Update duty is null");
     }
 
     @Override
     public List<DutyResponseChildren> loadAllDutyWithChildren() {
-        return repository.loadAllDutyWithChildren();
+        List<Duty> duties = repository.loadAllDutyWithChildren();
+        Map<Integer, DutyResponseChildren> dutyResponseChildrenMap = new HashMap<>();
+        List<DutyResponseChildren> rootDuties = new ArrayList<>();
+        for (Duty duty : duties) {
+            DutyResponseChildren responseChildren = DutyResponseChildren.builder()
+                    .id(duty.getId())
+                    .title(duty.getTitle())
+                    .selectable(duty.getSelectable())
+                    .subDuty(new HashSet<>())
+                    .build();
+            dutyResponseChildrenMap.put(duty.getId(), responseChildren);
+            if (duty.getParent() == null) {
+                rootDuties.add(responseChildren);
+            } else {
+                DutyResponseChildren parentResponse = dutyResponseChildrenMap.get(duty.getParent().getId());
+                if (parentResponse != null) {
+                    parentResponse.getSubDuty().add(responseChildren);
+                }
+            }
+        }
+        return rootDuties;
     }
 
     @Override
