@@ -38,7 +38,8 @@ public class Duty extends BaseEntity<Integer> {
 
     @Column
     @NotNull
-    private Boolean selectable;
+    @Builder.Default
+    private Boolean selectable=false;
 
     @PrePersist
     @PreUpdate

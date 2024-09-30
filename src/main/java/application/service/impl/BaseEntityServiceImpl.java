@@ -71,8 +71,6 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
         return repository.existsById(entity.getId());
     }
 
-
-
     private void validate(T entity) {
         Set<ConstraintViolation<T>> violations = validator.validate(entity);
         if (!violations.isEmpty()) {
