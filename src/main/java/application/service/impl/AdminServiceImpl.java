@@ -16,6 +16,7 @@ import application.service.AdminService;
 import application.service.PasswordEncode;
 import application.util.AuthHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -111,18 +112,21 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     }
 
     @Override
+    @Transactional
     public Boolean removeDutyFromExpert(Integer expertId, Integer dutyId) {
-        //done remove with query no for
-        Optional<Expert> expert = expertService.findById(expertId);
-        Optional<Duty> duty = dutyService.findById(dutyId);
-        if (expert.isEmpty() || duty.isEmpty()) {
-            throw new ValidationException("Expert or duty is null");
+        Expert expert = expertService.findById(expertId)
+                .orElseThrow(() -> new ValidationException("Expert not found with ID: " + expertId));
+        Duty duty = dutyService.findById(dutyId)
+                .orElseThrow(() -> new ValidationException("Duty not found with ID: " + dutyId));
+        Set<Duty> duties = expert.getDuties();
+        if (duties == null || duties.isEmpty()) {
+            throw new ValidationException("Duty set is empty for expert with ID: " + expertId);
         }
-        Set<Duty> duties = expert.get().getDuties();
-        if (duties != null && !duties.isEmpty()) {
-            if (!duties.remove(duty.get())) throw new ValidationException("Duty does not exist in set expert");
-        } else throw new ValidationException("Duty set is empty");
-        expertService.update(expert.get());
+        boolean removed = duties.remove(duty);
+        if (!removed) {
+            throw new ValidationException("Duty with ID " + dutyId + " does not exist in expert's duty set");
+        }
+        expertService.update(expert);
         return true;
     }
 }

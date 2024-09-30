@@ -7,4 +7,5 @@ import application.entity.users.Customer;
 public interface CustomerService extends UserService<Customer>{
 
     Order orderSubmit(OrderSubmission orderSubmission);
+    boolean isCustomerAuthenticated();
 }

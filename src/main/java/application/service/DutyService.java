@@ -11,4 +11,5 @@ public interface DutyService extends BaseEntityService<Duty,Integer> {
     Boolean updateDutyPriceOrDescription(UpdateDuty updateDuty);
     List<DutyResponseChildren> loadAllDutyWithChildren();
     Boolean containByUniqField(String title, Integer parentId);
+    List<Duty> getSelectableDuties();
 }

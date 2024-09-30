@@ -16,6 +16,7 @@ public class UpdateDuty {
     @NotBlank
     private Integer dutyId;
 
+
     private Integer price;
 
     private String description;

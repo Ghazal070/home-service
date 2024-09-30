@@ -27,7 +27,7 @@ public class Expert extends Users {
     @Builder.Default
     private Integer score = 0;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Duty> duties = new HashSet<>();
 
     @OneToOne

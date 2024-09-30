@@ -1,6 +1,7 @@
 package application.service.impl;
 
 import application.dto.UserChangePassword;
+import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
 import application.exception.ValidationException;
 import application.repository.UserRepository;
@@ -52,9 +53,9 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
-    public Users login(String email, String password) {
+    public UserLoginProjection login(String email, String password) {
         if (!email.isBlank() && !password.isBlank()) {
-            Optional<Users> loginUser = repository.login(email, password);
+            Optional<UserLoginProjection> loginUser = repository.login(email, password);
             authHolder.tokenId = loginUser.get().getId();
             authHolder.tokenName = loginUser.get().getProfile().getEmail();
             return loginUser.get();
@@ -83,4 +84,5 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     public Boolean containByUniqField(String uniqField) {
         return repository.containByUniqField(uniqField);
     }
+
 }

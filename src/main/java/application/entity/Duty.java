@@ -33,11 +33,8 @@ public class Duty extends BaseEntity<Integer> {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent",fetch = FetchType.EAGER)
     private Set<Duty> subDuty = new HashSet<>();
-
-    @ManyToMany(mappedBy = "duties")
-    private Set<Expert> experts = new HashSet<>();
 
     @Column
     @NotNull

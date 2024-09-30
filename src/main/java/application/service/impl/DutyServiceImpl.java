@@ -4,6 +4,7 @@ import application.dto.DutyResponseChildren;
 import application.dto.UpdateDuty;
 import application.entity.Duty;
 import application.repository.DutyRepository;
+import application.service.CustomerService;
 import application.service.DutyService;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
@@ -13,6 +14,7 @@ import java.util.*;
 
 @Service
 public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty, Integer> implements DutyService {
+
 
     public DutyServiceImpl(Validator validator, DutyRepository repository) {
         super(validator, repository);
@@ -25,8 +27,12 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
             //done use optional
             Optional<Duty> duty = repository.findById(updateDuty.getDutyId());
             if (duty.isEmpty()) {
-                throw new ValidationException("Duty with ID " + updateDuty.getDutyId() + " not found.");
+                throw new ValidationException("Duty with ID " + updateDuty.getDutyId() +" not found");
             }
+            if (updateDuty.getPrice() != null && duty.get().getBasePrice() >= updateDuty.getPrice()){
+                throw new ValidationException("Input price equal lower than base price duty");
+            }
+
             int countUpdate = repository.updateDutyPriceOrDescriptionOrSelectable(updateDuty.getDutyId(), updateDuty.getPrice()
                     , updateDuty.getDescription(), updateDuty.getSelectable());
             return countUpdate>0;
@@ -61,5 +67,8 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     @Override
     public Boolean containByUniqField(String title, Integer parentId){
         return repository.containByUniqField(title,parentId);
+    }
+    public List<Duty> getSelectableDuties() {
+        return repository.findAllBySelectableTrue();
     }
 }

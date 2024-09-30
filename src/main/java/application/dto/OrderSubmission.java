@@ -21,6 +21,8 @@ import java.time.ZonedDateTime;
 @Builder
 public class OrderSubmission {
 
+    @NotNull(message = "address order must not be null")
+    private Integer id;
     @NotNull(message = "order description must not be null")
     private String description;
 
@@ -33,6 +35,6 @@ public class OrderSubmission {
     @NotNull(message = "address order must not be null")
     private String address;
 
-    private Integer id;
+
 
 }
