@@ -4,16 +4,15 @@ import application.entity.BaseEntity;
 import jakarta.validation.*;
 import application.repository.BaseEntityRepository;
 import application.service.BaseEntityService;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 
-
-
-public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
-        T extends BaseEntity<ID>,ID extends Serializable> implements BaseEntityService<T,ID> {
+public class BaseEntityServiceImpl<U extends BaseEntityRepository<T, ID>,
+        T extends BaseEntity<ID>, ID extends Serializable> implements BaseEntityService<T, ID> {
 
     protected final Validator validator;
 
@@ -37,7 +36,6 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
     }
 
 
-
     @Override
     public T update(T newEntity) {
         validate(newEntity);
@@ -46,10 +44,16 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
 
     @Override
     public void deleteById(ID id) {
-        repository.deleteById(id);
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        }
+        else throw new ValidationException("This id does not exist");
+
     }
 
     public Boolean existsById(ID id) {
+        if (id==null)
+            throw new ValidationException("Id must not be null");
         return repository.existsById(id);
     }
 
@@ -63,15 +67,7 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
         return repository.findAll();
     }
 
-    @Override
-    public Boolean exists(T entity) {
-        if (entity == null || entity.getId() == null) {
-            return false;
-        }
-        return repository.existsById(entity.getId());
-    }
-
-    private void validate(T entity) {
+    public void validate(T entity) {
         Set<ConstraintViolation<T>> violations = validator.validate(entity);
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -81,8 +77,6 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T,ID>,
             throw new ConstraintViolationException(sb.toString(), violations);
         }
     }
-
-
 
 
 }
