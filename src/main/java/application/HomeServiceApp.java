@@ -42,9 +42,9 @@ public class HomeServiceApp {
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
         //adminCreateDutyDuplicate(faker,adminService);
-        //adminCreateDutyDontExitParentDuty(faker, adminService);
+        adminCreateDutyDontExitParentDuty(faker, adminService);
         //updatePriceOrDescriptionTest(dutyService);
-        loadAllDuties(dutyService);
+        //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
         //adminService.updateExpertStatus(2);
         //adminService.addDutyToExpert(2, 8);

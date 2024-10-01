@@ -39,5 +39,8 @@ public interface DutyRepository extends BaseEntityRepository<Duty, Integer> {
     @Query("select d from Duty d where d.id= :dutyId")
     Optional<Duty> findById(Integer dutyId);
 
+
+    Boolean existsByTitle(String dutyTitle);
+
     List<Duty> findAllBySelectableTrue();
 }

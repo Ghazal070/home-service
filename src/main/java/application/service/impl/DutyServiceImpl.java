@@ -68,6 +68,12 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     public Boolean containByUniqField(String title, Integer parentId){
         return repository.containByUniqField(title,parentId);
     }
+
+    @Override
+    public Boolean existsByTitle(String dutyTitle) {
+        return repository.existsByTitle(dutyTitle);
+    }
+
     public List<Duty> getSelectableDuties() {
         return repository.findAllBySelectableTrue();
     }

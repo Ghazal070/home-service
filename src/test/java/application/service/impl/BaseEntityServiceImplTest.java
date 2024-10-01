@@ -12,11 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.verification.VerificationMode;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.ArrayList;;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BaseEntityServiceImplTest {
 
-    @Mock
     private Validator validator;
     @Mock
     private BaseEntityRepository<Duty, Integer> repository;
@@ -69,7 +66,6 @@ class BaseEntityServiceImplTest {
     void updateValidEntity() {
         Duty duty = Duty.builder().id(100).title("Wash Dishes").basePrice(1_000).build();
         given(repository.save(duty)).willReturn(duty);
-
         assertEquals(duty, underTest.save(duty));
         verify(repository).save(duty);
     }
@@ -99,6 +95,12 @@ class BaseEntityServiceImplTest {
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("This id does not exist");
     }
+    @Test
+    void existsByIdNullId() {
+        assertThatThrownBy(() -> underTest.existsById(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Id must not be null");
+    }
 
     @Test
     void existsByIdValidId() {
@@ -111,7 +113,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void existsByIdDontExistId() {
+    void existsByIdNonExistingId() {
         given(repository.existsById(1)).willReturn(false);
 
         assertFalse(underTest.existsById(1));
@@ -162,10 +164,13 @@ class BaseEntityServiceImplTest {
     @Test
     public void validateValidEntity() {
         Duty duty = Duty.builder().id(100).title("Washing_1").build();
-        when(validator.validate(duty)).thenReturn(new HashSet<>());
         assertDoesNotThrow(() -> underTest.validate(duty));
-        verify(validator).validate(duty);
-
-
+    }
+    @Test
+    void validateInvalidEntity() {
+        Duty invalidDuty = Duty.builder().id(101).title(null).build();
+        assertThatThrownBy(() -> underTest.validate(invalidDuty))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Title must not be null");
     }
 }

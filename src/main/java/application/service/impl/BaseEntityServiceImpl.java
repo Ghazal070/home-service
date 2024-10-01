@@ -38,21 +38,25 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T, ID>,
 
     @Override
     public T update(T newEntity) {
-        validate(newEntity);
-        return repository.save(newEntity);
+        try {
+            validate(newEntity);
+            return repository.save(newEntity);
+        } catch (ValidationException e) {
+            throw new ValidationException("Validation failed: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public void deleteById(ID id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
-        }
-        else throw new ValidationException("This id does not exist");
+        } else throw new ValidationException("This id does not exist");
 
     }
 
+    @Override
     public Boolean existsById(ID id) {
-        if (id==null)
+        if (id == null)
             throw new ValidationException("Id must not be null");
         return repository.existsById(id);
     }

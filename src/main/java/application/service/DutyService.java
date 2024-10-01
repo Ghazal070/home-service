@@ -5,6 +5,7 @@ import application.dto.UpdateDuty;
 import application.entity.Duty;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DutyService extends BaseEntityService<Duty,Integer> {
 
@@ -12,4 +13,5 @@ public interface DutyService extends BaseEntityService<Duty,Integer> {
     List<DutyResponseChildren> loadAllDutyWithChildren();
     Boolean containByUniqField(String title, Integer parentId);
     List<Duty> getSelectableDuties();
+    Boolean existsByTitle(String dutyTitle);
 }

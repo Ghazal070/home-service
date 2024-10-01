@@ -41,44 +41,36 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     public Duty createDuty(DutyCreation dutyCreation) {
         //done parentTitle+title is uniq
         //done exist duty boolean instead of load duty
-        //done optional instead of ==null
-        Optional<Duty> optionalParentDuty = dutyCreation.getParentId() != null ?
-                dutyService.findById(dutyCreation.getParentId()) : Optional.empty();
-        if (dutyCreation.getParentId() != null && optionalParentDuty.isEmpty()) {
-            throw new ValidationException("This parent duty does not exist.");
-        }
-        if (optionalParentDuty.isPresent()) {
-            Duty parentDuty = optionalParentDuty.get();
-            if (dutyService.containByUniqField(dutyCreation.getTitle(),parentDuty.getId())) {
+        Duty parentDuty = null;
+        if (dutyCreation.getParentId() != null) {
+            parentDuty = dutyService.findById(dutyCreation.getParentId())
+                    .orElseThrow(() -> new ValidationException("This parent duty does not exist."));
+            if (dutyService.containByUniqField(dutyCreation.getTitle(), parentDuty.getId())) {
                 throw new ValidationException("Title for duty already exists for this parent duty.");
             }
-            return createDutyWithParent(dutyCreation, parentDuty);
+        } else {
+            if (dutyService.existsByTitle(dutyCreation.getTitle())) {
+                throw new ValidationException("Title exists for this parent null.");
+            }
         }
-        return createDutyWithoutParent(dutyCreation);
+        return dutyService.save(dutyCreation(dutyCreation, parentDuty));
     }
 
-    private Duty createDutyWithParent(DutyCreation dutyCreation, Duty parentDuty) {
-        Duty buildDuty = Duty.builder()
+    private Duty dutyCreation(DutyCreation dutyCreation, Duty parentDuty) {
+        Duty dutyBuilder = Duty.builder()
                 .title(dutyCreation.getTitle())
-                .parent(parentDuty)
                 .basePrice(dutyCreation.getBasePrice())
                 .description(dutyCreation.getDescription())
                 .selectable(dutyCreation.getSelectable())
                 .build();
-        return dutyService.save(buildDuty);
-    }
-
-    private Duty createDutyWithoutParent(DutyCreation dutyCreation) {
-        Duty buildDuty = Duty.builder()
-                .title(dutyCreation.getTitle())
-                .selectable(dutyCreation.getSelectable())
-                .build();
-        return dutyService.save(buildDuty);
+        if (parentDuty != null) {
+            dutyBuilder.setParent(parentDuty);
+        }
+        return dutyBuilder;
     }
 
     @Override
     public Boolean updateExpertStatus(Integer expertId) {
-        if (expertId != null) {
             //done only ExpertStatus.Accepted no get all expertStatus
             Optional<Expert> expert = expertService.findById(expertId);
             if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
@@ -86,8 +78,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 expertService.update(expert.get());
                 return true;
             } else throw new ValidationException("ExpertStatus does not New");
-        } else throw new ValidationException("Expert does not exist");
-
     }
 
     @Override
@@ -107,7 +97,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 expertService.update(expert.get());
                 return true;
             }
-        } else throw new ValidationException("Duty is no selectable");
+        } else throw new ValidationException("Expert isn't Accept status");
         return false;
     }
 
