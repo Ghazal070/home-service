@@ -21,13 +21,11 @@ import java.util.Optional;
 public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Customer> implements CustomerService {
 
     private final DutyService dutyService;
-    private final AuthHolder authHolder;
     private final OrderService orderService;
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, AuthHolder authHolder1, OrderService orderService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, OrderService orderService) {
         super(validator, repository, authHolder, passwordEncode);
         this.dutyService = dutyService;
-        this.authHolder = authHolder1;
         this.orderService = orderService;
     }
 
