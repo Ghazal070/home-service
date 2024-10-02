@@ -61,7 +61,7 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
-                        .id(8)
+                        .dutyId(8)
                         .priceOrder(700_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                         .address(faker.address().streetAddress())

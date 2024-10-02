@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@Builder
 public class AuthHolder {
     public Integer tokenId=null;
     public String tokenName=null;

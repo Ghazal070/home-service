@@ -31,14 +31,14 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     @Override
     public Order orderSubmit(OrderSubmission orderSubmission) {
-        if (!isCustomerAuthenticated()) {
+        Optional<Customer> customer = isCustomerAuthenticated();
+        if (customer.isEmpty()) {
             throw new ValidationException("Customer must be logged in to view duties.");
         }
         //done get id for duty in dto
         if (orderSubmission != null) {
-            Optional<Duty> duty = dutyService.findById(orderSubmission.getId());
-            Optional<Customer> customer = repository.findById(authHolder.tokenId);
-            if (duty.isPresent() && customer.isPresent() && duty.get().getSelectable()) {
+            Optional<Duty> duty = dutyService.findById(orderSubmission.getDutyId());
+            if (duty.isPresent() && duty.get().getSelectable()) {
                 if (duty.get().getBasePrice() <= orderSubmission.getPriceOrder()) {
                     Order order = Order.builder()
                             .customer(customer.get())
@@ -55,14 +55,10 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
                 throw new ValidationException("Title duty must be from Duty and be selectable List or auth holder is null");
         } else throw new ValidationException("OrderSubmission is null");
     }
-    public boolean isCustomerAuthenticated() {
-        if (authHolder != null && authHolder.tokenId != null){
-            Optional<Customer> customer = repository.findById(authHolder.tokenId);
-            if (customer.isEmpty()){
-                throw new ValidationException("Login user is not customer");
-            }
-            return true;
-        }else throw new ValidationException("Auth holder is null");
+
+    public Optional<Customer> isCustomerAuthenticated() {
+        Integer customerId = authHolder.getTokenId();
+        return repository.findById(customerId);
     }
 
 }
