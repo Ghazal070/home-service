@@ -74,7 +74,8 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             String newPassword = userChangePassword.getNewPassword();
             Optional<T> user = findById(authHolder.getTokenId());
             if (user.isPresent()) {
-                if (passwordEncode.isEqualEncodeDecodePass(oldPassword, newPassword)) {
+                String encodePassword =oldPassword;
+                if (passwordEncode.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
                     String encode = passwordEncode.encode(newPassword);
                     int repoResponse = repository.updatePassword(authHolder.getTokenName(), encode);
                     return repoResponse > 0;

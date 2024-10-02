@@ -42,7 +42,7 @@ public class HomeServiceApp {
         //adminCreateHouseholdAppliances(faker, adminService);
         //adminCreateCleaning(faker, adminService);
         //adminCreateDutyDuplicate(faker,adminService);
-        adminCreateDutyDontExitParentDuty(faker, adminService);
+        //adminCreateDutyDontExitParentDuty(faker, adminService);
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
@@ -82,7 +82,7 @@ public class HomeServiceApp {
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
-                .dutyId(14)
+                .dutyId(208)
 //                .price(1_000_000)
                 .description("Sofa###Washing****")
                 .selectable(true)
