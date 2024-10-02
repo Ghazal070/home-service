@@ -30,7 +30,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         this.passwordEncode = passwordEncode;
     }
 
-    public void convertByteToImage(Byte[] data, String firstNameId) {
+    public void convertByteToImage(Byte[] data, String firstName) {
         if (data == null || data.length == 0)
             throw new ValidationException("image is null");
         byte[] dataByte = new byte[data.length];
@@ -43,7 +43,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        File file = new File("src/main/resources/images/" + firstNameId + ".jpg");
+        File file = new File("src/main/resources/images/" + firstName + ".jpg");
         try {
             ImageIO.write(bImage2, "jpg", file);
 
@@ -56,28 +56,32 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     public UserLoginProjection login(String email, String password) {
         if (!email.isBlank() && !password.isBlank()) {
             Optional<UserLoginProjection> loginUser = repository.login(email, password);
-            authHolder.tokenId = loginUser.get().getId();
-            authHolder.tokenName = loginUser.get().getProfile().getEmail();
-            return loginUser.get();
-        }
-        return null;
+            if (loginUser.isPresent()) {
+                authHolder.tokenId = loginUser.get().getId();
+                authHolder.tokenName = loginUser.get().getProfile().getEmail();
+                return loginUser.get();
+            }
+            throw new ValidationException("Invalid login credentials");
+        } else
+            throw new ValidationException("Email or Password must not be empty");
+
     }
 
     @Override
     public Boolean updatePassword(UserChangePassword userChangePassword) {
-        if (userChangePassword!=null){
+        if (userChangePassword != null) {
             String oldPassword = userChangePassword.getOldPassword();
             String newPassword = userChangePassword.getNewPassword();
-            Optional<T> user = findById(authHolder.tokenId);
-            if (user.isPresent()){
-                if(passwordEncode.isEqualEncodeDecodePass(oldPassword,newPassword)){
+            Optional<T> user = findById(authHolder.getTokenId());
+            if (user.isPresent()) {
+                if (passwordEncode.isEqualEncodeDecodePass(oldPassword, newPassword)) {
                     String encode = passwordEncode.encode(newPassword);
-                    int repoResponse = repository.updatePassword(authHolder.tokenName, encode);
-                    return repoResponse>0;
-                }else throw new ValidationException("old password is not correct");
-            }else throw new ValidationException("user from token is null");
+                    int repoResponse = repository.updatePassword(authHolder.getTokenName(), encode);
+                    return repoResponse > 0;
+                } else throw new ValidationException("old password is not correct");
+            } else throw new ValidationException("user from token is null");
         }
-        return null;
+        throw new ValidationException("UserChangePassword is null");
     }
 
     @Override
