@@ -10,8 +10,8 @@ public class PasswordEncodeImpl implements PasswordEncode {
         return password;
     }
     @Override
-    public Boolean isEqualEncodeDecodePass(String oldPassword,String newPassword){
-        return true;
+    public Boolean isEqualEncodeDecodePass(String oldPassword,String encodedPassword){
+        return oldPassword.equals(encodedPassword);
     }
     //done simple method check encodePassword= oldPassword
 }

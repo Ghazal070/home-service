@@ -29,10 +29,6 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
             if (duty.isEmpty()) {
                 throw new ValidationException("Duty with ID " + updateDuty.getDutyId() +" not found");
             }
-            if (updateDuty.getPrice() != null && duty.get().getBasePrice() >= updateDuty.getPrice()){
-                throw new ValidationException("Input price equal lower than base price duty");
-            }
-
             int countUpdate = repository.updateDutyPriceOrDescriptionOrSelectable(updateDuty.getDutyId(), updateDuty.getPrice()
                     , updateDuty.getDescription(), updateDuty.getSelectable());
             return countUpdate>0;
