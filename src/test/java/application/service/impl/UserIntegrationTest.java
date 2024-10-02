@@ -1,11 +1,15 @@
 package application.service.impl;
 
+import application.dto.OrderSubmission;
 import application.dto.UserChangePassword;
 import application.dto.UserSignupRequest;
 import application.dto.projection.UserLoginProjection;
+import application.entity.Duty;
+import application.entity.Order;
 import application.entity.users.Users;
 import application.repository.UserRepository;
 import application.service.CustomerService;
+import application.service.DutyService;
 import application.service.SignupService;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -30,6 +35,8 @@ public class UserIntegrationTest {
 
     @Autowired
     private SignupService signupService;
+    @Autowired
+    private DutyService dutyService;
 
     @Autowired
     private UserRepository userRepository;
@@ -67,6 +74,19 @@ public class UserIntegrationTest {
         UserLoginProjection updatedLoginUser = customerService.login(userSignupRequest.getEmail(), newPassword);
         assertThat(updatedLoginUser).isNotNull();
         assertThat(updatedLoginUser.getProfile().getEmail()).isEqualTo(userSignupRequest.getEmail());
+
+
+        OrderSubmission orderSubmission = OrderSubmission.builder()
+                .dutyId(209)
+                .priceOrder(900_000)
+                .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
+                .address(faker.address().streetAddress())
+                .description("8 --- " + faker.lorem().characters(5, 20))
+                .build();
+        Order order = customerService.orderSubmit(orderSubmission);
+         assertNotNull(order);
+         assertThat(order.getDuty().getId()).isEqualTo(orderSubmission.getDutyId());
+
     }
 
     private UserSignupRequest createSignupRequest(String role, String password) throws FileNotFoundException {

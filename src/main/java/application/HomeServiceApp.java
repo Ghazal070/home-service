@@ -36,7 +36,7 @@ public class HomeServiceApp {
 
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        //loginTestMethod(customerService);
+        loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
@@ -50,7 +50,7 @@ public class HomeServiceApp {
         //adminService.addDutyToExpert(2, 8);
         //adminService.removeDutyFromExpert(2,8);
         //dutyService.getSelectableDuties().forEach(System.out::println);
-        //orderSubmitTest(faker, customerService);
+        orderSubmitTest(faker, customerService);
 
 
     }
@@ -61,8 +61,8 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
-                        .dutyId(8)
-                        .priceOrder(700_000)
+                        .dutyId(209)
+                        .priceOrder(800_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                         .address(faker.address().streetAddress())
                         .description( "8 --- " + faker.lorem().characters(5, 20))
@@ -179,8 +179,8 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        //UserLoginProjection login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
-        UserLoginProjection login = customerService.login("crystal.wunsch@gmail.com", "t4l29165");
+        UserLoginProjection login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
+        //UserLoginProjection login = customerService.login("crystal.wunsch@gmail.com", "t4l29165");
     }
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {

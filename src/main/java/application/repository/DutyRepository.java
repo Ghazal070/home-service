@@ -36,8 +36,8 @@ public interface DutyRepository extends BaseEntityRepository<Duty, Integer> {
     @Query("select count(d)>0 from Duty d where d.title=:title and d.parent.id=:parentId ")
     Boolean containByUniqField(String title, Integer parentId);
 
-    @Query("select d from Duty d where d.id= :dutyId")
-    Optional<Duty> findById(Integer dutyId);
+//    @Query("select d from Duty d where d.id= :dutyId")
+//    Optional<Duty> findById(Integer dutyId);
 
 
     Boolean existsByTitle(String dutyTitle);

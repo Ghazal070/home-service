@@ -84,11 +84,10 @@ class CustomerServiceImplTest {
     @Test
     void orderSubmitIsNull() {
         Customer customer = Customer.builder().id(100).build();
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmission))
+        assertThatThrownBy(()->underTest.orderSubmit(null))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("OrderSubmission is null");
     }
