@@ -33,6 +33,8 @@ public class HomeServiceApp {
         SignupService signupService = context.getBean(SignupService.class, args);
         ExpertService expertService = context.getBean(ExpertService.class, args);
         DutyService dutyService = context.getBean(DutyService.class, args);
+        OrderService orderService =context.getBean(OrderService.class,args);
+        OfferService offerService =context.getBean(OfferService.class,args);
 
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
@@ -46,11 +48,12 @@ public class HomeServiceApp {
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
-        //adminService.updateExpertStatus(2);
-        //adminService.addDutyToExpert(2, 8);
-        //adminService.removeDutyFromExpert(2,8);
+        //adminService.updateExpertStatus(293);
+        //adminService.addDutyToExpert(293, 305);
+        //adminService.removeDutyFromExpert(271,283);
         //dutyService.getSelectableDuties().forEach(System.out::println);
-        orderSubmitTest(faker, customerService);
+        //orderSubmitTest(faker, customerService);
+        orderService.getOrdersForExpert(293).forEach(System.out::println);
 
 
     }
@@ -61,7 +64,7 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmission.builder()
-                        .dutyId(209)
+                        .dutyId(299)
                         .priceOrder(800_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                         .address(faker.address().streetAddress())
@@ -82,7 +85,7 @@ public class HomeServiceApp {
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
         UpdateDuty updateDuty = UpdateDuty.builder()
-                .dutyId(208)
+                .dutyId(305)
 //                .price(1_000_000)
                 .description("Sofa###Washing****")
                 .selectable(true)
@@ -92,7 +95,7 @@ public class HomeServiceApp {
 
     private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
         String sub = "cleanHouse";
-        Integer parentId = 7;
+        Integer parentId = 298;
         adminService.createDuty(
                 DutyCreation.builder()
                         .title(sub)
@@ -128,7 +131,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentId(6)
+                            .parentId(297)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -146,7 +149,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreation.builder()
                             .title(sub)
-                            .parentId(7)
+                            .parentId(298)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -171,7 +174,7 @@ public class HomeServiceApp {
 
     private static void passwordUpdateTest(CustomerService customerService) {
         UserChangePassword userChangePassword = UserChangePassword.builder()
-                .oldPassword("t4l29165")
+                .oldPassword("wti94059")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePassword);
@@ -179,7 +182,7 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        UserLoginProjection login = customerService.login("dalia.buckridge@gmail.com", "tb8y6430");
+        UserLoginProjection login = customerService.login("elisabeth.hills@gmail.com", "wti94059");
         //UserLoginProjection login = customerService.login("crystal.wunsch@gmail.com", "t4l29165");
     }
 

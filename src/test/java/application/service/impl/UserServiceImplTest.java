@@ -143,7 +143,7 @@ class UserServiceImplTest {
         given(authHolder.getTokenName()).willReturn(email);
         given(repository.findById(1)).willReturn(Optional.of(users));
         given(passwordEncode.isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getNewPassword())).willReturn(true);
+                ,userChangePassword.getOldPassword())).willReturn(true);
         given(passwordEncode.encode(userChangePassword.getNewPassword())).willReturn(newPassword);
         given(repository.updatePassword(email,newPassword)).willReturn(1);
 
@@ -153,7 +153,7 @@ class UserServiceImplTest {
         verify(repository).findById(1);
         verify(passwordEncode).encode(userChangePassword.getNewPassword());
         verify(passwordEncode).isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getNewPassword());
+                ,userChangePassword.getOldPassword());
         verify(authHolder).getTokenId();
         verify(authHolder).getTokenName();
         verify(repository).updatePassword(email,newPassword);
@@ -191,7 +191,7 @@ class UserServiceImplTest {
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(users));
         given(passwordEncode.isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getNewPassword())).willReturn(false);
+                ,userChangePassword.getOldPassword())).willReturn(false);
 
 
         assertThatThrownBy(() -> underTest.updatePassword(userChangePassword))

@@ -41,6 +41,9 @@ public class Duty extends BaseEntity<Integer> {
     @Builder.Default
     private Boolean selectable=false;
 
+    @ManyToMany(mappedBy = "duties",fetch = FetchType.LAZY)
+    private Set<Expert> experts = new HashSet<>();
+
     @PrePersist
     @PreUpdate
     private void validator() {

@@ -39,7 +39,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         if (orderSubmission != null) {
             Optional<Duty> duty = dutyService.findById(orderSubmission.getDutyId());
             if (duty.isPresent() && duty.get().getSelectable()) {
-                if (duty.get().getBasePrice() <= orderSubmission.getPriceOrder()) {
+                if (duty.get().getBasePrice()!=null && duty.get().getBasePrice() <= orderSubmission.getPriceOrder()) {
                     Order order = Order.builder()
                             .customer(customer.get())
                             .description(orderSubmission.getDescription())

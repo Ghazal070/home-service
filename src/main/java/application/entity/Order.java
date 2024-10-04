@@ -3,6 +3,7 @@ package application.entity;
 
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
+import application.entity.users.Expert;
 import application.entity.users.Users;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -48,6 +49,9 @@ public class Order extends BaseEntity<Integer> {
     @ManyToOne
     @NotNull
     private Customer customer;
+
+    @ManyToOne
+    private Expert expert;
 
     @ManyToOne
     @NotNull

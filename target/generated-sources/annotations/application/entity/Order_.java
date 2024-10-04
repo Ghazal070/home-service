@@ -2,6 +2,7 @@ package application.entity;
 
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
+import application.entity.users.Expert;
 import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SetAttribute;
@@ -15,6 +16,7 @@ public abstract class Order_ extends application.entity.BaseEntity_ {
 
 	public static final String OFFERS = "offers";
 	public static final String PRICE_ORDER = "priceOrder";
+	public static final String EXPERT = "expert";
 	public static final String ADDRESS = "address";
 	public static final String DATE_TIME_ORDER = "dateTimeOrder";
 	public static final String DESCRIPTION = "description";
@@ -32,6 +34,11 @@ public abstract class Order_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Order#priceOrder
 	 **/
 	public static volatile SingularAttribute<Order, Integer> priceOrder;
+	
+	/**
+	 * @see application.entity.Order#expert
+	 **/
+	public static volatile SingularAttribute<Order, Expert> expert;
 	
 	/**
 	 * @see application.entity.Order#address

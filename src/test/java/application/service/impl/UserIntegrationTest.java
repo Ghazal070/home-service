@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,9 +76,13 @@ public class UserIntegrationTest {
         assertThat(updatedLoginUser).isNotNull();
         assertThat(updatedLoginUser.getProfile().getEmail()).isEqualTo(userSignupRequest.getEmail());
 
+        List<Duty> selectableDuties = dutyService.getSelectableDuties();
+
+        assertThat(selectableDuties).allMatch(a->a.getSelectable().equals(true));
+
 
         OrderSubmission orderSubmission = OrderSubmission.builder()
-                .dutyId(209)
+                .dutyId(283)
                 .priceOrder(900_000)
                 .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                 .address(faker.address().streetAddress())
