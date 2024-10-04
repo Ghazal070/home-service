@@ -14,5 +14,7 @@ public interface CustomerService extends UserService<Customer>{
     Optional<Customer> isCustomerAuthenticated();
     Set<Offer> getOffersForOrder(Integer orderId);
     Boolean chooseExpertForOrder(Integer offerId);
+    Boolean orderStarted(Integer offerId);
+    Boolean orderDone(Integer offerId);
 
 }

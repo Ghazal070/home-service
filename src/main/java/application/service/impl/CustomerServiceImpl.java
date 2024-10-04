@@ -13,6 +13,7 @@ import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,8 +76,39 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
             Order order = offer.getOrder();
             if (order.getOrderStatus().equals(OrderStatus.ExpertChooseWanting)){
                 order.setOrderStatus(OrderStatus.ComingToLocationWanting);
+                order.setExpert(offer.getExpert());
+                orderService.update(order);
                 return true;
             }else throw new ValidationException("Order status is not ExpertChooseWanting");
         }else throw new ValidationException("Offer is null");
+    }
+
+    @Override
+    public Boolean orderStarted(Integer offerId) {
+        Optional<Offer> optionalOffer = offerService.findById(offerId);
+        if (optionalOffer.isPresent()){
+            Offer offer = optionalOffer.get();
+            Order order = offer.getOrder();
+            if (order.getOrderStatus().equals(OrderStatus.ComingToLocationWanting)){
+                if (LocalDateTime.now().isAfter(offer.getDateTimeStartWork())){
+                    order.setOrderStatus(OrderStatus.Started);
+                    orderService.update(order);
+                    return true;
+                }else throw new ValidationException("DateTime is not After DateTimeStartWork offer");
+            }else throw new ValidationException("Order status is not ComingToLocationWanting");
+        }else throw new ValidationException("Order is null");
+    }
+    @Override
+    public Boolean orderDone(Integer offerId) {
+        Optional<Offer> optionalOffer = offerService.findById(offerId);
+        if (optionalOffer.isPresent()){
+            Offer offer = optionalOffer.get();
+            Order order = offer.getOrder();
+            if (order.getOrderStatus().equals(OrderStatus.Started)){
+                    order.setOrderStatus(OrderStatus.Done);
+                    orderService.update(order);
+                    return true;
+            }else throw new ValidationException("Order status is not ComingToLocationWanting");
+        }else throw new ValidationException("Order is null");
     }
 }

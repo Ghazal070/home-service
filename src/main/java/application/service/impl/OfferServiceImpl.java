@@ -24,8 +24,5 @@ public class OfferServiceImpl extends BaseEntityServiceImpl<OfferRepository, Off
         return repository.getOfferByCustomerIdOrderByPriceOrder(customerId,orderId);
     }
 
-    @Override
-    public Offer updateByOrderStatus(String orderStatus, Integer offerId) {
-        return repository.updateByOrderStatus(orderStatus,offerId);
-    }
+
 }
