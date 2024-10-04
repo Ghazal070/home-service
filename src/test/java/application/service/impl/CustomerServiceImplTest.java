@@ -7,6 +7,7 @@ import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.repository.CustomerRepository;
 import application.service.DutyService;
+import application.service.OfferService;
 import application.service.OrderService;
 import application.service.PasswordEncode;
 import application.util.AuthHolder;
@@ -51,6 +52,8 @@ class CustomerServiceImplTest {
 
     @Mock
     private PasswordEncode passwordEncode;
+    @Mock
+    private OfferService offerService;
 
     @InjectMocks
     private CustomerServiceImpl underTest;
@@ -59,7 +62,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncode, dutyService, orderService);
+                passwordEncode, dutyService, orderService, offerService);
     }
 
     @Test

@@ -2,31 +2,32 @@ package application.service.impl;
 
 import application.dto.OrderSubmission;
 import application.entity.Duty;
+import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.repository.CustomerRepository;
-import application.service.CustomerService;
-import application.service.DutyService;
-import application.service.OrderService;
-import application.service.PasswordEncode;
+import application.service.*;
 import application.util.AuthHolder;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Customer> implements CustomerService {
 
     private final DutyService dutyService;
     private final OrderService orderService;
+    private final OfferService offerService;
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, OrderService orderService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, OrderService orderService, OfferService offerService) {
         super(validator, repository, authHolder, passwordEncode);
         this.dutyService = dutyService;
         this.orderService = orderService;
+        this.offerService = offerService;
     }
 
     @Override
@@ -61,4 +62,21 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         return repository.findById(customerId);
     }
 
+    @Override
+    public Set<Offer> getOffersForOrder(Integer orderId) {
+        return offerService.getOfferByCustomerIdOrderByPriceOrder(authHolder.getTokenId(), orderId);
+    }
+
+    @Override
+    public Boolean chooseExpertForOrder(Integer offerId) {
+        Optional<Offer> optionalOffer = offerService.findById(offerId);
+        if (optionalOffer.isPresent()){
+            Offer offer = optionalOffer.get();
+            Order order = offer.getOrder();
+            if (order.getOrderStatus().equals(OrderStatus.ExpertChooseWanting)){
+                order.setOrderStatus(OrderStatus.ComingToLocationWanting);
+                return true;
+            }else throw new ValidationException("Order status is not ExpertChooseWanting");
+        }else throw new ValidationException("Offer is null");
+    }
 }
