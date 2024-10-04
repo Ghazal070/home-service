@@ -117,7 +117,7 @@ class ExpertServiceImplTest {
         assertEquals(OrderStatus.ExpertChooseWanting, order.getOrderStatus());
         verify(orderService).update(order);
     }
-
+//todo Package test
     @Test
     public void testSendOfferOrderNotFound() {
         OfferCreation offerCreation = OfferCreation.builder()

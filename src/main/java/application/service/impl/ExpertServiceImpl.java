@@ -46,7 +46,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
         Optional<Order> order = orderService.findById(offerCreation.getOrderId());
         if (order.isPresent()){
             Set<Order> orderList = orderService.getOrdersForExpert(authHolder.getTokenId());
-            Boolean existOrderInList = false;
+            boolean existOrderInList = false;
             for (Order orderTemp:orderList) {
                 if (order.get().equals(orderTemp)){
                     existOrderInList=true;

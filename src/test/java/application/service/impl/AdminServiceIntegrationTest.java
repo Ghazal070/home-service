@@ -66,7 +66,7 @@ public class AdminServiceIntegrationTest {
         Duty duty = adminService.createDuty(
                 DutyCreation.builder()
                         .title(title)
-                        .parentId(276)
+                        .parentId(298)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                         .description(title + "---" + faker.lorem().characters(5, 20))
                         .selectable(true)

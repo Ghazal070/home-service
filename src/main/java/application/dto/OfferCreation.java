@@ -34,4 +34,6 @@ public class OfferCreation {
     @Min(value = 1 , message = "Min days for days working is 1")
     @NotNull
     private Integer lengthDays;
+
+    //OfferCreationDTO
 }
