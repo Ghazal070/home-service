@@ -108,7 +108,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
                     order.setOrderStatus(OrderStatus.Done);
                     orderService.update(order);
                     return true;
-            }else throw new ValidationException("Order status is not ComingToLocationWanting");
+            }else throw new ValidationException("Order status is not Started");
         }else throw new ValidationException("Order is null");
     }
 }

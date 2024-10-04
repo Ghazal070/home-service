@@ -2,9 +2,11 @@ package application.service.impl;
 
 import application.dto.OrderSubmission;
 import application.entity.Duty;
+import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
+import application.entity.users.Expert;
 import application.repository.CustomerRepository;
 import application.service.DutyService;
 import application.service.OfferService;
@@ -22,7 +24,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -185,5 +189,118 @@ class CustomerServiceImplTest {
         Optional<Customer> actual = underTest.isCustomerAuthenticated();
 
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getOffersForOrder() {
+        Integer orderId = 1;
+        Integer customerId = 100;
+        Offer offer1 = Offer.builder().id(1).build();
+        Offer offer2 = Offer.builder().id(2).build();
+        Set<Offer> offers = Set.of(offer1, offer2);
+
+        given(authHolder.getTokenId()).willReturn(customerId);
+        given(offerService.getOfferByCustomerIdOrderByPriceOrder(customerId, orderId)).willReturn(offers);
+
+
+        Set<Offer> actualOffers = underTest.getOffersForOrder(orderId);
+        assertThat(actualOffers).isEqualTo(offers);
+    }
+    @Test
+    void chooseExpertForOrderSuccessfully() {
+        Integer offerId = 1;
+        Offer offer = Offer.builder().id(offerId).expert(Expert.builder().id(200).build()).build();
+        Order order = Order.builder().id(1).orderStatus(OrderStatus.ExpertChooseWanting).build();
+        offer.setOrder(order);
+
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+        given(orderService.update(any(Order.class))).willReturn(order);
+
+
+        Boolean result = underTest.chooseExpertForOrder(offerId);
+        assertTrue(result);
+        assertEquals(OrderStatus.ComingToLocationWanting, order.getOrderStatus());
+        assertEquals(offer.getExpert(), order.getExpert());
+    }
+
+    @Test
+    void chooseExpertForOrderOrderStatusNotExpertChooseWanting() {
+
+        Integer offerId = 1;
+        Offer offer = Offer.builder().id(offerId).build();
+        Order order = Order.builder().id(1).orderStatus(OrderStatus.Started).build();
+        offer.setOrder(order);
+
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+
+        assertThatThrownBy(() -> underTest.chooseExpertForOrder(offerId))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Order status is not ExpertChooseWanting");
+    }
+    @Test
+    void orderStartedSuccessfully() {
+
+        Integer offerId = 1;
+        Offer offer = Offer.builder().id(offerId).dateTimeStartWork(LocalDateTime.now().minusDays(1)).build();
+        Order order = Order.builder().id(1).orderStatus(OrderStatus.ComingToLocationWanting).build();
+        offer.setOrder(order);
+
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+        given(orderService.update(any(Order.class))).willReturn(order);
+
+
+        Boolean result = underTest.orderStarted(offerId);
+        assertTrue(result);
+        assertEquals(OrderStatus.Started, order.getOrderStatus());
+    }
+
+    @Test
+    void orderStartedDateTimeNotAfterStartWork() {
+
+        Integer offerId = 1;
+        Offer offer = Offer.builder().id(offerId).dateTimeStartWork(LocalDateTime.now().plusDays(1)).build();
+        Order order = Order.builder().id(1).orderStatus(OrderStatus.ComingToLocationWanting).build();
+        offer.setOrder(order);
+
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+
+        assertThatThrownBy(() -> underTest.orderStarted(offerId))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("DateTime is not After DateTimeStartWork offer");
+    }
+    @Test
+    void orderDoneSuccessfully() {
+
+        Integer offerId = 1;
+        Order order = Order.builder()
+                .id(1)
+                .orderStatus(OrderStatus.Started)
+                .build();
+        Offer offer = Offer.builder().id(offerId).order(order).build();
+
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+        given(orderService.update(any(Order.class))).willReturn(order);
+
+
+        Boolean result = underTest.orderDone(offerId);
+
+        assertTrue(result);
+        assertEquals(OrderStatus.Done, order.getOrderStatus());
+    }
+
+    @Test
+    void orderDoneStatusNotStarted() {
+        Integer offerId = 1;
+        Order order = Order.builder()
+                .id(1)
+                .orderStatus(OrderStatus.ComingToLocationWanting)
+                .build();
+        Offer offer = Offer.builder().id(offerId).order(order).build();
+        given(offerService.findById(offerId)).willReturn(Optional.of(offer));
+
+
+        assertThatThrownBy(() -> underTest.orderDone(offerId))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Order status is not Started");
     }
 }
