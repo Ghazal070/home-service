@@ -5,11 +5,10 @@ import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
 import application.exception.ValidationException;
 import application.repository.UserRepository;
-import application.service.PasswordEncode;
+import application.service.PasswordEncodeService;
 import application.service.UserService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
-import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,12 +21,12 @@ import java.util.Optional;
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
-    protected final PasswordEncode passwordEncode;
+    protected final PasswordEncodeService passwordEncodeService;
 
-    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncode passwordEncode) {
+    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService) {
         super(validator, repository);
         this.authHolder = authHolder;
-        this.passwordEncode = passwordEncode;
+        this.passwordEncodeService = passwordEncodeService;
     }
 
     public void convertByteToImage(Byte[] data, String firstName) {
@@ -75,8 +74,8 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             Optional<T> user = findById(authHolder.getTokenId());
             if (user.isPresent()) {
                 String encodePassword =oldPassword;
-                if (passwordEncode.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
-                    String encode = passwordEncode.encode(newPassword);
+                if (passwordEncodeService.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
+                    String encode = passwordEncodeService.encode(newPassword);
                     int repoResponse = repository.updatePassword(authHolder.getTokenName(), encode);
                     return repoResponse > 0;
                 } else throw new ValidationException("old password is not correct");

@@ -11,12 +11,11 @@ import application.repository.ExpertRepository;
 import application.service.ExpertService;
 import application.service.OfferService;
 import application.service.OrderService;
-import application.service.PasswordEncode;
+import application.service.PasswordEncodeService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,8 +24,8 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
 
     private final OrderService orderService;
     private final OfferService offerService;
-    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, OrderService orderService, OfferService offerService) {
-        super(validator, repository, authHolder, passwordEncode);
+    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, OrderService orderService, OfferService offerService) {
+        super(validator, repository, authHolder, passwordEncodeService);
         this.orderService = orderService;
         this.offerService = offerService;
     }

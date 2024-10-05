@@ -8,7 +8,7 @@ import application.entity.users.userFactory.CustomerFactory;
 import application.entity.users.userFactory.ExpertFactory;
 import application.service.CustomerService;
 import application.service.ExpertService;
-import application.service.PasswordEncode;
+import application.service.PasswordEncodeService;
 import application.service.SignupService;
 import application.util.AuthHolder;
 import jakarta.validation.ValidationException;
@@ -19,15 +19,15 @@ public class SignupServiceImpl implements SignupService {
 
     private final ExpertService expertService;
     private final CustomerService customerService;
-    private final PasswordEncode passwordEncode;
+    private final PasswordEncodeService passwordEncodeService;
     private final AuthHolder authHolder;
     private final ExpertFactory expertFactory;
     private final CustomerFactory customerFactory;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncode passwordEncode, AuthHolder authHolder, ExpertFactory expertFactory, CustomerFactory customerFactory) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncodeService passwordEncodeService, AuthHolder authHolder, ExpertFactory expertFactory, CustomerFactory customerFactory) {
         this.expertService = expertService;
         this.customerService = customerService;
-        this.passwordEncode = passwordEncode;
+        this.passwordEncodeService = passwordEncodeService;
         this.authHolder = authHolder;
         this.expertFactory = expertFactory;
         this.customerFactory = customerFactory;
@@ -44,7 +44,7 @@ public class SignupServiceImpl implements SignupService {
                     throw new ValidationException("Email must be unique");
                 }
                 userSignupRequest.setPassword(
-                        passwordEncode.encode(userSignupRequest.getPassword())
+                        passwordEncodeService.encode(userSignupRequest.getPassword())
                 );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequest);
                 expert = expertService.save(expert);
@@ -57,7 +57,7 @@ public class SignupServiceImpl implements SignupService {
                     throw new ValidationException("Email must be unique");
                 }
                 userSignupRequest.setPassword(
-                        passwordEncode.encode(userSignupRequest.getPassword())
+                        passwordEncodeService.encode(userSignupRequest.getPassword())
                 );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequest);
                 customer = customerService.save(customer);

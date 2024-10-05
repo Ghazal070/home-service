@@ -36,9 +36,9 @@ public class HomeServiceApp {
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
 
-        //signupCustomerTestMethod(customerService, signupService);
+        signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
-        loginTestMethod(customerService);
+        //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
         //adminCreateDutyFirstTime(adminService);
         //adminCreateHouseholdAppliances(faker, adminService);
@@ -53,7 +53,7 @@ public class HomeServiceApp {
         //adminService.removeDutyFromExpert(271,283);
         //dutyService.getSelectableDuties().forEach(System.out::println);
         //orderSubmitTest(faker, customerService);
-        orderService.getOrdersForExpert(293).forEach(System.out::println);
+        //orderService.getOrdersForExpert(293).forEach(System.out::println);
 
 
     }

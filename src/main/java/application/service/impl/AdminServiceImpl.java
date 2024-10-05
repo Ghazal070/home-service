@@ -9,19 +9,15 @@ import application.service.DutyService;
 import application.service.ExpertService;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import application.repository.AdminRepository;
 import application.service.AdminService;
-import application.service.PasswordEncode;
+import application.service.PasswordEncodeService;
 import application.util.AuthHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
-
-import static application.entity.Order_.duty;
 
 @Service
 public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
@@ -31,8 +27,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     private final DutyService dutyService;
     private final ExpertService expertService;
 
-    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, ExpertService expertService) {
-        super(validator, repository, authHolder, passwordEncode);
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, ExpertService expertService) {
+        super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.expertService = expertService;
     }

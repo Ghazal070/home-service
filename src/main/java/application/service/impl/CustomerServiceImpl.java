@@ -24,8 +24,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final OrderService orderService;
     private final OfferService offerService;
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncode passwordEncode, DutyService dutyService, OrderService orderService, OfferService offerService) {
-        super(validator, repository, authHolder, passwordEncode);
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService) {
+        super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.orderService = orderService;
         this.offerService = offerService;
