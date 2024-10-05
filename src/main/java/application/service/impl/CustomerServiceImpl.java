@@ -37,7 +37,6 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         if (customer.isEmpty()) {
             throw new ValidationException("Customer must be logged in to view duties.");
         }
-        //done get id for duty in dto
         if (orderSubmission != null) {
             Optional<Duty> duty = dutyService.findById(orderSubmission.getDutyId());
             if (duty.isPresent() && duty.get().getSelectable()) {

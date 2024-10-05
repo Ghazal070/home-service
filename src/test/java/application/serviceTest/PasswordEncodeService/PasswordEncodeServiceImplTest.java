@@ -15,7 +15,7 @@ class PasswordEncodeServiceImplTest {
     private PasswordEncodeServiceImpl underTest;
 
     @Test
-    void encode() {
+    public void testEncode() {
         String password = "ghazal";
 
         String actual = underTest.encode(password);
@@ -25,7 +25,7 @@ class PasswordEncodeServiceImplTest {
     }
 
     @Test
-    void isEqualEncodeDecodePass() {
+    public void testIsEqualEncodeDecodePass() {
         String password = "ghazal";
         String encodePassword = underTest.encode(password);
 
@@ -34,7 +34,7 @@ class PasswordEncodeServiceImplTest {
         assertTrue(actual);
     }
     @Test
-    void isEqualEncodeDecodePass_whenWrongPassword() {
+    public void testIsEqualEncodeDecodePass_whenWrongPassword() {
         String password = "ghazal";
         String encodedPassword = underTest.encode(password);
 

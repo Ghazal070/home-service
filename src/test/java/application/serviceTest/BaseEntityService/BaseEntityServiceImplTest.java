@@ -43,7 +43,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void saveValidEntity() {
+    public void testSaveValidEntity() {
         Duty duty = Duty.builder().id(100).title("WashDishes").build();
         //when(repository.save(duty)).thenReturn(duty);
         given(repository.save(duty)).willReturn(duty);
@@ -55,7 +55,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void dontSaveNotValidEntity() {
+    public void testDontSaveNotValidEntity() {
         Duty duty = Duty.builder().id(100).title(null).build();
 
         assertThatThrownBy(() -> underTest.save(duty))
@@ -64,7 +64,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void updateValidEntity() {
+    public void testUpdateValidEntity() {
         Duty duty = Duty.builder().id(100).title("Wash Dishes").basePrice(1_000).build();
         given(repository.save(duty)).willReturn(duty);
         assertEquals(duty, underTest.save(duty));
@@ -72,7 +72,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void dontUpdateNotValidEntity() {
+    public void testDontUpdateNotValidEntity() {
         Duty duty = Duty.builder().id(100).basePrice(2_000).build();
 
         assertThatThrownBy(() -> underTest.save(duty))
@@ -81,7 +81,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void deleteByIdValidId() {
+    public void testDeleteByIdValidId() {
         given(repository.existsById(1)).willReturn(true);
 
         underTest.deleteById(1);
@@ -89,7 +89,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void deleteByIdDontExist() {
+    public void testDeleteByIdDontExist() {
         given(repository.existsById(1)).willReturn(false);
 
         assertThatThrownBy(() -> underTest.deleteById(1))
@@ -97,14 +97,14 @@ class BaseEntityServiceImplTest {
                 .hasMessageContaining("This id does not exist");
     }
     @Test
-    void existsByIdNullId() {
+    public void testExistsByIdNullId() {
         assertThatThrownBy(() -> underTest.existsById(null))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Id must not be null");
     }
 
     @Test
-    void existsByIdValidId() {
+    public void testExistsByIdValidId() {
         given(repository.existsById(1)).willReturn(true);
 
         assertTrue(underTest.existsById(1));
@@ -114,7 +114,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void existsByIdNonExistingId() {
+    public void testExistsByIdNonExistingId() {
         given(repository.existsById(1)).willReturn(false);
 
         assertFalse(underTest.existsById(1));
@@ -124,7 +124,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void findByIdExistId() {
+    public void testFindByIdExistId() {
         Optional<Duty> duty = Optional.ofNullable(Duty.builder().id(100).title("Wash Dishes").basePrice(1_000).build());
         given(repository.findById(100)).willReturn(duty);
         Optional<Duty> underTestById = underTest.findById(100);
@@ -136,7 +136,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void findByNotExistId() {
+    public void testFindByNotExistId() {
         Optional<Duty> duty = Optional.ofNullable(Duty.builder().id(100).title("Wash Dishes").basePrice(1_000).build());
         given(repository.findById(100)).willReturn(null);
         assertNull(underTest.findById(100));
@@ -144,7 +144,7 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    public void testFindAll() {
         List<Duty> duties = new ArrayList<>();
         Duty dutyFirst = Duty.builder().id(100).title("Washing_1").build();
         Duty dutySecond = Duty.builder().id(101).title("Washing_2").build();
@@ -163,12 +163,12 @@ class BaseEntityServiceImplTest {
     }
 
     @Test
-    public void validateValidEntity() {
+    public void testValidateValidEntity() {
         Duty duty = Duty.builder().id(100).title("Washing_1").build();
         assertDoesNotThrow(() -> underTest.validate(duty));
     }
     @Test
-    void validateInvalidEntity() {
+    public void testValidateInvalidEntity() {
         Duty invalidDuty = Duty.builder().id(101).title(null).build();
         assertThatThrownBy(() -> underTest.validate(invalidDuty))
                 .isInstanceOf(ValidationException.class)

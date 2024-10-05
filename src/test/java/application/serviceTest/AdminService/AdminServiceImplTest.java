@@ -60,7 +60,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void createDutyWithoutParentSuccessfully() {
+    public void testCreateDutyWithoutParentSuccessfully() {
         DutyCreation dutyCreation = DutyCreation.builder()
                 .title("Wash Dishes").basePrice(1_000).build();
         given(dutyService.existsByTitle(dutyCreation.getTitle())).willReturn(false);
@@ -75,7 +75,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void createDutyWithoutParentDuplicateTitle() {
+    public void testCreateDutyWithoutParentDuplicateTitle() {
         DutyCreation dutyCreation = DutyCreation.builder()
                 .title("Wash Dishes").basePrice(1_000).build();
         given(dutyService.existsByTitle(dutyCreation.getTitle())).willReturn(true);
@@ -88,7 +88,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void createDutyWithParentSuccessfully() {
+    public void testCreateDutyWithParentSuccessfully() {
         DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
         Optional<Duty> parent = Optional.of(Duty.builder().id(100).build());
@@ -105,7 +105,7 @@ class AdminServiceImplTest {
     }
 //todo add test first method
     @Test
-    void createDutyWithParentDuplicateTitle() {
+    public void testCreateDutyWithParentDuplicateTitle() {
         DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
         Optional<Duty> parent = Optional.of(Duty.builder().id(100).build());
@@ -121,7 +121,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void createDutyWithParentNotFoundParent() {
+    public void testCreateDutyWithParentNotFoundParent() {
         DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
         given(dutyService.findById(dutyCreation.getParentId())).willReturn(Optional.empty());
@@ -136,7 +136,7 @@ class AdminServiceImplTest {
 
 
     @Test
-    void updateExpertNewStatusExistExpert() {
+    public void testUpdateExpertNewStatusExistExpert() {
         Optional<Expert> expert = Optional.ofNullable(Expert.builder().id(100).expertStatus(ExpertStatus.New).build());
         given(expertService.findById(100)).willReturn(expert);
         given(expertService.update(expert.get())).willReturn(expert.get());
@@ -149,7 +149,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void updateExpertNotNewStatusExistExpert() {
+    public void testUpdateExpertNotNewStatusExistExpert() {
         Optional<Expert> expert = Optional.ofNullable(Expert.builder().id(100).expertStatus(ExpertStatus.AcceptWaiting).build());
         given(expertService.findById(100)).willReturn(expert);
 
@@ -160,7 +160,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void updateExpertNotExistExpert() {
+    public void testUpdateExpertNotExistExpert() {
         Optional<Expert> expert = Optional.ofNullable(Expert.builder().id(100).expertStatus(ExpertStatus.New).build());
         given(expertService.findById(100)).willReturn(Optional.empty());
 
@@ -172,7 +172,7 @@ class AdminServiceImplTest {
 
 
     @Test
-    void addDutyToExpertSuccessfully() {
+    public void testAddDutyToExpertSuccessfully() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).duties(new HashSet<>()).build()
         );
@@ -195,7 +195,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void addDutyToExpertNotFoundDutyOrExpert() {
+    public void testAddDutyToExpertNotFoundDutyOrExpert() {
         given(expertService.findById(100)).willReturn(Optional.empty());
         given(dutyService.findById(101)).willReturn(Optional.empty());
 
@@ -208,7 +208,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void addDutyToExpertNotSelectableDuty() {
+    public void testAddDutyToExpertNotSelectableDuty() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).duties(new HashSet<>()).build()
         );
@@ -226,7 +226,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void addDutyToExpertNotAcceptExpert() {
+    public void testAddDutyToExpertNotAcceptExpert() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.AcceptWaiting).duties(new HashSet<>()).build()
         );
@@ -245,7 +245,7 @@ class AdminServiceImplTest {
 
 
     @Test
-    void removeDutyFromExpertSuccessfully() {
+    public void testRemoveDutyFromExpertSuccessfully() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).duties(new HashSet<>()).build()
         );
@@ -265,7 +265,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void removeDutyFromExpertNotFoundExpert() {
+    public void testRemoveDutyFromExpertNotFoundExpert() {
         Optional<Duty> duty = Optional.ofNullable(Duty.builder().id(101).title("Wash Dishes").selectable(true).build());
         given(expertService.findById(100)).willReturn(Optional.empty());
 
@@ -278,7 +278,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void removeDutyFromExpertNotFoundDuty() {
+    public void testRemoveDutyFromExpertNotFoundDuty() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).duties(new HashSet<>()).build()
         );
@@ -294,7 +294,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void removeDutyFromExpertNotExistDutyInSetExpert() {
+    public void testRemoveDutyFromExpertNotExistDutyInSetExpert() {
         Optional<Expert> expert = Optional.ofNullable(
                 Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).duties(new HashSet<>()).build()
         );

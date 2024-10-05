@@ -49,7 +49,7 @@ public class UserIntegrationTest {
     }
 
     @Test
-    void signupLoginUpdatePassword() throws Exception {
+    public void testSignupLoginUpdatePassword() throws Exception {
         String originalPassword = "pass1234";
         UserSignupRequest userSignupRequest = createSignupRequest("Customer", originalPassword);
 

@@ -64,7 +64,7 @@ class SignupServiceImplTest {
     }
 
     @Test
-    void signupCustomerSuccessfully() {
+    public void testSignupCustomerSuccessfully() {
         UserSignupRequest userSignupRequest = null;
         try {
             userSignupRequest = UserSignupRequest.builder().email("customer@example.com")
@@ -97,7 +97,7 @@ class SignupServiceImplTest {
     }
 
     @Test
-    void signupExpertSuccessfully() {
+    public void testSignupExpertSuccessfully() {
         //todo email @
         UserSignupRequest userSignupRequest = null;
         try {
@@ -131,7 +131,7 @@ class SignupServiceImplTest {
     }
 
     @Test
-    void signupInvalidRoleRole() {
+    public void testSignupInvalidRoleRole() {
         UserSignupRequest userSignupRequest;
         try {
             userSignupRequest = UserSignupRequest.builder().email("expert@example.com")
@@ -150,7 +150,7 @@ class SignupServiceImplTest {
     }
 
     @Test
-    void signupDuplicateEmail() {
+    public void testSignupDuplicateEmail() {
         UserSignupRequest userSignupRequest;
         try {
             userSignupRequest = UserSignupRequest.builder().email("expert@example.com")

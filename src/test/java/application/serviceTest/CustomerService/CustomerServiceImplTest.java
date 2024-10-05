@@ -71,7 +71,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void orderSubmitSuccessfully() {
+    public void orderSubmitSuccessfully() {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         Duty spyDuty = spy(duty);
@@ -90,7 +90,7 @@ class CustomerServiceImplTest {
         assertEquals(OrderStatus.ExpertOfferWanting,order.getOrderStatus());
     }
     @Test
-    void orderSubmitIsNull() {
+    public void orderSubmitIsNull() {
         Customer customer = Customer.builder().id(100).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
@@ -100,7 +100,7 @@ class CustomerServiceImplTest {
                 .hasMessageContaining("OrderSubmission is null");
     }
     @Test
-    void orderSubmitNotAuthenticated() {
+    public void orderSubmitNotAuthenticated() {
         Customer customer = Customer.builder().id(100).build();
         OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
@@ -111,7 +111,7 @@ class CustomerServiceImplTest {
                 .hasMessageContaining("Customer must be logged in to view duties.");
     }
     @Test
-    void orderSubmitNotFoundDuty() {
+    public void orderSubmitNotFoundDuty() {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
@@ -126,7 +126,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void orderSubmitNotSelectable() {
+    public void orderSubmitNotSelectable() {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = spy(
                 Duty.builder().id(120)
@@ -144,7 +144,7 @@ class CustomerServiceImplTest {
                 .hasMessageContaining("Title duty must be from Duty and be selectable List or auth holder is null");
     }
     @Test
-    void orderSubmitPriceLowerTHanBasePrice() {
+    public void orderSubmitPriceLowerTHanBasePrice() {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         Duty spyDuty = spy(duty);
@@ -162,7 +162,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void isCustomerAuthenticatedSuccessfully() {
+    public void isCustomerAuthenticatedSuccessfully() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
         given(authHolder.getTokenId()).willReturn(customer.get().getId());
         given(repository.findById(100)).willReturn(customer);
@@ -173,7 +173,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void isCustomerAuthenticatedFailedCustomerNotExist() {
+    public void isCustomerAuthenticatedFailedCustomerNotExist() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
         given(authHolder.getTokenId()).willReturn(customer.get().getId());
         given(repository.findById(100)).willReturn(Optional.empty());
@@ -184,7 +184,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void isCustomerAuthenticatedFailedAuthHolderIsNull() {
+    public void isCustomerAuthenticatedFailedAuthHolderIsNull() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
 
         Optional<Customer> actual = underTest.isCustomerAuthenticated();
@@ -193,7 +193,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void getOffersForOrder() {
+    public void getOffersForOrder() {
         Integer orderId = 1;
         Integer customerId = 100;
         Offer offer1 = Offer.builder().id(1).build();
@@ -208,7 +208,7 @@ class CustomerServiceImplTest {
         assertThat(actualOffers).isEqualTo(offers);
     }
     @Test
-    void chooseExpertForOrderSuccessfully() {
+    public void chooseExpertForOrderSuccessfully() {
         Integer offerId = 1;
         Offer offer = Offer.builder().id(offerId).expert(Expert.builder().id(200).build()).build();
         Order order = Order.builder().id(1).orderStatus(OrderStatus.ExpertChooseWanting).build();
@@ -225,7 +225,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void chooseExpertForOrderOrderStatusNotExpertChooseWanting() {
+    public void chooseExpertForOrderOrderStatusNotExpertChooseWanting() {
 
         Integer offerId = 1;
         Offer offer = Offer.builder().id(offerId).build();
@@ -239,7 +239,7 @@ class CustomerServiceImplTest {
                 .hasMessageContaining("Order status is not ExpertChooseWanting");
     }
     @Test
-    void orderStartedSuccessfully() {
+    public void orderStartedSuccessfully() {
 
         Integer offerId = 1;
         Offer offer = Offer.builder().id(offerId).dateTimeStartWork(LocalDateTime.now().minusDays(1)).build();
@@ -256,7 +256,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void orderStartedDateTimeNotAfterStartWork() {
+    public void orderStartedDateTimeNotAfterStartWork() {
 
         Integer offerId = 1;
         Offer offer = Offer.builder().id(offerId).dateTimeStartWork(LocalDateTime.now().plusDays(1)).build();
@@ -270,7 +270,7 @@ class CustomerServiceImplTest {
                 .hasMessageContaining("DateTime is not After DateTimeStartWork offer");
     }
     @Test
-    void orderDoneSuccessfully() {
+    public void orderDoneSuccessfully() {
 
         Integer offerId = 1;
         Order order = Order.builder()
@@ -290,7 +290,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void orderDoneStatusNotStarted() {
+    public void orderDoneStatusNotStarted() {
         Integer offerId = 1;
         Order order = Order.builder()
                 .id(1)

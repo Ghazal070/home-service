@@ -96,5 +96,4 @@ public class Users extends BaseEntity<Integer> {
     public String toString() {
         return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission;
     }
-    //todoMe getter setter in interface for my self after project
 }

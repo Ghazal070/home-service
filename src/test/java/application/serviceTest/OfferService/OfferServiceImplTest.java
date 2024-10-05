@@ -38,7 +38,7 @@ class OfferServiceImplTest {
 
 
     @Test
-    void getOfferByCustomerIdOrderByScoreExpert() {
+    public void testGetOfferByCustomerIdOrderByScoreExpert() {
 
         Integer customerId = 1;
         Integer orderId = 1;
@@ -56,7 +56,7 @@ class OfferServiceImplTest {
     }
 
     @Test
-    void getOfferByCustomerIdOrderByPriceOrder() {
+    public void testGetOfferByCustomerIdOrderByPriceOrder() {
 
         Integer customerId = 1;
         Integer orderId = 1;

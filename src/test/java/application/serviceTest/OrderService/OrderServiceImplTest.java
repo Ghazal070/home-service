@@ -39,7 +39,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    public void getOrdersForExpertSuccessfully() {
+    public void testGetOrdersForExpertSuccessfully() {
         Integer expertId = 1;
         Set<Order> expectedOrders = new HashSet<>();
         expectedOrders.add(new Order());
@@ -54,7 +54,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    public void getOrdersForExpertNoOrders() {
+    public void testGetOrdersForExpertNoOrders() {
         Integer expertId = 1;
         Set<Order> expectedOrders = new HashSet<>();
 

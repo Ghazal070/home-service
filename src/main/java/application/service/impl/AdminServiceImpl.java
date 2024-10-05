@@ -35,8 +35,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Duty createDuty(DutyCreation dutyCreation) {
-        //done parentTitle+title is uniq
-        //done exist duty boolean instead of load duty
         Duty parentDuty = null;
         if (dutyCreation.getParentId() != null) {
             parentDuty = dutyService.findById(dutyCreation.getParentId())
@@ -67,7 +65,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Boolean updateExpertStatus(Integer expertId) {
-            //done only ExpertStatus.Accepted no get all expertStatus
             Optional<Expert> expert = expertService.findById(expertId);
             if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
                 expert.get().setExpertStatus(ExpertStatus.Accepted);
@@ -78,7 +75,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Boolean addDutyToExpert(Integer expertId, Integer dutyId) {
-        //done--- find duty and expert
         Optional<Expert> expert = expertService.findById(expertId);
         Optional<Duty> duty = dutyService.findById(dutyId);
         if (expert.isEmpty() || duty.isEmpty()) {

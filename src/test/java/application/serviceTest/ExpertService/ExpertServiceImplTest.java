@@ -67,7 +67,7 @@ class ExpertServiceImplTest {
 
 
     @Test
-    void havePermissionTrueExpertToServices() {
+    public void testHavePermissionTrueExpertToServices() {
         Expert expert = Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).build();
 
         Boolean actual = underTest.havePermissionExpertToServices(expert);
@@ -77,7 +77,7 @@ class ExpertServiceImplTest {
     }
 
     @Test
-    void havePermissionFalseExpertToServices() {
+    public void testHavePermissionFalseExpertToServices() {
         Expert expert = Expert.builder().id(100).expertStatus(ExpertStatus.New).build();
 
         Boolean actual = underTest.havePermissionExpertToServices(expert);
@@ -111,7 +111,6 @@ class ExpertServiceImplTest {
         assertEquals(OrderStatus.ExpertChooseWanting, order.getOrderStatus());
         verify(orderService).update(order);
     }
-//todo Package test
     @Test
     public void testSendOfferOrderNotFound() {
         OfferCreation offerCreation = OfferCreation.builder()

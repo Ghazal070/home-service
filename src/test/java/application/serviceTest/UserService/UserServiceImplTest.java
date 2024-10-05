@@ -58,7 +58,7 @@ class UserServiceImplTest {
 
 
     @Test
-    void convertByteToImageSuccessfully() throws IOException {
+    void testConvertByteToImageSuccessfully() throws IOException {
         Path imagePath = Path.of("src/test/resources/less300.jpg");
         byte[] imageData = Files.readAllBytes(imagePath);
         Byte[] imageDataWrapper = new Byte[imageData.length];
@@ -77,14 +77,14 @@ class UserServiceImplTest {
     }
 
     @Test
-    void convertByteToImageWithNullData() {
+    void testConvertByteToImageWithNullData() {
         assertThatThrownBy(() -> underTest.convertByteToImage(null, "testUser"))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("image is null");
     }
 
     @Test
-    void convertByteToImageWithEmptyData() {
+    void testConvertByteToImageWithEmptyData() {
         Byte[] emptyData = new Byte[0];
         assertThatThrownBy(() -> underTest.convertByteToImage(emptyData, "testUser"))
                 .isInstanceOf(ValidationException.class)
@@ -93,7 +93,7 @@ class UserServiceImplTest {
 
     //todo png test
     @Test
-    void loginSuccessfully() {
+    void testLoginSuccessfully() {
         String email = "user@example.com";
         String password = "password";
         Profile profile = mock(Profile.class);
@@ -112,7 +112,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void loginFailEmailIsEmpty() {
+    void testLoginFailEmailIsEmpty() {
         String email = "";
         String password = "password";
 
@@ -122,7 +122,7 @@ class UserServiceImplTest {
 
     }
     @Test
-    void loginNotFoundUser() {
+    void testLoginNotFoundUser() {
         String email = "user@example.com";
         String password = "password";
         UserLoginProjection userLoginProjection = mock(UserLoginProjection.class);
@@ -134,7 +134,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordSuccessfully() {
+    void testUpdatePasswordSuccessfully() {
         String email = "user@example.com";
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
@@ -162,7 +162,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordNullUserChangePassword() {
+    void testUpdatePasswordNullUserChangePassword() {
         UserChangePassword userChangePassword = null;
 
         assertThatThrownBy(() -> underTest.updatePassword(userChangePassword))
@@ -171,7 +171,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordNullLoginUser() {
+    void testUpdatePasswordNullLoginUser() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
         UserChangePassword userChangePassword =UserChangePassword.builder().newPassword(newPassword)
@@ -184,7 +184,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordIsEqualEncodeDecodePassFalse() {
+    void testUpdatePasswordIsEqualEncodeDecodePassFalse() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
         UserChangePassword userChangePassword =UserChangePassword.builder().newPassword(newPassword)
@@ -203,7 +203,7 @@ class UserServiceImplTest {
 
 
     @Test
-    void containByUniqField() {
+    void testContainByUniqField() {
         String email = "user@example.com";
         given(repository.containByUniqField(email)).willReturn(true);
 
@@ -213,7 +213,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void NotContainByUniqField() {
+    void testNotContainByUniqField() {
         String email = "user@example.com";
         given(repository.containByUniqField(email)).willReturn(false);
 

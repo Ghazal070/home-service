@@ -38,8 +38,6 @@ public class SignupServiceImpl implements SignupService {
 
         switch (userSignupRequest.getRole()){
             case "Expert": {
-                //done email unique check first in if
-                //done expertFactory from application context
                 if(expertService.containByUniqField(userSignupRequest.getEmail())){
                     throw new ValidationException("Email must be unique");
                 }

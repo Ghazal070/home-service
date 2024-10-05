@@ -22,7 +22,6 @@ public class Comment extends BaseEntity<Integer> {
     @OneToOne
     private Offer offer;
 
-    //done oneToOne score
 
     @Column
     private String content;

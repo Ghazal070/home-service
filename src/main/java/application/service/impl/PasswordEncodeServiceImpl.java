@@ -13,5 +13,4 @@ public class PasswordEncodeServiceImpl implements PasswordEncodeService {
     public Boolean isEqualEncodeDecodePass(String oldPassword,String encodedPassword){
         return oldPassword.equals(encodedPassword);
     }
-    //done simple method check encodePassword= oldPassword
 }

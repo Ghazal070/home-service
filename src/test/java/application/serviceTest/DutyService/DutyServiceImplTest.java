@@ -42,7 +42,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void updateDutyPriceOrDescriptionSuccessFully() {
+    public void testUpdateDutyPriceOrDescriptionSuccessFully() {
         UpdateDuty updateDuty = UpdateDuty.builder().dutyId(100).price(1_000).build();
         Duty duty = Duty.builder().id(100).build();
         given(repository.findById(updateDuty.getDutyId())).willReturn(Optional.of(duty));
@@ -59,7 +59,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void updateDutyPriceOrDescriptionUpdateDutyIsNull() {
+    public void testUpdateDutyPriceOrDescriptionUpdateDutyIsNull() {
         UpdateDuty updateDuty = null;
 
         assertThatThrownBy(() -> underTest.updateDutyPriceOrDescription(updateDuty))
@@ -68,7 +68,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void updateDutyPriceOrDescriptionNotFoundDuty() {
+    public void testUpdateDutyPriceOrDescriptionNotFoundDuty() {
         UpdateDuty updateDuty = UpdateDuty.builder().dutyId(100).price(1_000).build();
         given(repository.findById(updateDuty.getDutyId())).willReturn(Optional.empty());
 
@@ -78,7 +78,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void loadAllDutyWithChildrenSuccessFully() {
+    public void testLoadAllDutyWithChildrenSuccessFully() {
         Duty parentDuty = Duty.builder().id(100).title("parent").parent(null).build();
         Duty childDuty = Duty.builder().id(101).parent(parentDuty).title("child").build();
         List<Duty> duties = List.of(parentDuty, childDuty);
@@ -101,7 +101,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void loadAllDutyWithChildrenFailed() {
+    public void testLoadAllDutyWithChildrenFailed() {
         List<Duty> duties = new ArrayList<>();
         given(repository.loadAllDutyWithChildren()).willReturn(duties);
 
@@ -110,7 +110,7 @@ class DutyServiceImplTest {
         assertThat(actual).isEmpty();
     }
     @Test
-    void containByUniqField() {
+    public void testContainByUniqField() {
         String title = "Wash Dishes";
         Integer parentId =100;
         given(repository.containByUniqField(title,parentId)).willReturn(true);
@@ -121,7 +121,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void NotContainByUniqField() {
+    public void testNotContainByUniqField() {
         String title = "Wash Dishes";
         Integer parentId =100;
         given(repository.containByUniqField(title,parentId)).willReturn(false);
@@ -132,7 +132,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void existsByTitle() {
+    public void testExistsByTitle() {
         String title = "Wash Dishes";
         given(repository.existsByTitle(title)).willReturn(true);
 
@@ -142,7 +142,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void NotExistsByTitle() {
+    public void testNotExistsByTitle() {
         String title = "Wash Dishes";
         given(repository.existsByTitle(title)).willReturn(false);
 
@@ -152,7 +152,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void getSelectableDutiesTrueSuccessfully() {
+    public void testGetSelectableDutiesTrueSuccessfully() {
         Duty parentDuty = Duty.builder().id(100).title("parent").selectable(false).build();
         Duty childDuty = Duty.builder().id(101).parent(parentDuty).selectable(true).build();
         List<Duty> duties = List.of(childDuty);
@@ -168,7 +168,7 @@ class DutyServiceImplTest {
     }
 
     @Test
-    void getSelectableDutiesTrueFailed() {
+    public void testGetSelectableDutiesTrueFailed() {
         List<Duty> duties = new ArrayList<>();
         given(repository.findAllBySelectableTrue()).willReturn(duties);
 

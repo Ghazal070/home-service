@@ -58,7 +58,7 @@ public class AdminServiceIntegrationTest {
     }
 
     @Test
-    void adminTasks() throws IOException {
+    public void testAdminTasks() throws IOException {
         String title = "Wash cloth";
 
         Duty duty = adminService.createDuty(

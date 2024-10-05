@@ -23,8 +23,6 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     @Override
     public Boolean updateDutyPriceOrDescription(UpdateDuty updateDuty) {
         if (updateDuty != null) {
-            //done id not null check in dto
-            //done use optional
             Optional<Duty> duty = repository.findById(updateDuty.getDutyId());
             if (duty.isEmpty()) {
                 throw new ValidationException("Duty with ID " + updateDuty.getDutyId() +" not found");
