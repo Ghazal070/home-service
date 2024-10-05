@@ -1,6 +1,6 @@
 package application.serviceTest.ExpertService;
 
-import application.dto.OfferCreation;
+import application.dto.OfferCreationDto;
 import application.entity.Duty;
 import application.entity.Offer;
 import application.entity.Order;
@@ -89,7 +89,7 @@ class ExpertServiceImplTest {
 
     @Test
     public void testSendOfferSuccess() {
-        OfferCreation offerCreation = OfferCreation.builder()
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
                 .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
@@ -99,13 +99,13 @@ class ExpertServiceImplTest {
         Set<Duty> duties = Set.of(duty);
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         Expert expert = Expert.builder().id(1).duties(duties).build();
-        given(orderService.findById(offerCreation.getOrderId())).willReturn(Optional.of(order));
+        given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
         given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(new Offer());
 
-        Offer savedOffer = underTest.sendOffer(offerCreation);
+        Offer savedOffer = underTest.sendOffer(offerCreationDto);
 
         assertNotNull(savedOffer);
         assertEquals(OrderStatus.ExpertChooseWanting, order.getOrderStatus());
@@ -113,15 +113,15 @@ class ExpertServiceImplTest {
     }
     @Test
     public void testSendOfferOrderNotFound() {
-        OfferCreation offerCreation = OfferCreation.builder()
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
                 .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
-        given(orderService.findById(offerCreation.getOrderId())).willReturn(Optional.empty());
+        given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreation))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Order is null");
 
@@ -129,7 +129,7 @@ class ExpertServiceImplTest {
 
     @Test
     public void testSendOfferOrderNotInList() {
-        OfferCreation offerCreation = OfferCreation.builder()
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
                 .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
@@ -137,18 +137,18 @@ class ExpertServiceImplTest {
                 .build();
         Duty duty = Duty.builder().id(50).basePrice(1_000).build();
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
-        given(orderService.findById(offerCreation.getOrderId())).willReturn(Optional.of(order));
+        given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(orderService.getOrdersForExpert(1)).willReturn(new HashSet<>());
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreation))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("This order is not in list expert order or not waiting");
     }
 
     @Test
     public void testSendOfferBasePriceGreaterThanOffer() {
-        OfferCreation offerCreation = OfferCreation.builder()
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
                 .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
@@ -156,18 +156,18 @@ class ExpertServiceImplTest {
                 .build();
         Duty duty = Duty.builder().id(50).basePrice(8_000).build();
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
-        given(orderService.findById(offerCreation.getOrderId())).willReturn(Optional.of(order));
+        given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreation))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Base price greater than your offer");
     }
 
     @Test
     public void testSendOfferOfferNotSaved() {
-        OfferCreation offerCreation = OfferCreation.builder()
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
                 .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
@@ -177,13 +177,13 @@ class ExpertServiceImplTest {
         Set<Duty> duties = Set.of(duty);
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         Expert expert = Expert.builder().id(1).duties(duties).build();
-        given(orderService.findById(offerCreation.getOrderId())).willReturn(Optional.of(order));
+        given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
         given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(null);
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreation))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Error in saving offer");
     }

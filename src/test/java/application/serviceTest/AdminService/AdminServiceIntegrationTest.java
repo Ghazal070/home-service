@@ -1,8 +1,8 @@
 package application.serviceTest.AdminService;
 
-import application.dto.DutyCreation;
-import application.dto.DutyResponseChildren;
-import application.dto.UpdateDuty;
+import application.dto.DutyCreationDto;
+import application.dto.DutyResponseChildrenDto;
+import application.dto.UpdateDutyDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
@@ -62,7 +62,7 @@ public class AdminServiceIntegrationTest {
         String title = "Wash cloth";
 
         Duty duty = adminService.createDuty(
-                DutyCreation.builder()
+                DutyCreationDto.builder()
                         .title(title)
                         .parentId(298)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
@@ -76,20 +76,20 @@ public class AdminServiceIntegrationTest {
         assertThat(saveDuty.getTitle()).isEqualTo(title);
         assertThat(dutyService.existsById(saveDuty.getId())).isTrue();
 
-        List<DutyResponseChildren> allDutyWithChildren = dutyService.loadAllDutyWithChildren();
+        List<DutyResponseChildrenDto> allDutyWithChildren = dutyService.loadAllDutyWithChildren();
         boolean match = allDutyWithChildren.stream().anyMatch(
                 parent -> parent.getSubDuty().stream().anyMatch(
                         child -> child.getId().equals(saveDuty.getId()))
         );
         assertTrue(match);
 
-        UpdateDuty updateDuty = UpdateDuty.builder()
+        UpdateDutyDto updateDutyDto = UpdateDutyDto.builder()
                 .dutyId(saveDuty.getId())
 //                .price(1_000_000)
                 .description("Wash ### cloth ****")
                 .selectable(true)
                 .build();
-        Boolean updateDutyPriceOrDescription = dutyService.updateDutyPriceOrDescription(updateDuty);
+        Boolean updateDutyPriceOrDescription = dutyService.updateDutyPriceOrDescription(updateDutyDto);
 
         Integer saveDutyId = saveDuty.getId();
         assertTrue(updateDutyPriceOrDescription);

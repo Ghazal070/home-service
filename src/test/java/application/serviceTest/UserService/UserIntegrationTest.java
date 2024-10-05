@@ -1,8 +1,8 @@
 package application.serviceTest.UserService;
 
-import application.dto.OrderSubmission;
-import application.dto.UserChangePassword;
-import application.dto.UserSignupRequest;
+import application.dto.OrderSubmissionDto;
+import application.dto.UserChangePasswordDto;
+import application.dto.UserSignupRequestDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.Duty;
 import application.entity.Order;
@@ -51,50 +51,50 @@ public class UserIntegrationTest {
     @Test
     public void testSignupLoginUpdatePassword() throws Exception {
         String originalPassword = "pass1234";
-        UserSignupRequest userSignupRequest = createSignupRequest("Customer", originalPassword);
+        UserSignupRequestDto userSignupRequestDto = createSignupRequest("Customer", originalPassword);
 
-        Users newUser = signupService.signup(userSignupRequest);
+        Users newUser = signupService.signup(userSignupRequestDto);
         assertThat(newUser).isNotNull();
-        assertThat(newUser.getProfile().getEmail()).isEqualTo(userSignupRequest.getEmail());
+        assertThat(newUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
 
-        UserLoginProjection loginUser = customerService.login(userSignupRequest.getEmail(), originalPassword);
+        UserLoginProjection loginUser = customerService.login(userSignupRequestDto.getEmail(), originalPassword);
         assertThat(loginUser).isNotNull();
-        assertThat(loginUser.getProfile().getEmail()).isEqualTo(userSignupRequest.getEmail());
+        assertThat(loginUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
 
         String newPassword = "PASS5678";
 
-        UserChangePassword userChangePassword = UserChangePassword.builder()
+        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
                 .oldPassword(originalPassword)
                 .newPassword(newPassword)
                 .build();
 
-        Boolean isUpdated = customerService.updatePassword(userChangePassword);
+        Boolean isUpdated = customerService.updatePassword(userChangePasswordDto);
         assertThat(isUpdated).isTrue();
 
-        UserLoginProjection updatedLoginUser = customerService.login(userSignupRequest.getEmail(), newPassword);
+        UserLoginProjection updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
         assertThat(updatedLoginUser).isNotNull();
-        assertThat(updatedLoginUser.getProfile().getEmail()).isEqualTo(userSignupRequest.getEmail());
+        assertThat(updatedLoginUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
 
         List<Duty> selectableDuties = dutyService.getSelectableDuties();
 
         assertThat(selectableDuties).allMatch(a->a.getSelectable().equals(true));
 
 
-        OrderSubmission orderSubmission = OrderSubmission.builder()
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder()
                 .dutyId(299)
                 .priceOrder(900_000)
                 .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                 .address(faker.address().streetAddress())
                 .description("8 --- " + faker.lorem().characters(5, 20))
                 .build();
-        Order order = customerService.orderSubmit(orderSubmission);
+        Order order = customerService.orderSubmit(orderSubmissionDto);
          assertNotNull(order);
-         assertThat(order.getDuty().getId()).isEqualTo(orderSubmission.getDutyId());
+         assertThat(order.getDuty().getId()).isEqualTo(orderSubmissionDto.getDutyId());
 
     }
 
-    private UserSignupRequest createSignupRequest(String role, String password) throws FileNotFoundException {
-        return UserSignupRequest.builder()
+    private UserSignupRequestDto createSignupRequest(String role, String password) throws FileNotFoundException {
+        return UserSignupRequestDto.builder()
                 .firstName(faker.name().firstName())
                 .lastName(faker.name().lastName())
                 .email(faker.internet().emailAddress())

@@ -1,6 +1,6 @@
 package application.serviceTest.AdminService;
 
-import application.dto.DutyCreation;
+import application.dto.DutyCreationDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
@@ -61,14 +61,14 @@ class AdminServiceImplTest {
 
     @Test
     public void testCreateDutyWithoutParentSuccessfully() {
-        DutyCreation dutyCreation = DutyCreation.builder()
+        DutyCreationDto dutyCreationDto = DutyCreationDto.builder()
                 .title("Wash Dishes").basePrice(1_000).build();
-        given(dutyService.existsByTitle(dutyCreation.getTitle())).willReturn(false);
+        given(dutyService.existsByTitle(dutyCreationDto.getTitle())).willReturn(false);
         given(dutyService.save(any(Duty.class))).willReturn(new Duty());
 
-        Duty underTestDuty = underTest.createDuty(dutyCreation);
+        Duty underTestDuty = underTest.createDuty(dutyCreationDto);
 
-        verify(dutyService).existsByTitle(dutyCreation.getTitle());
+        verify(dutyService).existsByTitle(dutyCreationDto.getTitle());
         verify(dutyService).save(any(Duty.class));
         assertNotNull(underTestDuty);
 
@@ -76,61 +76,60 @@ class AdminServiceImplTest {
 
     @Test
     public void testCreateDutyWithoutParentDuplicateTitle() {
-        DutyCreation dutyCreation = DutyCreation.builder()
+        DutyCreationDto dutyCreationDto = DutyCreationDto.builder()
                 .title("Wash Dishes").basePrice(1_000).build();
-        given(dutyService.existsByTitle(dutyCreation.getTitle())).willReturn(true);
+        given(dutyService.existsByTitle(dutyCreationDto.getTitle())).willReturn(true);
 
-        assertThatThrownBy(() -> underTest.createDuty(dutyCreation))
+        assertThatThrownBy(() -> underTest.createDuty(dutyCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title exists for this parent null.");
 
-        verify(dutyService).existsByTitle(dutyCreation.getTitle());
+        verify(dutyService).existsByTitle(dutyCreationDto.getTitle());
     }
 
     @Test
     public void testCreateDutyWithParentSuccessfully() {
-        DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
+        DutyCreationDto dutyCreationDto = DutyCreationDto.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
         Optional<Duty> parent = Optional.of(Duty.builder().id(100).build());
-        given(dutyService.findById(dutyCreation.getParentId())).willReturn(parent);
-        given(dutyService.containByUniqField(dutyCreation.getTitle(), dutyCreation.getParentId())).willReturn(false);
+        given(dutyService.findById(dutyCreationDto.getParentId())).willReturn(parent);
+        given(dutyService.containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId())).willReturn(false);
         given(dutyService.save(any(Duty.class))).willReturn(new Duty());
 
-        Duty underTestDuty = underTest.createDuty(dutyCreation);
+        Duty underTestDuty = underTest.createDuty(dutyCreationDto);
 
-        verify(dutyService).findById(dutyCreation.getParentId());
-        verify(dutyService).containByUniqField(dutyCreation.getTitle(), dutyCreation.getParentId());
+        verify(dutyService).findById(dutyCreationDto.getParentId());
+        verify(dutyService).containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId());
         verify(dutyService).save(any(Duty.class));
         assertNotNull(underTestDuty);
     }
-//todo add test first method
     @Test
     public void testCreateDutyWithParentDuplicateTitle() {
-        DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
+        DutyCreationDto dutyCreationDto = DutyCreationDto.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
         Optional<Duty> parent = Optional.of(Duty.builder().id(100).build());
-        given(dutyService.findById(dutyCreation.getParentId())).willReturn(parent);
-        given(dutyService.containByUniqField(dutyCreation.getTitle(), dutyCreation.getParentId())).willReturn(true);
+        given(dutyService.findById(dutyCreationDto.getParentId())).willReturn(parent);
+        given(dutyService.containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId())).willReturn(true);
 
-        assertThatThrownBy(() -> underTest.createDuty(dutyCreation))
+        assertThatThrownBy(() -> underTest.createDuty(dutyCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title for duty already exists for this parent duty.");
 
-        verify(dutyService).findById(dutyCreation.getParentId());
-        verify(dutyService).containByUniqField(dutyCreation.getTitle(), dutyCreation.getParentId());
+        verify(dutyService).findById(dutyCreationDto.getParentId());
+        verify(dutyService).containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId());
     }
 
     @Test
     public void testCreateDutyWithParentNotFoundParent() {
-        DutyCreation dutyCreation = DutyCreation.builder().parentId(100)
+        DutyCreationDto dutyCreationDto = DutyCreationDto.builder().parentId(100)
                 .title("Wash Dishes").basePrice(1_000).build();
-        given(dutyService.findById(dutyCreation.getParentId())).willReturn(Optional.empty());
+        given(dutyService.findById(dutyCreationDto.getParentId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.createDuty(dutyCreation))
+        assertThatThrownBy(() -> underTest.createDuty(dutyCreationDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("This parent duty does not exist.");
 
-        verify(dutyService).findById(dutyCreation.getParentId());
+        verify(dutyService).findById(dutyCreationDto.getParentId());
 
     }
 

@@ -1,6 +1,6 @@
 package application.service.impl;
 
-import application.dto.UserChangePassword;
+import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
 import application.exception.ValidationException;
@@ -67,10 +67,10 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
-    public Boolean updatePassword(UserChangePassword userChangePassword) {
-        if (userChangePassword != null) {
-            String oldPassword = userChangePassword.getOldPassword();
-            String newPassword = userChangePassword.getNewPassword();
+    public Boolean updatePassword(UserChangePasswordDto userChangePasswordDto) {
+        if (userChangePasswordDto != null) {
+            String oldPassword = userChangePasswordDto.getOldPassword();
+            String newPassword = userChangePasswordDto.getNewPassword();
             Optional<T> user = findById(authHolder.getTokenId());
             if (user.isPresent()) {
                 String encodePassword =oldPassword;

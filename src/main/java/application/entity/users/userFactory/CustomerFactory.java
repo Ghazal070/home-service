@@ -1,27 +1,27 @@
 package application.entity.users.userFactory;
 
-import application.dto.UserSignupRequest;
+import application.dto.UserSignupRequestDto;
 import application.entity.users.Customer;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+
 @Component
 public class CustomerFactory implements UserFactory {
     @Override
-    public Users createUser(UserSignupRequest userSignupRequest) {
+    public Users createUser(UserSignupRequestDto userSignupRequestDto) {
         Customer customer = Customer.builder()
-                .firstName(userSignupRequest.getFirstName())
-                .lastName(userSignupRequest.getLastName())
+                .firstName(userSignupRequestDto.getFirstName())
+                .lastName(userSignupRequestDto.getLastName())
                 .profile(
                         Profile.builder()
-                                .email(userSignupRequest.getEmail())
-                                .password(userSignupRequest.getPassword()).build())
+                                .email(userSignupRequestDto.getEmail())
+                                .password(userSignupRequestDto.getPassword()).build())
                 .dateTimeSubmission(LocalDateTime.now())
                 .build();
-        customer.setImage(userSignupRequest.getInputStream());
+        customer.setImage(userSignupRequestDto.getInputStream());
         return customer;
     }
 }

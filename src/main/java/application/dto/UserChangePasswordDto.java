@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserChangePassword {
+public class UserChangePasswordDto {
 
 
     @NotNull

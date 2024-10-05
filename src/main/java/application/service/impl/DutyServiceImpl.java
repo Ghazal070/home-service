@@ -1,10 +1,9 @@
 package application.service.impl;
 
-import application.dto.DutyResponseChildren;
-import application.dto.UpdateDuty;
+import application.dto.DutyResponseChildrenDto;
+import application.dto.UpdateDutyDto;
 import application.entity.Duty;
 import application.repository.DutyRepository;
-import application.service.CustomerService;
 import application.service.DutyService;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
@@ -21,25 +20,25 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     }
 
     @Override
-    public Boolean updateDutyPriceOrDescription(UpdateDuty updateDuty) {
-        if (updateDuty != null) {
-            Optional<Duty> duty = repository.findById(updateDuty.getDutyId());
+    public Boolean updateDutyPriceOrDescription(UpdateDutyDto updateDutyDto) {
+        if (updateDutyDto != null) {
+            Optional<Duty> duty = repository.findById(updateDutyDto.getDutyId());
             if (duty.isEmpty()) {
-                throw new ValidationException("Duty with ID " + updateDuty.getDutyId() +" not found");
+                throw new ValidationException("Duty with ID " + updateDutyDto.getDutyId() +" not found");
             }
-            int countUpdate = repository.updateDutyPriceOrDescriptionOrSelectable(updateDuty.getDutyId(), updateDuty.getPrice()
-                    , updateDuty.getDescription(), updateDuty.getSelectable());
+            int countUpdate = repository.updateDutyPriceOrDescriptionOrSelectable(updateDutyDto.getDutyId(), updateDutyDto.getPrice()
+                    , updateDutyDto.getDescription(), updateDutyDto.getSelectable());
             return countUpdate>0;
         } else throw new ValidationException("Update duty is null");
     }
 
     @Override
-    public List<DutyResponseChildren> loadAllDutyWithChildren() {
+    public List<DutyResponseChildrenDto> loadAllDutyWithChildren() {
         List<Duty> duties = repository.loadAllDutyWithChildren();
-        Map<Integer, DutyResponseChildren> dutyResponseChildrenMap = new HashMap<>();
-        List<DutyResponseChildren> rootDuties = new ArrayList<>();
+        Map<Integer, DutyResponseChildrenDto> dutyResponseChildrenMap = new HashMap<>();
+        List<DutyResponseChildrenDto> rootDuties = new ArrayList<>();
         for (Duty duty : duties) {
-            DutyResponseChildren responseChildren = DutyResponseChildren.builder()
+            DutyResponseChildrenDto responseChildren = DutyResponseChildrenDto.builder()
                     .id(duty.getId())
                     .title(duty.getTitle())
                     .selectable(duty.getSelectable())
@@ -49,7 +48,7 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
             if (duty.getParent() == null) {
                 rootDuties.add(responseChildren);
             } else {
-                DutyResponseChildren parentResponse = dutyResponseChildrenMap.get(duty.getParent().getId());
+                DutyResponseChildrenDto parentResponse = dutyResponseChildrenMap.get(duty.getParent().getId());
                 if (parentResponse != null) {
                     parentResponse.getSubDuty().add(responseChildren);
                 }

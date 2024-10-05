@@ -1,18 +1,21 @@
 package application.serviceTest.SignupService;
 
-import application.dto.UserSignupRequest;
+import application.dto.UserSignupRequestDto;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 import application.entity.users.userFactory.CustomerFactory;
 import application.entity.users.userFactory.ExpertFactory;
+import application.exception.ValidationException;
 import application.service.CustomerService;
 import application.service.ExpertService;
 import application.service.PasswordEncodeService;
 import application.service.impl.SignupServiceImpl;
 import application.util.AuthHolder;
-import jakarta.validation.ValidationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +28,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,20 +59,24 @@ class SignupServiceImplTest {
     @Mock
     private CustomerFactory customerFactory;
 
+    @Mock
+    private Validator validator;
+
     @Autowired
     @InjectMocks
     private SignupServiceImpl underTest;
 
+
     @BeforeEach
     void setUp() {
-        this.underTest =new SignupServiceImpl(expertService,customerService, passwordEncodeService,authHolder,expertFactory,customerFactory);
+        this.underTest = new SignupServiceImpl(expertService, customerService, passwordEncodeService, authHolder, expertFactory, customerFactory, validator);
     }
 
     @Test
     public void testSignupCustomerSuccessfully() {
-        UserSignupRequest userSignupRequest = null;
+        UserSignupRequestDto userSignupRequestDto = null;
         try {
-            userSignupRequest = UserSignupRequest.builder().email("customer@example.com")
+            userSignupRequestDto = UserSignupRequestDto.builder().email("customer@example.com")
                     .password("ghazal99")
                     .role("Customer")
                     .password("pass1234")
@@ -77,31 +86,32 @@ class SignupServiceImplTest {
             throw new RuntimeException(e);
         }
         Customer customer = Customer.builder().id(100).profile(Profile.builder()
-                .email(userSignupRequest.getEmail())
-                .password(userSignupRequest.getPassword())
+                .email(userSignupRequestDto.getEmail())
+                .password(userSignupRequestDto.getPassword())
                 .build()).build();
-        given(customerService.containByUniqField(userSignupRequest.getEmail())).willReturn(false);
-       given(passwordEncodeService.encode(userSignupRequest.getPassword())).willReturn("pass1234");
-        given(customerFactory.createUser(any(UserSignupRequest.class))).willReturn(customer);
+        given(customerService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
+        given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
+        given(passwordEncodeService.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
+        given(customerFactory.createUser(any(UserSignupRequestDto.class))).willReturn(customer);
         given(customerService.save(any(Customer.class))).willReturn(customer);
 
-        Users actual = underTest.signup(userSignupRequest);
+        Users actual = underTest.signup(userSignupRequestDto);
 
         assertNotNull(actual);
-        verify(customerService).containByUniqField(userSignupRequest.getEmail());
-        verify(passwordEncodeService).encode(userSignupRequest.getPassword());
-        verify(customerFactory).createUser(userSignupRequest);
+        verify(customerService).containByUniqField(userSignupRequestDto.getEmail());
+        verify(passwordEncodeService).encode(userSignupRequestDto.getPassword());
+        verify(customerFactory).createUser(userSignupRequestDto);
         verify(customerService).save(any(Customer.class));
-        assertEquals(userSignupRequest.getEmail(), actual.getProfile().getEmail());
+        assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
 
     }
 
     @Test
     public void testSignupExpertSuccessfully() {
-        //todo email @
-        UserSignupRequest userSignupRequest = null;
+        //done email @ but i haveQuestion
+        UserSignupRequestDto userSignupRequestDto = null;
         try {
-            userSignupRequest = UserSignupRequest.builder().email("expert@example.com")
+            userSignupRequestDto = UserSignupRequestDto.builder().email("expert@example.com")
                     .password("ghazal99")
                     .role("Expert")
                     .password("pass1234")
@@ -111,30 +121,33 @@ class SignupServiceImplTest {
             throw new RuntimeException(e);
         }
         Expert expert = Expert.builder().id(100).profile(Profile.builder()
-                .email(userSignupRequest.getEmail())
-                .password(userSignupRequest.getPassword())
+                .email(userSignupRequestDto.getEmail())
+                .password(userSignupRequestDto.getPassword())
                 .build()).build();
-        given(expertService.containByUniqField(userSignupRequest.getEmail())).willReturn(false);
-        given(passwordEncodeService.encode(userSignupRequest.getPassword())).willReturn("pass1234");
-        given(expertFactory.createUser(any(UserSignupRequest.class))).willReturn(expert);
+        given(expertService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
+        given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
+        given(passwordEncodeService.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
+        given(expertFactory.createUser(any(UserSignupRequestDto.class))).willReturn(expert);
         given(expertService.save(any(Expert.class))).willReturn(expert);
 
-        Users actual = underTest.signup(userSignupRequest);
+        Users actual = underTest.signup(userSignupRequestDto);
 
         assertNotNull(actual);
-        verify(expertService).containByUniqField(userSignupRequest.getEmail());
-        verify(passwordEncodeService).encode(userSignupRequest.getPassword());
-        verify(expertFactory).createUser(userSignupRequest);
+        assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
+        verify(expertService).containByUniqField(userSignupRequestDto.getEmail());
+        verify(passwordEncodeService).encode(userSignupRequestDto.getPassword());
+        verify(expertFactory).createUser(userSignupRequestDto);
         verify(expertService).save(any(Expert.class));
-        assertEquals(userSignupRequest.getEmail(), actual.getProfile().getEmail());
+        verify(validator).validate(userSignupRequestDto);
+
 
     }
 
     @Test
     public void testSignupInvalidRoleRole() {
-        UserSignupRequest userSignupRequest;
+        UserSignupRequestDto userSignupRequestDto;
         try {
-            userSignupRequest = UserSignupRequest.builder().email("expert@example.com")
+            userSignupRequestDto = UserSignupRequestDto.builder().email("expert@example.com")
                     .password("ghazal99")
                     .role("InvalidRole")
                     .password("pass1234")
@@ -143,17 +156,21 @@ class SignupServiceImplTest {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        assertThatThrownBy(()->underTest.signup(userSignupRequest))
+        given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
+
+        assertThatThrownBy(() -> underTest.signup(userSignupRequestDto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Only Expert or Customer can sign up");
+
+        verify(validator).validate(userSignupRequestDto);
 
     }
 
     @Test
     public void testSignupDuplicateEmail() {
-        UserSignupRequest userSignupRequest;
+        UserSignupRequestDto userSignupRequestDto;
         try {
-            userSignupRequest = UserSignupRequest.builder().email("expert@example.com")
+            userSignupRequestDto = UserSignupRequestDto.builder().email("expert@example.com")
                     .password("ghazal99")
                     .role("Customer")
                     .password("pass1234")
@@ -162,14 +179,40 @@ class SignupServiceImplTest {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
+        given(customerService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(true);
 
-        given(customerService.containByUniqField(userSignupRequest.getEmail())).willReturn(true);
-
-        assertThatThrownBy(()->underTest.signup(userSignupRequest))
+        assertThatThrownBy(() -> underTest.signup(userSignupRequestDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Email must be unique");
-        verify(customerService).containByUniqField(userSignupRequest.getEmail());
+        verify(customerService).containByUniqField(userSignupRequestDto.getEmail());
+        verify(validator).validate(userSignupRequestDto);
 
 
+    }
+
+    @Test
+    public void testNotValidateEmail() {
+        UserSignupRequestDto userSignupRequestDto;
+        try {
+            userSignupRequestDto = UserSignupRequestDto.builder().email("customerexample.com")
+                    .password("ghaza99")
+                    .role("Customer")
+                    .password("pass1234")
+                    .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
+                    .build();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Set<ConstraintViolation<UserSignupRequestDto>> violations = new HashSet<>();
+        ConstraintViolation<UserSignupRequestDto> violation = mock(ConstraintViolation.class);
+        given(violation.getMessage()).willReturn("Please follow this pattern: gh@to.com");
+        violations.add(violation);
+        given(validator.validate(userSignupRequestDto)).willReturn(violations);
+
+        assertThatThrownBy(() -> underTest.signup(userSignupRequestDto))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Please follow this pattern: gh@to.com");
     }
 }

@@ -1,9 +1,5 @@
 package application.dto;
 
-import application.entity.Order;
-import application.entity.users.Expert;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OfferCreation {
+public class OfferCreationDto {
 
     @NotNull
     private Integer orderId;

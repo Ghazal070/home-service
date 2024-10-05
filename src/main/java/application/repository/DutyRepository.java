@@ -1,7 +1,5 @@
 package application.repository;
 
-import application.dto.DutyResponseChildren;
-import application.dto.UpdateDuty;
 import application.entity.Duty;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface DutyRepository extends BaseEntityRepository<Duty, Integer> {

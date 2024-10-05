@@ -4,15 +4,9 @@ import application.dto.*;
 import application.dto.projection.UserLoginProjection;
 import application.entity.Duty;
 import application.entity.Order;
-import application.entity.users.userFactory.CustomerFactory;
-import application.entity.users.userFactory.ExpertFactory;
-import application.repository.*;
 import application.service.*;
-import application.service.impl.*;
 import com.github.javafaker.Faker;
 import application.entity.users.Users;
-import jakarta.persistence.EntityManager;
-import application.util.AuthHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,7 +30,7 @@ public class HomeServiceApp {
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
 
-        signupCustomerTestMethod(customerService, signupService);
+        //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
@@ -63,7 +57,7 @@ public class HomeServiceApp {
 
 
         Order cleanHouse = customerService.orderSubmit(
-                OrderSubmission.builder()
+                OrderSubmissionDto.builder()
                         .dutyId(299)
                         .priceOrder(800_000)
                         .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
@@ -74,7 +68,7 @@ public class HomeServiceApp {
     }
 
     private static void loadAllDutyWithChildrenTest(DutyService dutyService) {
-        List<DutyResponseChildren> duties = dutyService.loadAllDutyWithChildren();
+        List<DutyResponseChildrenDto> duties = dutyService.loadAllDutyWithChildren();
         duties.forEach(System.out::println);
     }
 
@@ -84,20 +78,20 @@ public class HomeServiceApp {
     }
 
     private static void updatePriceOrDescriptionTest(DutyService dutyService) {
-        UpdateDuty updateDuty = UpdateDuty.builder()
+        UpdateDutyDto updateDutyDto = UpdateDutyDto.builder()
                 .dutyId(305)
 //                .price(1_000_000)
                 .description("Sofa###Washing****")
                 .selectable(true)
                 .build();
-        dutyService.updateDutyPriceOrDescription(updateDuty);
+        dutyService.updateDutyPriceOrDescription(updateDutyDto);
     }
 
     private static void adminCreateDutyDuplicate(Faker faker, AdminService adminService) {
         String sub = "cleanHouse";
         Integer parentId = 298;
         adminService.createDuty(
-                DutyCreation.builder()
+                DutyCreationDto.builder()
                         .title(sub)
                         .parentId(parentId)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
@@ -112,7 +106,7 @@ public class HomeServiceApp {
         String sub = "WashMachine";
         Integer parentId = 250;
         adminService.createDuty(
-                DutyCreation.builder()
+                DutyCreationDto.builder()
                         .title(sub)
                         .parentId(parentId)
                         .basePrice(faker.number().numberBetween(100_000, 1_000_000))
@@ -129,7 +123,7 @@ public class HomeServiceApp {
         );
         for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
-                    DutyCreation.builder()
+                    DutyCreationDto.builder()
                             .title(sub)
                             .parentId(297)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
@@ -147,7 +141,7 @@ public class HomeServiceApp {
         );
         for (String sub : subDutyHouseholdAppliancesList) {
             adminService.createDuty(
-                    DutyCreation.builder()
+                    DutyCreationDto.builder()
                             .title(sub)
                             .parentId(298)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
@@ -164,7 +158,7 @@ public class HomeServiceApp {
         List<String> dutyTypes = List.of("Decoration", "BuildingFacilities", "CargoVehicles", "HouseholdAppliances", "Cleaning");
         for (String title : dutyTypes) {
             adminService.createDuty(
-                    DutyCreation.builder()
+                    DutyCreationDto.builder()
                             .title(title)
                             .selectable(false)
                             .build()
@@ -173,11 +167,11 @@ public class HomeServiceApp {
     }
 
     private static void passwordUpdateTest(CustomerService customerService) {
-        UserChangePassword userChangePassword = UserChangePassword.builder()
+        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
                 .oldPassword("wti94059")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
-        Boolean aBoolean = customerService.updatePassword(userChangePassword);
+        Boolean aBoolean = customerService.updatePassword(userChangePasswordDto);
         System.out.println("change Password" + aBoolean);
     }
 
@@ -188,23 +182,23 @@ public class HomeServiceApp {
 
     private static void signupCustomerTestMethod(CustomerService customerService, SignupService signupService) {
         Faker faker = new Faker();
-        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Customer");
-        Users signup = signupService.signup(userSignupRequest);
+        UserSignupRequestDto userSignupRequestDto = createSignupRequest(faker, "Customer");
+        Users signup = signupService.signup(userSignupRequestDto);
         customerService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
 
     private static void signupExpertTestMethod(ExpertService expertService, SignupService signupService) {
         Faker faker = new Faker();
-        UserSignupRequest userSignupRequest = createSignupRequest(faker, "Expert");
-        Users signup = signupService.signup(userSignupRequest);
+        UserSignupRequestDto userSignupRequestDto = createSignupRequest(faker, "Expert");
+        Users signup = signupService.signup(userSignupRequestDto);
         expertService.convertByteToImage(signup.getImage(), signup.getFirstName());
     }
 
 
-    private static UserSignupRequest createSignupRequest(Faker faker, String role) {
-        UserSignupRequest signupRequest;
+    private static UserSignupRequestDto createSignupRequest(Faker faker, String role) {
+        UserSignupRequestDto signupRequest;
         try {
-            signupRequest = UserSignupRequest.builder()
+            signupRequest = UserSignupRequestDto.builder()
                     .firstName(faker.name().firstName())
                     .lastName(faker.name().lastName())
                     .email(faker.internet().emailAddress())

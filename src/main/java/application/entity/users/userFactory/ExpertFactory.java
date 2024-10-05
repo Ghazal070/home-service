@@ -1,6 +1,6 @@
 package application.entity.users.userFactory;
 
-import application.dto.UserSignupRequest;
+import application.dto.UserSignupRequestDto;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
 import application.entity.users.Profile;
@@ -8,25 +8,24 @@ import application.entity.users.Users;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Component
 public class ExpertFactory implements UserFactory {
     @Override
-    public Users createUser(UserSignupRequest userSignupRequest) {
+    public Users createUser(UserSignupRequestDto userSignupRequestDto) {
         Expert expert = Expert.builder()
-                .firstName(userSignupRequest.getFirstName())
-                .lastName(userSignupRequest.getLastName())
+                .firstName(userSignupRequestDto.getFirstName())
+                .lastName(userSignupRequestDto.getLastName())
                 .profile(
                         Profile.builder()
-                                .email(userSignupRequest.getEmail())
-                                .password(userSignupRequest.getPassword())
+                                .email(userSignupRequestDto.getEmail())
+                                .password(userSignupRequestDto.getPassword())
                                 .build()
                 )
                 .dateTimeSubmission(LocalDateTime.now())
                 .expertStatus(ExpertStatus.New)
                 .build();
-        expert.setImage(userSignupRequest.getInputStream());
+        expert.setImage(userSignupRequestDto.getInputStream());
         return expert;
     }
 }

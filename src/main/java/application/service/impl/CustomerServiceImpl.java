@@ -1,6 +1,6 @@
 package application.service.impl;
 
-import application.dto.OrderSubmission;
+import application.dto.OrderSubmissionDto;
 import application.entity.Duty;
 import application.entity.Offer;
 import application.entity.Order;
@@ -32,23 +32,23 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
     @Override
-    public Order orderSubmit(OrderSubmission orderSubmission) {
+    public Order orderSubmit(OrderSubmissionDto orderSubmissionDto) {
         Optional<Customer> customer = isCustomerAuthenticated();
         if (customer.isEmpty()) {
             throw new ValidationException("Customer must be logged in to view duties.");
         }
-        if (orderSubmission != null) {
-            Optional<Duty> duty = dutyService.findById(orderSubmission.getDutyId());
+        if (orderSubmissionDto != null) {
+            Optional<Duty> duty = dutyService.findById(orderSubmissionDto.getDutyId());
             if (duty.isPresent() && duty.get().getSelectable()) {
-                if (duty.get().getBasePrice()!=null && duty.get().getBasePrice() <= orderSubmission.getPriceOrder()) {
+                if (duty.get().getBasePrice()!=null && duty.get().getBasePrice() <= orderSubmissionDto.getPriceOrder()) {
                     Order order = Order.builder()
                             .customer(customer.get())
-                            .description(orderSubmission.getDescription())
-                            .address(orderSubmission.getAddress())
-                            .priceOrder(orderSubmission.getPriceOrder())
+                            .description(orderSubmissionDto.getDescription())
+                            .address(orderSubmissionDto.getAddress())
+                            .priceOrder(orderSubmissionDto.getPriceOrder())
                             .duty(duty.get())
                             .orderStatus(OrderStatus.ExpertOfferWanting)
-                            .dateTimeOrder(orderSubmission.getDateTimeOrder())
+                            .dateTimeOrder(orderSubmissionDto.getDateTimeOrder())
                             .build();
                     return orderService.save(order);
                 } else throw new ValidationException("Duty base price greater than your order");

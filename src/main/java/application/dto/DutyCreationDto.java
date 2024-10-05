@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DutyCreation {
+public class DutyCreationDto {
 
 
     @NotNull

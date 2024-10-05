@@ -1,6 +1,6 @@
 package application.serviceTest.CustomerService;
 
-import application.dto.OrderSubmission;
+import application.dto.OrderSubmissionDto;
 import application.entity.Duty;
 import application.entity.Offer;
 import application.entity.Order;
@@ -75,16 +75,16 @@ class CustomerServiceImplTest {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         Duty spyDuty = spy(duty);
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
-        OrderSubmission spyOrderSubmission = spy(orderSubmission);
-        doReturn(10_000).when(spyOrderSubmission).getPriceOrder();
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
+        OrderSubmissionDto spyOrderSubmissionDto = spy(orderSubmissionDto);
+        doReturn(10_000).when(spyOrderSubmissionDto).getPriceOrder();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(spyDuty.getId())).willReturn(Optional.of(spyDuty));
         doReturn(true).when(spyDuty).getSelectable();
         given(orderService.save(any(Order.class))).willReturn(new Order());
 
-        Order order = underTest.orderSubmit(spyOrderSubmission);
+        Order order = underTest.orderSubmit(spyOrderSubmissionDto);
 
         assertNotNull(order);
         assertEquals(OrderStatus.ExpertOfferWanting,order.getOrderStatus());
@@ -102,11 +102,11 @@ class CustomerServiceImplTest {
     @Test
     public void orderSubmitNotAuthenticated() {
         Customer customer = Customer.builder().id(100).build();
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmission))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Customer must be logged in to view duties.");
     }
@@ -114,12 +114,12 @@ class CustomerServiceImplTest {
     public void orderSubmitNotFoundDuty() {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(duty.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmission))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title duty must be from Duty and be selectable List or auth holder is null");
 
@@ -133,13 +133,13 @@ class CustomerServiceImplTest {
                         .selectable(false)
                         .build()
         );
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(duty.getId())).willReturn(Optional.of(duty));
         doReturn(false).when(duty).getSelectable();
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmission))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title duty must be from Duty and be selectable List or auth holder is null");
     }
@@ -148,15 +148,15 @@ class CustomerServiceImplTest {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         Duty spyDuty = spy(duty);
-        OrderSubmission orderSubmission = OrderSubmission.builder().priceOrder(2_000).dutyId(120).build();
-        OrderSubmission spyOrderSubmission = spy(orderSubmission);
-        doReturn(1_00).when(spyOrderSubmission).getPriceOrder();
+        OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
+        OrderSubmissionDto spyOrderSubmissionDto = spy(orderSubmissionDto);
+        doReturn(1_00).when(spyOrderSubmissionDto).getPriceOrder();
         given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(spyDuty.getId())).willReturn(Optional.of(spyDuty));
         doReturn(true).when(spyDuty).getSelectable();
 
-        assertThatThrownBy(()->underTest.orderSubmit(spyOrderSubmission))
+        assertThatThrownBy(()->underTest.orderSubmit(spyOrderSubmissionDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Duty base price greater than your order");
     }

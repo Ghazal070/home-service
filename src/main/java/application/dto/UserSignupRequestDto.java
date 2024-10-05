@@ -5,19 +5,19 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserSignupRequest {
+public class UserSignupRequestDto {
 
     private String firstName;
     private String lastName;
 
     @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z]+(?:.[a-zA-Z]+)*$",message = "Please follow this pattern: gh@to.com")
     private String email;
 
     @NotNull

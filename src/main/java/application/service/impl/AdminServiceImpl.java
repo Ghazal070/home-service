@@ -1,6 +1,6 @@
 package application.service.impl;
 
-import application.dto.DutyCreation;
+import application.dto.DutyCreationDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Admin;
@@ -34,28 +34,28 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     }
 
     @Override
-    public Duty createDuty(DutyCreation dutyCreation) {
+    public Duty createDuty(DutyCreationDto dutyCreationDto) {
         Duty parentDuty = null;
-        if (dutyCreation.getParentId() != null) {
-            parentDuty = dutyService.findById(dutyCreation.getParentId())
+        if (dutyCreationDto.getParentId() != null) {
+            parentDuty = dutyService.findById(dutyCreationDto.getParentId())
                     .orElseThrow(() -> new ValidationException("This parent duty does not exist."));
-            if (dutyService.containByUniqField(dutyCreation.getTitle(), parentDuty.getId())) {
+            if (dutyService.containByUniqField(dutyCreationDto.getTitle(), parentDuty.getId())) {
                 throw new ValidationException("Title for duty already exists for this parent duty.");
             }
         } else {
-            if (dutyService.existsByTitle(dutyCreation.getTitle())) {
+            if (dutyService.existsByTitle(dutyCreationDto.getTitle())) {
                 throw new ValidationException("Title exists for this parent null.");
             }
         }
-        return dutyService.save(dutyCreation(dutyCreation, parentDuty));
+        return dutyService.save(dutyCreation(dutyCreationDto, parentDuty));
     }
 
-    private Duty dutyCreation(DutyCreation dutyCreation, Duty parentDuty) {
+    private Duty dutyCreation(DutyCreationDto dutyCreationDto, Duty parentDuty) {
         Duty dutyBuilder = Duty.builder()
-                .title(dutyCreation.getTitle())
-                .basePrice(dutyCreation.getBasePrice())
-                .description(dutyCreation.getDescription())
-                .selectable(dutyCreation.getSelectable())
+                .title(dutyCreationDto.getTitle())
+                .basePrice(dutyCreationDto.getBasePrice())
+                .description(dutyCreationDto.getDescription())
+                .selectable(dutyCreationDto.getSelectable())
                 .build();
         if (parentDuty != null) {
             dutyBuilder.setParent(parentDuty);

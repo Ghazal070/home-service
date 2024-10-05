@@ -1,6 +1,6 @@
 package application.service.impl;
 
-import application.dto.OfferCreation;
+import application.dto.OfferCreationDto;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
@@ -41,8 +41,8 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     }
 
     @Override
-    public Offer sendOffer(OfferCreation offerCreation) {
-        Optional<Order> order = orderService.findById(offerCreation.getOrderId());
+    public Offer sendOffer(OfferCreationDto offerCreationDto) {
+        Optional<Order> order = orderService.findById(offerCreationDto.getOrderId());
         if (order.isPresent()){
             Set<Order> orderList = orderService.getOrdersForExpert(authHolder.getTokenId());
             boolean existOrderInList = false;
@@ -56,15 +56,15 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
             if (!existOrderInList){
                 throw new ValidationException("This order is not in list expert order or not waiting");
             }
-            if (basePrice != null && basePrice <= offerCreation.getPriceOffer()){
+            if (basePrice != null && basePrice <= offerCreationDto.getPriceOffer()){
                 Optional<Expert> expert = repository.findById(authHolder.getTokenId());
                 Offer offer = Offer.builder()
                         .order(order.get())
                         .expert(expert.get())
-                        .dateTimeOffer(offerCreation.getDateTimeOffer())
-                        .dateTimeStartWork(offerCreation.getDateTimeStartWork())
-                        .lengthDays(offerCreation.getLengthDays())
-                        .priceOffer(offerCreation.getPriceOffer())
+                        .dateTimeOffer(offerCreationDto.getDateTimeOffer())
+                        .dateTimeStartWork(offerCreationDto.getDateTimeStartWork())
+                        .lengthDays(offerCreationDto.getLengthDays())
+                        .priceOffer(offerCreationDto.getPriceOffer())
                         .build();
                 Offer saveOffer = offerService.save(offer);
                 if (saveOffer!=null){

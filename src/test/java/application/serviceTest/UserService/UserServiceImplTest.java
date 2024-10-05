@@ -1,6 +1,6 @@
 package application.serviceTest.UserService;
 
-import application.dto.UserChangePassword;
+import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.users.Profile;
 import application.entity.users.Users;
@@ -76,6 +76,7 @@ class UserServiceImplTest {
         assertNotNull(savedImage, "Saved image should not be null");
     }
 
+
     @Test
     void testConvertByteToImageWithNullData() {
         assertThatThrownBy(() -> underTest.convertByteToImage(null, "testUser"))
@@ -121,6 +122,7 @@ class UserServiceImplTest {
                 .hasMessageContaining("Email or Password must not be empty");
 
     }
+
     @Test
     void testLoginNotFoundUser() {
         String email = "user@example.com";
@@ -138,34 +140,34 @@ class UserServiceImplTest {
         String email = "user@example.com";
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
-        UserChangePassword userChangePassword =UserChangePassword.builder().newPassword(newPassword)
+        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
         Users users = Users.builder().id(1).build();
         given(authHolder.getTokenId()).willReturn(1);
         given(authHolder.getTokenName()).willReturn(email);
         given(repository.findById(1)).willReturn(Optional.of(users));
-        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getOldPassword())).willReturn(true);
-        given(passwordEncodeService.encode(userChangePassword.getNewPassword())).willReturn(newPassword);
-        given(repository.updatePassword(email,newPassword)).willReturn(1);
+        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+                , userChangePasswordDto.getOldPassword())).willReturn(true);
+        given(passwordEncodeService.encode(userChangePasswordDto.getNewPassword())).willReturn(newPassword);
+        given(repository.updatePassword(email, newPassword)).willReturn(1);
 
-        Boolean actual = underTest.updatePassword(userChangePassword);
+        Boolean actual = underTest.updatePassword(userChangePasswordDto);
 
         assertTrue(actual);
         verify(repository).findById(1);
-        verify(passwordEncodeService).encode(userChangePassword.getNewPassword());
-        verify(passwordEncodeService).isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getOldPassword());
+        verify(passwordEncodeService).encode(userChangePasswordDto.getNewPassword());
+        verify(passwordEncodeService).isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+                , userChangePasswordDto.getOldPassword());
         verify(authHolder).getTokenId();
         verify(authHolder).getTokenName();
-        verify(repository).updatePassword(email,newPassword);
+        verify(repository).updatePassword(email, newPassword);
     }
 
     @Test
     void testUpdatePasswordNullUserChangePassword() {
-        UserChangePassword userChangePassword = null;
+        UserChangePasswordDto userChangePasswordDto = null;
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePassword))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("UserChangePassword is null");
     }
@@ -174,11 +176,11 @@ class UserServiceImplTest {
     void testUpdatePasswordNullLoginUser() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
-        UserChangePassword userChangePassword =UserChangePassword.builder().newPassword(newPassword)
+        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
         given(authHolder.getTokenId()).willReturn(null);
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePassword))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("user from token is null");
     }
@@ -187,16 +189,16 @@ class UserServiceImplTest {
     void testUpdatePasswordIsEqualEncodeDecodePassFalse() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
-        UserChangePassword userChangePassword =UserChangePassword.builder().newPassword(newPassword)
+        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
         Users users = Users.builder().id(1).build();
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(users));
-        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePassword.getOldPassword()
-                ,userChangePassword.getOldPassword())).willReturn(false);
+        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+                , userChangePasswordDto.getOldPassword())).willReturn(false);
 
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePassword))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("old password is not correct");
     }

@@ -1,7 +1,7 @@
 package application.serviceTest.DutyService;
 
-import application.dto.DutyResponseChildren;
-import application.dto.UpdateDuty;
+import application.dto.DutyResponseChildrenDto;
+import application.dto.UpdateDutyDto;
 import application.entity.Duty;
 import application.repository.DutyRepository;
 import application.service.impl.DutyServiceImpl;
@@ -43,16 +43,16 @@ class DutyServiceImplTest {
 
     @Test
     public void testUpdateDutyPriceOrDescriptionSuccessFully() {
-        UpdateDuty updateDuty = UpdateDuty.builder().dutyId(100).price(1_000).build();
+        UpdateDutyDto updateDutyDto = UpdateDutyDto.builder().dutyId(100).price(1_000).build();
         Duty duty = Duty.builder().id(100).build();
-        given(repository.findById(updateDuty.getDutyId())).willReturn(Optional.of(duty));
+        given(repository.findById(updateDutyDto.getDutyId())).willReturn(Optional.of(duty));
         given(repository.updateDutyPriceOrDescriptionOrSelectable(
-                        updateDuty.getDutyId(), updateDuty.getPrice()
-                        , updateDuty.getDescription(), updateDuty.getSelectable()
+                        updateDutyDto.getDutyId(), updateDutyDto.getPrice()
+                        , updateDutyDto.getDescription(), updateDutyDto.getSelectable()
                 )
         ).willReturn(1);
 
-        Boolean actual = underTest.updateDutyPriceOrDescription(updateDuty);
+        Boolean actual = underTest.updateDutyPriceOrDescription(updateDutyDto);
 
         assertTrue(actual);
 
@@ -60,21 +60,21 @@ class DutyServiceImplTest {
 
     @Test
     public void testUpdateDutyPriceOrDescriptionUpdateDutyIsNull() {
-        UpdateDuty updateDuty = null;
+        UpdateDutyDto updateDutyDto = null;
 
-        assertThatThrownBy(() -> underTest.updateDutyPriceOrDescription(updateDuty))
+        assertThatThrownBy(() -> underTest.updateDutyPriceOrDescription(updateDutyDto))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Update duty is null");
     }
 
     @Test
     public void testUpdateDutyPriceOrDescriptionNotFoundDuty() {
-        UpdateDuty updateDuty = UpdateDuty.builder().dutyId(100).price(1_000).build();
-        given(repository.findById(updateDuty.getDutyId())).willReturn(Optional.empty());
+        UpdateDutyDto updateDutyDto = UpdateDutyDto.builder().dutyId(100).price(1_000).build();
+        given(repository.findById(updateDutyDto.getDutyId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.updateDutyPriceOrDescription(updateDuty))
+        assertThatThrownBy(() -> underTest.updateDutyPriceOrDescription(updateDutyDto))
                 .isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Duty with ID " + updateDuty.getDutyId() + " not found");
+                .hasMessageContaining("Duty with ID " + updateDutyDto.getDutyId() + " not found");
     }
 
     @Test
@@ -84,7 +84,7 @@ class DutyServiceImplTest {
         List<Duty> duties = List.of(parentDuty, childDuty);
         given(repository.loadAllDutyWithChildren()).willReturn(duties);
 
-        List<DutyResponseChildren> actual = underTest.loadAllDutyWithChildren();
+        List<DutyResponseChildrenDto> actual = underTest.loadAllDutyWithChildren();
 
         assertThat(actual).hasSize(1);
         assertThat(actual.get(0)).isNotNull();
@@ -105,7 +105,7 @@ class DutyServiceImplTest {
         List<Duty> duties = new ArrayList<>();
         given(repository.loadAllDutyWithChildren()).willReturn(duties);
 
-        List<DutyResponseChildren> actual = underTest.loadAllDutyWithChildren();
+        List<DutyResponseChildrenDto> actual = underTest.loadAllDutyWithChildren();
 
         assertThat(actual).isEmpty();
     }

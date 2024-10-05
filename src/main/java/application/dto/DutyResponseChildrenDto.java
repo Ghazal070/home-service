@@ -1,7 +1,5 @@
 package application.dto;
 
-import application.entity.Duty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.HashSet;
@@ -12,7 +10,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DutyResponseChildren {
+public class DutyResponseChildrenDto {
 
 
     private Integer id;
@@ -22,7 +20,7 @@ public class DutyResponseChildren {
 
     private Boolean selectable;
 
-    private Set<DutyResponseChildren> subDuty = new HashSet<>();
+    private Set<DutyResponseChildrenDto> subDuty = new HashSet<>();
 
 
     @Override
