@@ -1,0 +1,8 @@
+admin create duty
+{
+	"title":"adminCreateDuty",
+	"parentId":305,
+	"basePrice":5000,
+	"description":"adminCreateDuty",
+	"selectable" : true
+}

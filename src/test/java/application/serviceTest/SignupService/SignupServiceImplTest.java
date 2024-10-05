@@ -62,7 +62,6 @@ class SignupServiceImplTest {
     @Mock
     private Validator validator;
 
-    @Autowired
     @InjectMocks
     private SignupServiceImpl underTest;
 

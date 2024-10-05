@@ -30,7 +30,7 @@ public class HomeServiceApp {
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
 
-        //signupCustomerTestMethod(customerService, signupService);
+        //(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
