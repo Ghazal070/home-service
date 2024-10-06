@@ -3,7 +3,7 @@ package application.service.impl;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
-import application.exception.ValidationException;
+import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
 import application.service.PasswordEncodeService;
 import application.service.UserService;

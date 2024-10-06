@@ -2,6 +2,7 @@ package application.exception;
 
 
 import application.dto.ErrorResponseDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,12 +26,19 @@ public class ValidationControllerExceptionHandler {
    @ExceptionHandler(value = {RuntimeException.class})
     public ModelAndView getRunTimeException(RuntimeException exception){
        ModelAndView view = new ModelAndView("runtime_exception");
-       view.addObject("cause", exception.getCause().getMessage());
-       view.addObject("date",LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-       view.addObject("message",exception.getMessage());
+       view.addObject("Cause", exception.getCause().getMessage());
+       view.addObject("Date",LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+       view.addObject("Message",exception.getMessage());
        return view;
    }
 
-   @ExceptionHandler(value = {ValidationException.class})
+   @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<ErrorResponseDto> getException(Exception exception){
+       ErrorResponseDto errorResponseDto = ErrorResponseDto.builder().message(exception.getMessage())
+               .dateError(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+               .status(String.valueOf(HttpStatus.BAD_REQUEST))
+               .build();
+       return new ResponseEntity<>(errorResponseDto,HttpStatus.BAD_REQUEST);
+   }
 
 }

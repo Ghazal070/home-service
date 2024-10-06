@@ -7,7 +7,7 @@ import application.entity.users.Profile;
 import application.entity.users.Users;
 import application.entity.users.userFactory.CustomerFactory;
 import application.entity.users.userFactory.ExpertFactory;
-import application.exception.ValidationException;
+import jakarta.validation.ValidationException;
 import application.service.CustomerService;
 import application.service.ExpertService;
 import application.service.PasswordEncodeService;

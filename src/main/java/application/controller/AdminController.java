@@ -4,18 +4,13 @@ import application.dto.DutyCreationDto;
 import application.dto.DutyResponseDto;
 import application.entity.Duty;
 import application.exception.ValidationControllerException;
-import application.exception.ValidationControllerExceptionHandler;
 import application.service.AdminService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 
 
 @RestController
@@ -45,8 +40,16 @@ public class AdminController {
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
+    }
 
-
+    @PatchMapping("/expert/{id}/status")
+    public ResponseEntity updateExpertStatus(@PathVariable Integer id){
+        try {
+        adminService.updateExpertStatus(id);
+        return ResponseEntity.ok("Expert status change to Accepted");
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 
 

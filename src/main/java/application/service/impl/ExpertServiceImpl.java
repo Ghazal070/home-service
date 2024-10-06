@@ -6,7 +6,7 @@ import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
-import application.exception.ValidationException;
+import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
 import application.service.ExpertService;
 import application.service.OfferService;

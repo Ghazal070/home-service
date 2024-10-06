@@ -1,6 +1,6 @@
 package application.dto;
 
-import application.exception.ValidationException;
+import jakarta.validation.ValidationException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotBlank;

@@ -2,7 +2,7 @@ package application.entity;
 
 
 import application.entity.users.Expert;
-import application.exception.ValidationException;
+import jakarta.validation.ValidationException;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
