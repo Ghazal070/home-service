@@ -16,3 +16,16 @@ http://localhost:8080/admins/expertStatus/{id}
 http://localhost:8080/admins/addDutyToExpert?expertId=2&dutyId=9
 -------------------------------------------
 http://localhost:8080/admins/removeDutyFromExpert?expertId=2&dutyId=9
+
+======================================================================
+======================================================================
+Customers
+http://localhost:8080/customers/orderSubmit
+
+{
+    "dutyId":299,
+    "description": "helllo",
+    "priceOrder": 100000000,
+    "dateTimeOrder":"2024-12-06 22:30:23.124835",
+    "address":"gggggggggg"
+}

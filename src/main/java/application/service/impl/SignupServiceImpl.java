@@ -49,7 +49,7 @@ public class SignupServiceImpl implements SignupService {
         this.customerFactory = customerFactory;
         this.validator = validator;
     }
-
+//todo prototype design pattern for input stream
     @Override
     public Users signup(UserSignupRequestDto userSignupRequestDto) {
         InputStream originalInputStream = userSignupRequestDto.getInputStream();
