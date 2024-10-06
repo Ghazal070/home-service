@@ -22,6 +22,8 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -50,7 +52,14 @@ public class SignupServiceImpl implements SignupService {
 
     @Override
     public Users signup(UserSignupRequestDto userSignupRequestDto) {
+        InputStream originalInputStream = userSignupRequestDto.getInputStream();
+        byte[] imageBytes = copyInputStream(originalInputStream);
+        userSignupRequestDto.setInputStream(new ByteArrayInputStream(imageBytes));
+        InputStream inputStreamCopy = new ByteArrayInputStream(imageBytes);
         Set<ConstraintViolation<UserSignupRequestDto>> violations = validator.validate(userSignupRequestDto);
+        if (!isImageJpg(inputStreamCopy)) {
+            throw new ValidationException("Image must be in JPG format");
+        }
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder("Validation failed: ");
             for (ConstraintViolation<UserSignupRequestDto> violation : violations) {
@@ -58,9 +67,7 @@ public class SignupServiceImpl implements SignupService {
             }
             throw new ValidationException(sb.toString().trim());
         }
-//        if (!isImageJpg(userSignupRequestDto.getInputStream())) {
-//            throw new ValidationException("Image must be in JPG format");
-//        }
+
         switch (userSignupRequestDto.getRole()) {
             case "Expert" -> {
                 if (expertService.containByUniqField(userSignupRequestDto.getEmail())) {
@@ -91,6 +98,7 @@ public class SignupServiceImpl implements SignupService {
             default -> throw new IllegalArgumentException("Only Expert or Customer can sign up");
         }
     }
+
     public boolean isImageJpg(InputStream inputStream) {
         try {
             ImageInputStream imageInputStream = ImageIO.createImageInputStream(inputStream);
@@ -108,4 +116,18 @@ public class SignupServiceImpl implements SignupService {
         return false;
     }
 
+    private byte[] copyInputStream(InputStream inputStream) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024]; // Buffer size
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, bytesRead);
+            }
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to copy InputStream", e);
+        }
+
+    }
 }

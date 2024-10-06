@@ -53,16 +53,10 @@ public class Users extends BaseEntity<Integer> {
 
 
     public void setImage(InputStream inputStream) {
-//        if (!isJpgStream(inputStream)) {
-//            throw new ValidationException("Input stream does not contain a valid JPG image");
-//        }
         BufferedImage bImage;
         try {
             inputStream = new ByteArrayInputStream(inputStream.readAllBytes());
             bImage = ImageIO.read(inputStream);
-//            if (bImage == null) {
-//                throw new ValidationException("in getBytes method bImage is null");
-//            }
         } catch (IOException e) {
             throw new RuntimeException("Error reading the image file: " + e.getMessage(), e);
         }
@@ -78,17 +72,6 @@ public class Users extends BaseEntity<Integer> {
             }
         } catch (IOException e) {
             throw new RuntimeException("Error in ImageIO write: " + e.getMessage(), e);
-        }
-    }
-    private boolean isJpgStream(InputStream inputStream) {
-            byte[] header = new byte[2];
-        try {
-            if (inputStream.read(header) != 2) {
-                return false;
-            }
-            return header[0] == (byte) 0xFF && header[1] == (byte) 0xD8;
-        } catch (IOException e) {
-            return false;
         }
     }
 

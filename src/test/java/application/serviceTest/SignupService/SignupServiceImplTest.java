@@ -104,42 +104,57 @@ class SignupServiceImplTest {
         assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
 
     }
-
     @Test
     public void testSignupExpertSuccessfully() {
-        //done email @ but i haveQuestion
         UserSignupRequestDto userSignupRequestDto = null;
         try {
-            userSignupRequestDto = UserSignupRequestDto.builder().email("expert@example.com")
+            userSignupRequestDto = UserSignupRequestDto.builder().email("customer@example.com")
                     .password("ghazal99")
-                    .role("Expert")
+                    .role("Customer")
                     .password("pass1234")
                     .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
                     .build();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Expert expert = Expert.builder().id(100).profile(Profile.builder()
+        Customer customer = Customer.builder().id(100).profile(Profile.builder()
                 .email(userSignupRequestDto.getEmail())
                 .password(userSignupRequestDto.getPassword())
                 .build()).build();
-        given(expertService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
+        given(customerService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
         given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
         given(passwordEncodeService.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
-        given(expertFactory.createUser(any(UserSignupRequestDto.class))).willReturn(expert);
-        given(expertService.save(any(Expert.class))).willReturn(expert);
+        given(customerFactory.createUser(any(UserSignupRequestDto.class))).willReturn(customer);
+        given(customerService.save(any(Customer.class))).willReturn(customer);
 
         Users actual = underTest.signup(userSignupRequestDto);
 
         assertNotNull(actual);
-        assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
-        verify(expertService).containByUniqField(userSignupRequestDto.getEmail());
+        verify(customerService).containByUniqField(userSignupRequestDto.getEmail());
         verify(passwordEncodeService).encode(userSignupRequestDto.getPassword());
-        verify(expertFactory).createUser(userSignupRequestDto);
-        verify(expertService).save(any(Expert.class));
-        verify(validator).validate(userSignupRequestDto);
+        verify(customerFactory).createUser(userSignupRequestDto);
+        verify(customerService).save(any(Customer.class));
+        assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
 
+    }
 
+    @Test
+    public void testSignupOtherFormatExceptJpgOrJpeg() {
+        UserSignupRequestDto userSignupRequestDto;
+        try {
+            userSignupRequestDto = UserSignupRequestDto.builder().email("expert@example.com")
+                    .password("ghazal99")
+                    .role("Expert")
+                    .password("pass1234")
+                    .inputStream(new FileInputStream("src/main/resources/images/tool.png"))
+                    .build();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertThatThrownBy(() -> underTest.signup(userSignupRequestDto))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Image must be in JPG format");
     }
 
     @Test

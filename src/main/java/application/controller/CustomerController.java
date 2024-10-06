@@ -15,8 +15,8 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping("/orderSubmit")
-    public ResponseEntity<OrderResponseDto> orderSubmit(OrderSubmissionDto orderSubmissionDto){
-
-    }
+//    @PostMapping("/orderSubmit")
+//    public ResponseEntity<OrderResponseDto> orderSubmit(OrderSubmissionDto orderSubmissionDto){
+//
+//    }
 }

@@ -30,7 +30,7 @@ public class HomeServiceApp {
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
 
-        //signupCustomerTestMethod(customerService, signupService);
+        signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
         //loginTestMethod(customerService);
         //passwordUpdateTest(customerService);
@@ -203,7 +203,7 @@ public class HomeServiceApp {
                     .lastName(faker.name().lastName())
                     .email(faker.internet().emailAddress())
                     .password(faker.lorem().characters(4) + faker.number().numberBetween(1000, 9999))
-                    .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
+                    .inputStream(new FileInputStream("src/main/resources/images/tool.png"))
                     .role(role)
                     .build();
         } catch (FileNotFoundException e) {
