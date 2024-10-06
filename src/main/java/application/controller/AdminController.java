@@ -42,7 +42,7 @@ public class AdminController {
         }
     }
 
-    @PatchMapping("/expertStatus/{id}")
+    @PatchMapping("/expertStatus/{expertId}")
     public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId){
         try {
         adminService.updateExpertStatus(expertId);
@@ -52,8 +52,8 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/addDutyToExpert")
-    public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, Integer dutyId){
+    @PatchMapping("/addDutyToExpert")
+    public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId){
         try{
             adminService.addDutyToExpert(expertId,dutyId);
             return ResponseEntity.ok("Add duty = %s to expert = %s ".formatted(expertId,dutyId));
@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/removeDutyFromExpert")
-    public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId,Integer dutyId){
+    public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId,@RequestParam Integer dutyId){
         try{
             adminService.removeDutyFromExpert(expertId,dutyId);
             return ResponseEntity.ok("Remove duty = %s to expert = %s ".formatted(expertId,dutyId));
