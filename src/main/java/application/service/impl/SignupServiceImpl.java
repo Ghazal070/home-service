@@ -99,7 +99,7 @@ public class SignupServiceImpl implements SignupService {
             if (readers.hasNext()) {
                 ImageReader reader = readers.next();
                 String formatName = reader.getFormatName();
-                inputStream.reset();
+//                inputStream.reset();
                 return "JPEG".equalsIgnoreCase(formatName) || "jpg".equalsIgnoreCase(formatName);
             }
         } catch (Exception e) {

@@ -60,9 +60,9 @@ public class Users extends BaseEntity<Integer> {
         try {
             inputStream = new ByteArrayInputStream(inputStream.readAllBytes());
             bImage = ImageIO.read(inputStream);
-            if (bImage == null) {
-                throw new ValidationException("in getBytes method bImage is null");
-            }
+//            if (bImage == null) {
+//                throw new ValidationException("in getBytes method bImage is null");
+//            }
         } catch (IOException e) {
             throw new RuntimeException("Error reading the image file: " + e.getMessage(), e);
         }
