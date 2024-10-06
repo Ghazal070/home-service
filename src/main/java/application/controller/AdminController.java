@@ -42,15 +42,36 @@ public class AdminController {
         }
     }
 
-    @PatchMapping("/expert/{id}/status")
-    public ResponseEntity updateExpertStatus(@PathVariable Integer id){
+    @PatchMapping("/expertStatus/{id}")
+    public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId){
         try {
-        adminService.updateExpertStatus(id);
+        adminService.updateExpertStatus(expertId);
         return ResponseEntity.ok("Expert status change to Accepted");
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/addDutyToExpert")
+    public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, Integer dutyId){
+        try{
+            adminService.addDutyToExpert(expertId,dutyId);
+            return ResponseEntity.ok("Add duty = %s to expert = %s ".formatted(expertId,dutyId));
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/removeDutyFromExpert")
+    public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId,Integer dutyId){
+        try{
+            adminService.removeDutyFromExpert(expertId,dutyId);
+            return ResponseEntity.ok("Remove duty = %s to expert = %s ".formatted(expertId,dutyId));
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 

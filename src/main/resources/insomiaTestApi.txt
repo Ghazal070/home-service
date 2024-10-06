@@ -11,4 +11,18 @@ admin create duty
 }
 
 -------------------------------------------
+http://localhost:8080/admins/expertStatus/{id}
+-------------------------------------------
+http://localhost:8080/admins/addDutyToExpert
 
+{
+    "expertId":21,
+    "dutyId":9
+}
+----------------------------------------------
+http://localhost:8080/admins/removeDutyFromExpert
+
+{
+    "expertId":21,
+    "dutyId":9
+}
