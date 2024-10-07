@@ -81,13 +81,13 @@ public class UserIntegrationTest {
 
 
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder()
-                .dutyId(299)
+                .dutyId(9)
                 .priceOrder(900_000)
                 .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                 .address(faker.address().streetAddress())
                 .description("8 --- " + faker.lorem().characters(5, 20))
                 .build();
-        Order order = customerService.orderSubmit(orderSubmissionDto);
+        Order order = customerService.orderSubmit(orderSubmissionDto,loginUser.getId());
          assertNotNull(order);
          assertThat(order.getDuty().getId()).isEqualTo(orderSubmissionDto.getDutyId());
 

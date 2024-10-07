@@ -5,13 +5,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.io.Serializable;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserChangePasswordDto {
+public class UserChangePasswordDto  implements Serializable {
 
 
     @NotNull

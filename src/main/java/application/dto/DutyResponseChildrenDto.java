@@ -2,6 +2,7 @@ package application.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DutyResponseChildrenDto {
+public class DutyResponseChildrenDto  implements Serializable {
 
 
     private Integer id;

@@ -64,7 +64,7 @@ public class HomeServiceApp {
                         .address(faker.address().streetAddress())
                         .description( "8 --- " + faker.lorem().characters(5, 20))
                         .build()
-        );
+        ,2);
     }
 
     private static void loadAllDutyWithChildrenTest(DutyService dutyService) {

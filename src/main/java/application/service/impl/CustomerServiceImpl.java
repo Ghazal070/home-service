@@ -1,5 +1,6 @@
 package application.service.impl;
 
+import application.controller.CustomerController;
 import application.dto.OrderSubmissionDto;
 import application.entity.Duty;
 import application.entity.Offer;
@@ -32,8 +33,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
     @Override
-    public Order orderSubmit(OrderSubmissionDto orderSubmissionDto) {
-        Optional<Customer> customer = isCustomerAuthenticated();
+    public Order orderSubmit(OrderSubmissionDto orderSubmissionDto,Integer customerId) {
+        Optional<Customer> customer = isCustomerAuthenticated(customerId);
         if (customer.isEmpty()) {
             throw new ValidationException("Customer must be logged in to view duties.");
         }
@@ -57,8 +58,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         } else throw new ValidationException("OrderSubmission is null");
     }
 
-    public Optional<Customer> isCustomerAuthenticated() {
-        Integer customerId = authHolder.getTokenId();
+    public Optional<Customer> isCustomerAuthenticated(Integer customerId) {
         return repository.findById(customerId);
     }
 

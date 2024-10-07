@@ -5,13 +5,14 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserSignupRequestDto {
+public class UserSignupRequestDto  implements Serializable {
 
     private String firstName;
     private String lastName;

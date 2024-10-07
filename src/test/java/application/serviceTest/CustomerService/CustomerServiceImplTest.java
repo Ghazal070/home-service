@@ -78,13 +78,13 @@ class CustomerServiceImplTest {
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
         OrderSubmissionDto spyOrderSubmissionDto = spy(orderSubmissionDto);
         doReturn(10_000).when(spyOrderSubmissionDto).getPriceOrder();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
+//        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(spyDuty.getId())).willReturn(Optional.of(spyDuty));
         doReturn(true).when(spyDuty).getSelectable();
         given(orderService.save(any(Order.class))).willReturn(new Order());
 
-        Order order = underTest.orderSubmit(spyOrderSubmissionDto);
+        Order order = underTest.orderSubmit(spyOrderSubmissionDto,customer.getId());
 
         assertNotNull(order);
         assertEquals(OrderStatus.ExpertOfferWanting,order.getOrderStatus());
@@ -92,10 +92,9 @@ class CustomerServiceImplTest {
     @Test
     public void orderSubmitIsNull() {
         Customer customer = Customer.builder().id(100).build();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
 
-        assertThatThrownBy(()->underTest.orderSubmit(null))
+        assertThatThrownBy(()->underTest.orderSubmit(null,customer.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("OrderSubmission is null");
     }
@@ -103,10 +102,9 @@ class CustomerServiceImplTest {
     public void orderSubmitNotAuthenticated() {
         Customer customer = Customer.builder().id(100).build();
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto,customer.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Customer must be logged in to view duties.");
     }
@@ -115,11 +113,10 @@ class CustomerServiceImplTest {
         Customer customer = Customer.builder().id(100).build();
         Duty duty = Duty.builder().id(120).basePrice(1_000).title("Wash Dishes").selectable(true).build();
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(duty.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto,customer.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title duty must be from Duty and be selectable List or auth holder is null");
 
@@ -134,12 +131,11 @@ class CustomerServiceImplTest {
                         .build()
         );
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(duty.getId())).willReturn(Optional.of(duty));
         doReturn(false).when(duty).getSelectable();
 
-        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto))
+        assertThatThrownBy(()->underTest.orderSubmit(orderSubmissionDto,customer.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Title duty must be from Duty and be selectable List or auth holder is null");
     }
@@ -151,12 +147,11 @@ class CustomerServiceImplTest {
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder().priceOrder(2_000).dutyId(120).build();
         OrderSubmissionDto spyOrderSubmissionDto = spy(orderSubmissionDto);
         doReturn(1_00).when(spyOrderSubmissionDto).getPriceOrder();
-        given(authHolder.getTokenId()).willReturn(customer.getId());
         given(repository.findById(customer.getId())).willReturn(Optional.of(customer));
         given(dutyService.findById(spyDuty.getId())).willReturn(Optional.of(spyDuty));
         doReturn(true).when(spyDuty).getSelectable();
 
-        assertThatThrownBy(()->underTest.orderSubmit(spyOrderSubmissionDto))
+        assertThatThrownBy(()->underTest.orderSubmit(spyOrderSubmissionDto,customer.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Duty base price greater than your order");
     }
@@ -164,10 +159,9 @@ class CustomerServiceImplTest {
     @Test
     public void isCustomerAuthenticatedSuccessfully() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
-        given(authHolder.getTokenId()).willReturn(customer.get().getId());
         given(repository.findById(100)).willReturn(customer);
 
-        Optional<Customer> actual = underTest.isCustomerAuthenticated();
+        Optional<Customer> actual = underTest.isCustomerAuthenticated(customer.get().getId());
 
         assertNotNull(actual);
     }
@@ -175,10 +169,9 @@ class CustomerServiceImplTest {
     @Test
     public void isCustomerAuthenticatedFailedCustomerNotExist() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
-        given(authHolder.getTokenId()).willReturn(customer.get().getId());
         given(repository.findById(100)).willReturn(Optional.empty());
 
-        Optional<Customer> actual = underTest.isCustomerAuthenticated();
+        Optional<Customer> actual = underTest.isCustomerAuthenticated(customer.get().getId());
 
         assertThat(actual).isEmpty();
     }
@@ -187,7 +180,7 @@ class CustomerServiceImplTest {
     public void isCustomerAuthenticatedFailedAuthHolderIsNull() {
         Optional<Customer> customer = Optional.ofNullable(Customer.builder().id(100).build());
 
-        Optional<Customer> actual = underTest.isCustomerAuthenticated();
+        Optional<Customer> actual = underTest.isCustomerAuthenticated(customer.get().getId());
 
         assertThat(actual).isEmpty();
     }

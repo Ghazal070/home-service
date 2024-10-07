@@ -10,8 +10,8 @@ import java.util.Set;
 
 public interface CustomerService extends UserService<Customer>{
 
-    Order orderSubmit(OrderSubmissionDto orderSubmissionDto);
-    Optional<Customer> isCustomerAuthenticated();
+    Order orderSubmit(OrderSubmissionDto orderSubmissionDto,Integer customerId);
+    Optional<Customer> isCustomerAuthenticated(Integer customerId);
     Set<Offer> getOffersForOrder(Integer orderId);
     Boolean chooseExpertForOrder(Integer offerId);
     Boolean orderStarted(Integer offerId);

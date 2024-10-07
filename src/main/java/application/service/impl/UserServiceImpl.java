@@ -63,7 +63,6 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             throw new ValidationException("Invalid login credentials");
         } else
             throw new ValidationException("Email or Password must not be empty");
-
     }
 
     @Override
