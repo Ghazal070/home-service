@@ -1,10 +1,13 @@
 package application.controller;
 
+import application.dto.OfferResponseDto;
 import application.dto.OrderResponseDto;
 import application.dto.OrderSubmissionDto;
+import application.entity.Offer;
 import application.entity.Order;
 import application.entity.users.Customer;
 import application.exception.ValidationControllerException;
+import application.mapper.OfferMapper;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
 import application.util.AuthHolder;
@@ -14,8 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.function.EntityResponse;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/customers")
@@ -24,6 +31,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final OrderMapper orderMapper;
+    private  final OfferMapper offerMapper;
 
 
 
@@ -47,5 +55,20 @@ public class CustomerController {
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/offer/{orderId}")
+    public ModelAndView getOffersForOrder(@PathVariable Integer orderId){
+        try{
+            ModelAndView view = new ModelAndView("offers");
+
+            Set<Offer> offers = customerService.getOffersForOrder(orderId);
+            Set<OfferResponseDto> offerResponse = offerMapper.convertEntityToDto(offers);
+            view.addObject("offerResponse",offerResponse);
+            return view;
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
     }
 }
