@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -18,9 +19,8 @@ public interface OrderMapper extends BaseMapper<Order, OrderResponseDto> {
             @Mapping(target = "expertId", source = "expert.id")
     }
     )
-    @Override
     OrderResponseDto convertEntityToDto(Order order);
 
-    @Override
+
     List<OrderResponseDto> convertEntityToDto(List<Order> e);
 }
