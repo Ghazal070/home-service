@@ -91,7 +91,6 @@ class ExpertServiceImplTest {
     public void testSendOfferSuccess() {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
-                .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
@@ -102,10 +101,10 @@ class ExpertServiceImplTest {
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
-        given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
+        given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(new Offer());
 
-        Offer savedOffer = underTest.sendOffer(offerCreationDto);
+        Offer savedOffer = underTest.sendOffer(offerCreationDto,expert.getId());
 
         assertNotNull(savedOffer);
         assertEquals(OrderStatus.ExpertChooseWanting, order.getOrderStatus());
@@ -115,13 +114,13 @@ class ExpertServiceImplTest {
     public void testSendOfferOrderNotFound() {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
-                .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
+        Expert expert = Expert.builder().id(1).build();
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto,expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Order is null");
 
@@ -131,17 +130,16 @@ class ExpertServiceImplTest {
     public void testSendOfferOrderNotInList() {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
-                .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
         Duty duty = Duty.builder().id(50).basePrice(1_000).build();
+        Expert expert = Expert.builder().id(1).build();
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
-        given(authHolder.getTokenId()).willReturn(1);
-        given(orderService.getOrdersForExpert(1)).willReturn(new HashSet<>());
+        given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(new HashSet<>());
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto,expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("This order is not in list expert order or not waiting");
     }
@@ -150,17 +148,16 @@ class ExpertServiceImplTest {
     public void testSendOfferBasePriceGreaterThanOffer() {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
-                .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
+        Expert expert = Expert.builder().id(1).build();
         Duty duty = Duty.builder().id(50).basePrice(8_000).build();
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
-        given(authHolder.getTokenId()).willReturn(1);
-        given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
+        given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(Set.of(order));
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto,expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Base price greater than your offer");
     }
@@ -169,7 +166,6 @@ class ExpertServiceImplTest {
     public void testSendOfferOfferNotSaved() {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
                 .orderId(100).priceOffer(2_000)
-                .dateTimeOffer(LocalDateTime.now())
                 .lengthDays(5)
                 .dateTimeStartWork(LocalDateTime.now().plus(5, ChronoUnit.DAYS))
                 .build();
@@ -180,10 +176,10 @@ class ExpertServiceImplTest {
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
         given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
-        given(orderService.getOrdersForExpert(1)).willReturn(Set.of(order));
+        given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(null);
 
-        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto))
+        assertThatThrownBy(() -> underTest.sendOffer(offerCreationDto,expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Error in saving offer");
     }

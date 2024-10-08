@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -59,6 +60,8 @@ public class Order extends BaseEntity<Integer> {
 
     @OneToMany(mappedBy = "order")
     private Set<Offer> offers;
+
+
 
     @Override
     public String toString() {

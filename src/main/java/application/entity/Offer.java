@@ -5,6 +5,7 @@ import application.entity.users.Expert;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +39,6 @@ public class Offer extends BaseEntity<Integer>{
     private Integer priceOffer;
 
     @Column
-    @NotNull
     private LocalDateTime dateTimeOffer;
 
     @Column
@@ -53,6 +53,9 @@ public class Offer extends BaseEntity<Integer>{
     private Integer lengthDays;
 
 
-
+    @PrePersist
+    protected void onCreate(){
+        this.dateTimeOffer =LocalDateTime.now();
+    }
 
 }

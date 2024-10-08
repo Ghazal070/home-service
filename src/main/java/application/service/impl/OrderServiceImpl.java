@@ -19,7 +19,7 @@ public class OrderServiceImpl extends BaseEntityServiceImpl<OrderRepository, Ord
 
     @Transactional
     @Override
-    public Set<Order> getOrdersForExpert(Integer expertId) {
-        return repository.getOrdersForExpert(expertId);
+    public Set<Order> getOrdersForExpertWaitingOrChoosing(Integer expertId) {
+        return repository.getOrdersForExpertWaitingOrChoosing(expertId);
     }
 }

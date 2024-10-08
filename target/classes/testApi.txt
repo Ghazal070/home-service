@@ -1,0 +1,48 @@
+
+http://localhost:8081/admins/dutyCreation
+
+admin create duty
+{
+	"title":"adminCreateDuty",
+	"parentId":305,
+	"basePrice":5000,
+	"description":"adminCreateDuty",
+	"selectable" : true
+}
+
+-------------------------------------------
+http://localhost:8081/admins/expertStatus/{id}
+-------------------------------------------
+http://localhost:8081/admins/addDutyToExpert?expertId=2&dutyId=9
+-------------------------------------------
+http://localhost:8081/admins/removeDutyFromExpert?expertId=2&dutyId=9
+
+======================================================================
+======================================================================
+Customers
+http://localhost:8081/customers/orderSubmit/2
+
+{
+    "dutyId":299,
+    "description": "helllo",
+    "priceOrder": 100000000,
+    "dateTimeOrder":"2024-12-06 22:30:23.124835",
+    "address":"gggggggggg"
+}
+===================================================================
+login customer
+http://localhost:8080/users/login?username=ezequiel.kuhlman@gmail.com&password=5lmi7364
+==================================================================
+get offer for order id
+http://localhost:8081/customers/offer/322
+==================================================================
+change status to ExpertChooseWanting
+http://localhost:8081/customers/offer/chooseExpert/{offerId}
+
+================================================================
+orderDone
+http://localhost:8081/customers/offer/orderDone/{offerId}
+
+================================================================
+orderStarted
+http://localhost:8081/customers/offer/orderStarted/{offerId}

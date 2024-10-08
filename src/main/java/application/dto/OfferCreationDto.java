@@ -21,9 +21,6 @@ public class OfferCreationDto  implements Serializable {
     @NotNull
     private Integer priceOffer;
 
-    @NotNull
-    private LocalDateTime dateTimeOffer;
-
     @Future
     @NotNull
     private LocalDateTime dateTimeStartWork;

@@ -39,30 +39,30 @@ class OrderServiceImplTest {
     }
 
     @Test
-    public void testGetOrdersForExpertSuccessfully() {
+    public void testgetOrdersForExpertWaitingOrChoosingSuccessfully() {
         Integer expertId = 1;
         Set<Order> expectedOrders = new HashSet<>();
         expectedOrders.add(new Order());
 
 
-        given(repository.getOrdersForExpert(expertId)).willReturn(expectedOrders);
+        given(repository.getOrdersForExpertWaitingOrChoosing(expertId)).willReturn(expectedOrders);
 
-        Set<Order> actualOrders = underTest.getOrdersForExpert(expertId);
+        Set<Order> actualOrders = underTest.getOrdersForExpertWaitingOrChoosing(expertId);
 
         assertEquals(expectedOrders, actualOrders);
-        verify(repository).getOrdersForExpert(expertId);
+        verify(repository).getOrdersForExpertWaitingOrChoosing(expertId);
     }
 
     @Test
-    public void testGetOrdersForExpertNoOrders() {
+    public void testgetOrdersForExpertWaitingOrChoosingNoOrders() {
         Integer expertId = 1;
         Set<Order> expectedOrders = new HashSet<>();
 
-        given(repository.getOrdersForExpert(expertId)).willReturn(expectedOrders);
+        given(repository.getOrdersForExpertWaitingOrChoosing(expertId)).willReturn(expectedOrders);
 
-        Set<Order> actualOrders = underTest.getOrdersForExpert(expertId);
+        Set<Order> actualOrders = underTest.getOrdersForExpertWaitingOrChoosing(expertId);
 
         assertEquals(expectedOrders, actualOrders);
-        verify(repository).getOrdersForExpert(expertId);
+        verify(repository).getOrdersForExpertWaitingOrChoosing(expertId);
     }
 }

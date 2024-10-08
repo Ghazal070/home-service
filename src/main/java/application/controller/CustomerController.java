@@ -31,44 +31,73 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final OrderMapper orderMapper;
-    private  final OfferMapper offerMapper;
-
+    private final OfferMapper offerMapper;
 
 
     @PostMapping("/orderSubmit/{customerId}")
-    public ResponseEntity<OrderResponseDto> orderSubmit(@RequestBody @Valid OrderSubmissionDto orderSubmissionDto,@PathVariable Integer customerId){
-        try{
+    public ResponseEntity<OrderResponseDto> orderSubmit(@RequestBody @Valid OrderSubmissionDto orderSubmissionDto, @PathVariable Integer customerId) {
+        try {
             customerService.isCustomerAuthenticated(customerId);
-            Order order = customerService.orderSubmit(orderSubmissionDto,customerId);
+            Order order = customerService.orderSubmit(orderSubmissionDto, customerId);
             OrderResponseDto orderResponseDto = orderMapper.convertEntityToDto(order);
             return ResponseEntity.ok(orderResponseDto);
-        }catch (ValidationException e){
+        } catch (ValidationException e) {
             throw new ValidationControllerException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/authenticate/{customerId}")
-    public ResponseEntity<String> isCustomerAuthenticated(Integer customerId){
+    public ResponseEntity<String> isCustomerAuthenticated(@PathVariable Integer customerId) {
         try {
             customerService.isCustomerAuthenticated(customerId);
             return ResponseEntity.ok("Customer is Authenticate");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/offer/{orderId}")
-    public ModelAndView getOffersForOrder(@PathVariable Integer orderId){
-        try{
+    public ModelAndView getOffersForOrder(@PathVariable Integer orderId) {
+        try {
             ModelAndView view = new ModelAndView("offers");
 
             Set<Offer> offers = customerService.getOffersForOrder(orderId);
             Set<OfferResponseDto> offerResponse = offerMapper.convertEntityToDto(offers);
-            view.addObject("offerResponse",offerResponse);
+            view.addObject("offerResponse", offerResponse);
             return view;
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/offer/chooseExpert/{offerId}")
+    public ResponseEntity<String> chooseExpertForOrder(@PathVariable Integer offerId) {
+        try {
+            customerService.chooseExpertForOrder(offerId);
+            return ResponseEntity.ok("Status change to ComingToLocationWanting");
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
-
     }
+
+    @PatchMapping("/offer/orderStarted/{offerId}")
+    public ResponseEntity<String> orderStarted(@PathVariable Integer offerId) {
+        try {
+            customerService.orderStarted(offerId);
+            return ResponseEntity.ok("Status change to orderStarted");
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/offer/orderDone/{offerId}")
+    public ResponseEntity<String> orderDone(@PathVariable Integer offerId) {
+        try {
+            customerService.orderStarted(offerId);
+            return ResponseEntity.ok("Status change to orderDone");
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

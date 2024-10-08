@@ -13,15 +13,15 @@ import java.util.Set;
 public interface OfferMapper extends BaseMapper<Offer, OfferResponseDto> {
 
     @Mappings({
-            @Mapping(target = "orderId", source = "Order.id"),
-            @Mapping(target = "expertId", source = "Expert.id")
+            @Mapping(target="orderId", source="order.id"),
+            @Mapping(target="expertId", source="expert.id")
     }
     )
     OfferResponseDto convertEntityToDto(Offer offer);
 
     @Mappings({
-            @Mapping(target = "orderId", source = "Order.id"),
-            @Mapping(target = "expertId", source = "Expert.id")
+            @Mapping(target="orderId", source="order.id"),
+            @Mapping(target="expertId", source="expert.id")
     }
     )
     Set<OfferResponseDto> convertEntityToDto(Set<Offer> e);

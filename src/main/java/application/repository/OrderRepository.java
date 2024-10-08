@@ -20,5 +20,6 @@ public interface OrderRepository extends BaseEntityRepository<Order,Integer>{
             )  
             AND (o.orderStatus = 'ExpertOfferWanting' OR o.orderStatus = 'ExpertChooseWanting')  
             """)
-    Set<Order> getOrdersForExpert(@Param("expertId") Integer expertId);
+    Set<Order> getOrdersForExpertWaitingOrChoosing(@Param("expertId") Integer expertId);
+
 }

@@ -14,6 +14,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @SpringBootApplication
@@ -47,9 +48,22 @@ public class HomeServiceApp {
         //adminService.removeDutyFromExpert(271,283);
         //dutyService.getSelectableDuties().forEach(System.out::println);
         //orderSubmitTest(faker, customerService);
-        //orderService.getOrdersForExpert(293).forEach(System.out::println);
+        //orderService.getOrdersForExpertWaitingOrChoosing(293).forEach(System.out::println);
+        //customerService.chooseExpertForOrder(325);
+        //expertCreateOffer(expertService);
 
 
+
+    }
+
+    private static void expertCreateOffer(ExpertService expertService) {
+        OfferCreationDto offerCreationDto = OfferCreationDto.builder()
+                .orderId(324)
+                .priceOffer(2000000)
+                .dateTimeStartWork(LocalDateTime.now().plus(2, ChronoUnit.DAYS))
+                .lengthDays(1)
+                .build();
+        expertService.sendOffer(offerCreationDto,327);
     }
 
 
@@ -203,7 +217,7 @@ public class HomeServiceApp {
                     .lastName(faker.name().lastName())
                     .email(faker.internet().emailAddress())
                     .password(faker.lorem().characters(4) + faker.number().numberBetween(1000, 9999))
-                    .inputStream(new FileInputStream("src/main/resources/images/tool.png"))
+                    .inputStream(new FileInputStream("src/main/resources/images/less300.jpg"))
                     .role(role)
                     .build();
         } catch (FileNotFoundException e) {
