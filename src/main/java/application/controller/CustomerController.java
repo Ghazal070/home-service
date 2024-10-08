@@ -56,12 +56,12 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/offer/{orderId}")
-    public ModelAndView getOffersForOrder(@PathVariable Integer orderId) {
+    @GetMapping("/offer")
+    public ModelAndView getOffersForOrder(@RequestParam Integer orderId,@RequestParam Integer customerId) {
         try {
             ModelAndView view = new ModelAndView("offers");
 
-            Set<Offer> offers = customerService.getOffersForOrder(orderId);
+            Set<Offer> offers = customerService.getOffersForOrder(orderId,customerId);
             Set<OfferResponseDto> offerResponse = offerMapper.convertEntityToDto(offers);
             view.addObject("offerResponse", offerResponse);
             return view;

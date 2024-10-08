@@ -193,11 +193,9 @@ class CustomerServiceImplTest {
         Offer offer2 = Offer.builder().id(2).build();
         Set<Offer> offers = Set.of(offer1, offer2);
 
-        given(authHolder.getTokenId()).willReturn(customerId);
         given(offerService.getOfferByCustomerIdOrderByPriceOrder(customerId, orderId)).willReturn(offers);
 
-
-        Set<Offer> actualOffers = underTest.getOffersForOrder(orderId);
+        Set<Offer> actualOffers = underTest.getOffersForOrder(orderId,customerId);
         assertThat(actualOffers).isEqualTo(offers);
     }
     @Test

@@ -34,7 +34,7 @@ login customer
 http://localhost:8080/users/login?username=ezequiel.kuhlman@gmail.com&password=5lmi7364
 ==================================================================
 get offer for order id
-http://localhost:8081/customers/offer/322
+http://localhost:8081/customers/offer?orderId=324&customerId=315
 ==================================================================
 change status to ExpertChooseWanting
 http://localhost:8081/customers/offer/chooseExpert/{offerId}

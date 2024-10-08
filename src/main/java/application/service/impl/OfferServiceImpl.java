@@ -1,8 +1,10 @@
 package application.service.impl;
 
+import application.dto.projection.OfferProjection;
 import application.entity.Offer;
 import application.repository.OfferRepository;
 import application.service.OfferService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Validator;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,8 @@ public class OfferServiceImpl extends BaseEntityServiceImpl<OfferRepository, Off
     }
 
     @Override
-    public Set<Offer> getOfferByCustomerIdOrderByPriceOrder(Integer customerId,Integer orderId) {
+    @Transactional
+    public Set<Offer> getOfferByCustomerIdOrderByPriceOrder(Integer customerId, Integer orderId) {
         return repository.getOfferByCustomerIdOrderByPriceOrder(customerId,orderId);
     }
 

@@ -51,6 +51,7 @@ public class HomeServiceApp {
         //orderService.getOrdersForExpertWaitingOrChoosing(293).forEach(System.out::println);
         //customerService.chooseExpertForOrder(325);
         //expertCreateOffer(expertService);
+        //customerService.getOffersForOrder(324,315).forEach(System.out::println);
 
 
 

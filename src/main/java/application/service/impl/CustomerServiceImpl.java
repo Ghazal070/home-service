@@ -63,8 +63,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
     @Override
-    public Set<Offer> getOffersForOrder(Integer orderId) {
-        return offerService.getOfferByCustomerIdOrderByPriceOrder(authHolder.getTokenId(), orderId);
+    public Set<Offer> getOffersForOrder(Integer orderId,Integer customerId) {
+        return offerService.getOfferByCustomerIdOrderByPriceOrder(customerId, orderId);
     }
 
     @Override
