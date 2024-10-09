@@ -46,3 +46,14 @@ http://localhost:8081/customers/offer/orderDone/{offerId}
 ================================================================
 orderStarted
 http://localhost:8081/customers/offer/orderStarted/{offerId}
+
+================================================================
+orderStarted
+http://localhost:8081/duties/update
+
+{
+	"dutyId":304,
+	"price":500,
+	"description":"helllo from insomia",
+	"selectable":true
+}

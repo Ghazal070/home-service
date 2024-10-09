@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.dto.UpdateDutyDto;
 import application.dto.projection.UserLoginProjection;
 import application.exception.ValidationControllerException;
 import application.service.CustomerService;
@@ -8,10 +9,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/duties")
@@ -21,13 +19,16 @@ public class DutyController {
     private final DutyService dutyService;
 
 
-    @PostMapping("/login")
-    public ResponseEntity<String> customerLogin (@RequestParam String username, @RequestParam String password){
-        try {
-            UserLoginProjection login = customerService.login(username, password);
-            return ResponseEntity.ok("Customer is Authenticate");
+    @PatchMapping("/update")
+    public ResponseEntity<String> updateDutyPriceOrDescription(@RequestBody UpdateDutyDto updateDutyDto){
+        try{
+            dutyService.updateDutyPriceOrDescription(updateDutyDto);
+            return new ResponseEntity<>("Duty is updated",HttpStatus.OK);
         }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
 }
