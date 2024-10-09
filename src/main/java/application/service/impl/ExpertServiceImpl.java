@@ -32,9 +32,10 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     }
 
     @Override
-    public Boolean havePermissionExpertToServices(Expert expert) {
-        if (expert != null) {
-            if (expert.getExpertStatus().equals(ExpertStatus.Accepted)) {
+    public Boolean havePermissionExpertToServices(Integer expertId) {
+        Optional<Expert> expert = repository.findById(expertId);
+        if (expert.isPresent()) {
+            if (expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
                 return true;
             }
         }

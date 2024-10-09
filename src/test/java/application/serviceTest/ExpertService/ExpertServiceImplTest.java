@@ -69,18 +69,18 @@ class ExpertServiceImplTest {
     @Test
     public void testHavePermissionTrueExpertToServices() {
         Expert expert = Expert.builder().id(100).expertStatus(ExpertStatus.Accepted).build();
+        given(repository.findById(100)).willReturn(Optional.of(expert));
 
-        Boolean actual = underTest.havePermissionExpertToServices(expert);
+        Boolean actual = underTest.havePermissionExpertToServices(expert.getId());
 
         assertTrue(actual);
-
     }
 
     @Test
     public void testHavePermissionFalseExpertToServices() {
         Expert expert = Expert.builder().id(100).expertStatus(ExpertStatus.New).build();
 
-        Boolean actual = underTest.havePermissionExpertToServices(expert);
+        Boolean actual = underTest.havePermissionExpertToServices(expert.getId());
 
         assertFalse(actual);
 
@@ -99,7 +99,6 @@ class ExpertServiceImplTest {
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         Expert expert = Expert.builder().id(1).duties(duties).build();
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
-        given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
         given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(new Offer());
@@ -174,7 +173,6 @@ class ExpertServiceImplTest {
         Order order = Order.builder().id(100).priceOrder(2_500).duty(duty).build();
         Expert expert = Expert.builder().id(1).duties(duties).build();
         given(orderService.findById(offerCreationDto.getOrderId())).willReturn(Optional.of(order));
-        given(authHolder.getTokenId()).willReturn(1);
         given(repository.findById(1)).willReturn(Optional.of(expert));
         given(orderService.getOrdersForExpertWaitingOrChoosing(1)).willReturn(Set.of(order));
         given(offerService.save(any(Offer.class))).willReturn(null);

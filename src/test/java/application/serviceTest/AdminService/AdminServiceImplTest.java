@@ -178,7 +178,7 @@ class AdminServiceImplTest {
         Duty duty = Duty.builder().id(101).title("Wash Dishes").selectable(true).build();
         given(expertService.findById(100)).willReturn(expert);
         given(dutyService.findById(101)).willReturn(Optional.ofNullable(duty));
-        given(expertService.havePermissionExpertToServices(expert.get()))
+        given(expertService.havePermissionExpertToServices(expert.get().getId()))
                 .willReturn(true);
         given(expertService.update(expert.get())).willReturn(expert.get());
 
@@ -187,7 +187,7 @@ class AdminServiceImplTest {
 
         verify(expertService).findById(100);
         verify(dutyService).findById(101);
-        verify(expertService).havePermissionExpertToServices(expert.get());
+        verify(expertService).havePermissionExpertToServices(expert.get().getId());
         verify(expertService).update(expert.get());
         assertTrue(addDutyToExpert);
 

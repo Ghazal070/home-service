@@ -48,7 +48,7 @@ orderStarted
 http://localhost:8081/customers/offer/orderStarted/{offerId}
 
 ================================================================
-orderStarted
+updateDuty
 http://localhost:8081/duties/update
 
 {
@@ -57,3 +57,21 @@ http://localhost:8081/duties/update
 	"description":"helllo from insomia",
 	"selectable":true
 }
+================================================================
+dutiesWithSubDuties
+http://localhost:8081/duties/dutiesWithSubDuties
+
+================================================================
+dutiesWithSubDutiesOnlyTitle
+http://localhost:8081/duties/dutiesWithSubDutiesOnlyTitle
+
+================================================================
+dutyUniqField
+http://localhost:8080/duties/uniqField?title=SofaWashing&parentId=298
+================================================================
+dutyExitTitle
+http://localhost:8080/duties/exitTitle?title=SofaWashing
+
+================================================================
+allSelectableDuties
+http://localhost:8080/duties/allSelectableDuties

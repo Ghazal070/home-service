@@ -83,7 +83,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         if (!duty.get().getSelectable()) {
             throw new ValidationException("Duty selectable is false");
         }
-        if (expertService.havePermissionExpertToServices(expert.get())) {
+        if (expertService.havePermissionExpertToServices(expert.get().getId())) {
             Set<Duty> duties = expert.get().getDuties();
             if (duties.add(duty.get())) {
                 expertService.update(expert.get());
