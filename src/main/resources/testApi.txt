@@ -97,3 +97,17 @@ http://localhost:8081/offers/orderByScoreExpert?customerId=315&orderID=324
 orders
 http://localhost:8081/orders/expertWaiting/{327}
 ================================================================
+passwordEncoder
+http://localhost:8081/passwordEncoder/encoding
+
+{
+	"password":"ghazal"
+}
+================================================================
+passwordEncoder
+http://localhost:8081/passwordEncoder/equalOLdAndEncoded
+{
+	"oldPassword":"ghazal99",
+	"encodedPassword":"ghazal99"
+}
+================================================================
