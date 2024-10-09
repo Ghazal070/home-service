@@ -17,6 +17,7 @@ public class OfferServiceImpl extends BaseEntityServiceImpl<OfferRepository, Off
         super(validator, repository);
     }
     @Override
+    @Transactional
     public Set<Offer> getOfferByCustomerIdOrderByScoreExpert(Integer customerId,Integer orderId){
         return repository.getOfferByCustomerIdOrderByScoreExpert(customerId,orderId);
     }

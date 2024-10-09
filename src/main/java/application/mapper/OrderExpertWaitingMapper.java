@@ -1,17 +1,16 @@
 package application.mapper;
 
+import application.dto.OrderExpertWaitingDto;
 import application.dto.OrderResponseDto;
 import application.entity.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-
-import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
-public interface OrderMapper extends BaseMapper<Order, OrderResponseDto> {
+public interface OrderExpertWaitingMapper extends BaseMapper<Order, OrderExpertWaitingDto> {
 
 
     @Mappings({
@@ -20,7 +19,7 @@ public interface OrderMapper extends BaseMapper<Order, OrderResponseDto> {
             @Mapping(target = "expertId", source = "expert.id")
     }
     )
-    OrderResponseDto convertEntityToDto(Order order);
+    OrderExpertWaitingDto convertEntityToDto(Order order);
 
 
     @Mappings({
@@ -29,5 +28,5 @@ public interface OrderMapper extends BaseMapper<Order, OrderResponseDto> {
             @Mapping(target = "expertId", source = "expert.id")
     }
     )
-    Set<OrderResponseDto> convertEntityToDto(Set<Order> e);
+    Set<OrderExpertWaitingDto> convertEntityToDto(Set<Order> e);
 }

@@ -1,8 +1,7 @@
 package application.mapper;
 
-import application.dto.OrderResponseDto;
+import application.dto.OrderExpertWaitingDto;
 import application.entity.Duty;
-import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
@@ -18,14 +17,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-09T15:23:18+0330",
+    date = "2024-10-09T16:32:01+0330",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
-public class OrderMapperImpl implements OrderMapper {
+public class OrderExpertWaitingMapperImpl implements OrderExpertWaitingMapper {
 
     @Override
-    public Order convertDtoToEntity(OrderResponseDto d) {
+    public Order convertDtoToEntity(OrderExpertWaitingDto d) {
         if ( d == null ) {
             return null;
         }
@@ -40,35 +39,31 @@ public class OrderMapperImpl implements OrderMapper {
         if ( d.orderStatus() != null ) {
             order.orderStatus( Enum.valueOf( OrderStatus.class, d.orderStatus() ) );
         }
-        Set<Offer> set = d.offers();
-        if ( set != null ) {
-            order.offers( new LinkedHashSet<Offer>( set ) );
-        }
 
         return order.build();
     }
 
     @Override
-    public List<Order> convertDtoToEntity(List<OrderResponseDto> d) {
+    public List<Order> convertDtoToEntity(List<OrderExpertWaitingDto> d) {
         if ( d == null ) {
             return null;
         }
 
         List<Order> list = new ArrayList<Order>( d.size() );
-        for ( OrderResponseDto orderResponseDto : d ) {
-            list.add( convertDtoToEntity( orderResponseDto ) );
+        for ( OrderExpertWaitingDto orderExpertWaitingDto : d ) {
+            list.add( convertDtoToEntity( orderExpertWaitingDto ) );
         }
 
         return list;
     }
 
     @Override
-    public List<OrderResponseDto> convertEntityToDto(List<Order> e) {
+    public List<OrderExpertWaitingDto> convertEntityToDto(List<Order> e) {
         if ( e == null ) {
             return null;
         }
 
-        List<OrderResponseDto> list = new ArrayList<OrderResponseDto>( e.size() );
+        List<OrderExpertWaitingDto> list = new ArrayList<OrderExpertWaitingDto>( e.size() );
         for ( Order order : e ) {
             list.add( convertEntityToDto( order ) );
         }
@@ -77,7 +72,7 @@ public class OrderMapperImpl implements OrderMapper {
     }
 
     @Override
-    public OrderResponseDto convertEntityToDto(Order order) {
+    public OrderExpertWaitingDto convertEntityToDto(Order order) {
         if ( order == null ) {
             return null;
         }
@@ -89,7 +84,6 @@ public class OrderMapperImpl implements OrderMapper {
         Integer priceOrder = null;
         String dateTimeOrder = null;
         String orderStatus = null;
-        Set<Offer> offers = null;
 
         customerId = orderCustomerId( order );
         dutyId = orderDutyId( order );
@@ -102,23 +96,19 @@ public class OrderMapperImpl implements OrderMapper {
         if ( order.getOrderStatus() != null ) {
             orderStatus = order.getOrderStatus().name();
         }
-        Set<Offer> set = order.getOffers();
-        if ( set != null ) {
-            offers = new LinkedHashSet<Offer>( set );
-        }
 
-        OrderResponseDto orderResponseDto = new OrderResponseDto( description, priceOrder, dateTimeOrder, orderStatus, customerId, expertId, dutyId, offers );
+        OrderExpertWaitingDto orderExpertWaitingDto = new OrderExpertWaitingDto( description, priceOrder, dateTimeOrder, orderStatus, customerId, expertId, dutyId );
 
-        return orderResponseDto;
+        return orderExpertWaitingDto;
     }
 
     @Override
-    public Set<OrderResponseDto> convertEntityToDto(Set<Order> e) {
+    public Set<OrderExpertWaitingDto> convertEntityToDto(Set<Order> e) {
         if ( e == null ) {
             return null;
         }
 
-        Set<OrderResponseDto> set = new LinkedHashSet<OrderResponseDto>( Math.max( (int) ( e.size() / .75f ) + 1, 16 ) );
+        Set<OrderExpertWaitingDto> set = new LinkedHashSet<OrderExpertWaitingDto>( Math.max( (int) ( e.size() / .75f ) + 1, 16 ) );
         for ( Order order : e ) {
             set.add( convertEntityToDto( order ) );
         }

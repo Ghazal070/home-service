@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-
+//@Transactional(readOnly=true)
 public class OrderServiceImpl extends BaseEntityServiceImpl<OrderRepository, Order, Integer> implements OrderService {
     public OrderServiceImpl(Validator validator, OrderRepository repository) {
         super(validator, repository);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Set<Order> getOrdersForExpertWaitingOrChoosing(Integer expertId) {
         return repository.getOrdersForExpertWaitingOrChoosing(expertId);
     }
