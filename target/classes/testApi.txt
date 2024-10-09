@@ -31,7 +31,10 @@ http://localhost:8081/customers/orderSubmit/2
 }
 ===================================================================
 login customer
-http://localhost:8080/users/login?username=ezequiel.kuhlman@gmail.com&password=5lmi7364
+http://localhost:8080/users/customers/login?username=reee@gh.com&password=ghazal99
+==================================================================
+login expert
+http://localhost:8080/users/experts/login?username=ezequiel.kuhlman@gmail.com&password=5lmi7364
 ==================================================================
 get offer for order id
 http://localhost:8081/customers/offer?orderId=324&customerId=315
@@ -107,7 +110,11 @@ http://localhost:8081/passwordEncoder/encoding
 passwordEncoder
 http://localhost:8081/passwordEncoder/equalOLdAndEncoded
 {
-	"oldPassword":"ghazal",
-	"encodedPassword":"ghazal"
+	"oldPassword":"ghazal99",
+	"encodedPassword":"ghazal99"
 }
+================================================================
+signup
+http://localhost:8081/signup/createUser
+{"firstName":"ghazal","lastName":"torabi","email":"reee@gh.com","password":"ghazal99","role":"Customer"}
 ================================================================

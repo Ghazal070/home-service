@@ -29,26 +29,32 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         this.passwordEncodeService = passwordEncodeService;
     }
 
-    public void convertByteToImage(Byte[] data, String firstName) {
-        if (data == null || data.length == 0)
-            throw new ValidationException("image is null");
-        byte[] dataByte = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            dataByte[i] = data[i];
-        }
-        BufferedImage bImage2;
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(dataByte)) {
-            bImage2 = ImageIO.read(bis);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        File file = new File("src/main/resources/images/" + firstName + ".jpg");
-        try {
-            ImageIO.write(bImage2, "jpg", file);
+    public void convertByteToImage(Integer userId) {
+        Optional<T> users = repository.findById(userId);
+        if (users.isPresent()){
+            Byte[] data = users.get().getImage();
+            String firstName = users.get().getFirstName();
+            if (data == null || data.length == 0)
+                throw new ValidationException("image is null");
+            byte[] dataByte = new byte[data.length];
+            for (int i = 0; i < data.length; i++) {
+                dataByte[i] = data[i];
+            }
+            BufferedImage bImage2;
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(dataByte)) {
+                bImage2 = ImageIO.read(bis);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            File file = new File("src/main/resources/images/" + firstName + ".jpg");
+            try {
+                ImageIO.write(bImage2, "jpg", file);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else throw new ValidationException("UserId is not exist");
+
     }
 
     @Override

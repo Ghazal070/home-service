@@ -2,6 +2,7 @@ package application.serviceTest.UserService;
 
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
+import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 import jakarta.validation.ValidationException;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 
+import static application.entity.users.Users_.firstName;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -65,12 +67,13 @@ class UserServiceImplTest {
         for (int i = 0; i < imageData.length; i++) {
             imageDataWrapper[i] = imageData[i];
         }
-        String firstName = "testUser";
+        Expert expert = Expert.builder().id(100).firstName("testUser").image(imageDataWrapper).build();
+        given(repository.findById(100)).willReturn(Optional.of(expert));
 
-        assertDoesNotThrow(() -> underTest.convertByteToImage(imageDataWrapper, firstName));
+        assertDoesNotThrow(() -> underTest.convertByteToImage(expert.getId()));
 
-        File createdFile = new File(tempDir + "/" + firstName + ".jpg");
-        assertTrue(createdFile.exists(), "Image file should exist after conversion");
+        File createdFile = new File(tempDir + "/" + expert.getFirstName() + ".jpg");
+        assertTrue(createdFile.exists());
 
         BufferedImage savedImage = ImageIO.read(createdFile);
         assertNotNull(savedImage, "Saved image should not be null");
@@ -79,7 +82,10 @@ class UserServiceImplTest {
 
     @Test
     void testConvertByteToImageWithNullData() {
-        assertThatThrownBy(() -> underTest.convertByteToImage(null, "testUser"))
+        Expert expert = Expert.builder().id(100).firstName("testUser").build();
+        given(repository.findById(100)).willReturn(Optional.of(expert));
+
+        assertThatThrownBy(() -> underTest.convertByteToImage(expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("image is null");
     }
@@ -87,7 +93,9 @@ class UserServiceImplTest {
     @Test
     void testConvertByteToImageWithEmptyData() {
         Byte[] emptyData = new Byte[0];
-        assertThatThrownBy(() -> underTest.convertByteToImage(emptyData, "testUser"))
+        Expert expert = Expert.builder().id(100).firstName("testUser").image(emptyData).build();
+        given(repository.findById(100)).willReturn(Optional.of(expert));
+        assertThatThrownBy(() -> underTest.convertByteToImage(expert.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("image is null");
     }

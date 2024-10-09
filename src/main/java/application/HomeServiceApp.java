@@ -202,14 +202,14 @@ public class HomeServiceApp {
         Faker faker = new Faker();
         UserSignupRequestDto userSignupRequestDto = createSignupRequest(faker, "Customer");
         Users signup = signupService.signup(userSignupRequestDto);
-        customerService.convertByteToImage(signup.getImage(), signup.getFirstName());
+        customerService.convertByteToImage(signup.getId());
     }
 
     private static void signupExpertTestMethod(ExpertService expertService, SignupService signupService) {
         Faker faker = new Faker();
         UserSignupRequestDto userSignupRequestDto = createSignupRequest(faker, "Expert");
         Users signup = signupService.signup(userSignupRequestDto);
-        expertService.convertByteToImage(signup.getImage(), signup.getFirstName());
+        expertService.convertByteToImage(signup.getId());
     }
 
 

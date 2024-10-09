@@ -99,7 +99,7 @@ public class SignupServiceImpl implements SignupService {
         }
     }
 
-    public boolean isImageJpg(InputStream inputStream) {
+    private boolean isImageJpg(InputStream inputStream) {
         try {
             ImageInputStream imageInputStream = ImageIO.createImageInputStream(inputStream);
             Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
