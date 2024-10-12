@@ -68,7 +68,7 @@ public class UserIntegrationTest {
                 .newPassword(newPassword)
                 .build();
 
-        Boolean isUpdated = customerService.updatePassword(userChangePasswordDto);
+        Boolean isUpdated = customerService.updatePassword(userChangePasswordDto,loginUser.getId());
         assertThat(isUpdated).isTrue();
 
         UserLoginProjection updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
@@ -81,7 +81,7 @@ public class UserIntegrationTest {
 
 
         OrderSubmissionDto orderSubmissionDto = OrderSubmissionDto.builder()
-                .dutyId(9)
+                .dutyId(299)
                 .priceOrder(900_000)
                 .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
                 .address(faker.address().streetAddress())

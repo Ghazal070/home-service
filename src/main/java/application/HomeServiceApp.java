@@ -185,11 +185,12 @@ public class HomeServiceApp {
     }
 
     private static void passwordUpdateTest(CustomerService customerService) {
+        Integer userId=298;
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
                 .oldPassword("wti94059")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
-        Boolean aBoolean = customerService.updatePassword(userChangePasswordDto);
+        Boolean aBoolean = customerService.updatePassword(userChangePasswordDto,userId);
         System.out.println("change Password" + aBoolean);
     }
 

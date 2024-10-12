@@ -2,6 +2,7 @@ package application.controller;
 
 import application.dto.OrderResponseDto;
 import application.dto.OrderSubmissionDto;
+import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.Order;
 import application.entity.users.Customer;
@@ -9,6 +10,7 @@ import application.exception.ValidationControllerException;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
 import application.service.ExpertService;
+import application.service.PasswordEncodeService;
 import application.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -57,4 +59,27 @@ public class UserController {
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/experts/changePassword/{expertId}")
+    public ResponseEntity<String> updatePasswordExpert (@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
+                                               @PathVariable Integer expertId){
+        try {
+            Boolean updatePassword = expertService.updatePassword(userChangePasswordDto, expertId);
+            return ResponseEntity.ok("Password Change");
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/customers/changePassword/{customerId}")
+    public ResponseEntity<String> updatePasswordCustomer (@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
+                                               @PathVariable Integer customerId){
+        try {
+            Boolean updatePassword = expertService.updatePassword(userChangePasswordDto, customerId);
+            return ResponseEntity.ok("Password Change");
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

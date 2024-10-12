@@ -16,8 +16,6 @@ http://localhost:8081/admins/expertStatus/{id}
 http://localhost:8081/admins/addDutyToExpert?expertId=2&dutyId=9
 -------------------------------------------
 http://localhost:8081/admins/removeDutyFromExpert?expertId=2&dutyId=9
-
-======================================================================
 ======================================================================
 Customers
 http://localhost:8081/customers/orderSubmit/2
@@ -34,7 +32,10 @@ login customer
 http://localhost:8080/users/customers/login?username=reee@gh.com&password=ghazal99
 ==================================================================
 login expert
-http://localhost:8080/users/experts/login?username=ezequiel.kuhlman@gmail.com&password=5lmi7364
+http://localhost:8080/users/experts/login?username=jamey.mraz@gmail.com&password=z3jq8345
+==================================================================
+convert image customer
+http://localhost:8080/users/customers/image/{343}
 ==================================================================
 get offer for order id
 http://localhost:8081/customers/offer?orderId=324&customerId=315

@@ -116,8 +116,6 @@ class UserServiceImplTest {
 
         assertNotNull(actual);
         assertEquals(userLoginProjection, actual);
-//        assertEquals(1, authHolder.getTokenId());
-//        assertEquals(email, authHolder.getTokenName());
     }
 
     @Test
@@ -150,32 +148,29 @@ class UserServiceImplTest {
         String oldPassword = "pass1234";
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
-        Users users = Users.builder().id(1).build();
-        given(authHolder.getTokenId()).willReturn(1);
-        given(authHolder.getTokenName()).willReturn(email);
+        Users users = Users.builder().id(1).profile(Profile.builder().email("user@example.com").build()).build();
         given(repository.findById(1)).willReturn(Optional.of(users));
         given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword())).willReturn(true);
         given(passwordEncodeService.encode(userChangePasswordDto.getNewPassword())).willReturn(newPassword);
         given(repository.updatePassword(email, newPassword)).willReturn(1);
 
-        Boolean actual = underTest.updatePassword(userChangePasswordDto);
+        Boolean actual = underTest.updatePassword(userChangePasswordDto,users.getId());
 
         assertTrue(actual);
         verify(repository).findById(1);
         verify(passwordEncodeService).encode(userChangePasswordDto.getNewPassword());
         verify(passwordEncodeService).isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword());
-        verify(authHolder).getTokenId();
-        verify(authHolder).getTokenName();
         verify(repository).updatePassword(email, newPassword);
     }
 
     @Test
     void testUpdatePasswordNullUserChangePassword() {
+        Users users = Users.builder().id(1).build();
         UserChangePasswordDto userChangePasswordDto = null;
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto,users.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("UserChangePassword is null");
     }
@@ -184,11 +179,12 @@ class UserServiceImplTest {
     void testUpdatePasswordNullLoginUser() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
+        Users users = Users.builder().id(1).build();
+        given(repository.findById(1)).willReturn(Optional.empty());
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
-        given(authHolder.getTokenId()).willReturn(null);
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto,users.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("user from token is null");
     }
@@ -197,16 +193,15 @@ class UserServiceImplTest {
     void testUpdatePasswordIsEqualEncodeDecodePassFalse() {
         String newPassword = "PASS5678";
         String oldPassword = "pass1234";
+        Users users = Users.builder().id(1).build();
+        given(repository.findById(1)).willReturn(Optional.of(users));
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
-        Users users = Users.builder().id(1).build();
-        given(authHolder.getTokenId()).willReturn(1);
-        given(repository.findById(1)).willReturn(Optional.of(users));
         given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword())).willReturn(false);
 
 
-        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto))
+        assertThatThrownBy(() -> underTest.updatePassword(userChangePasswordDto,users.getId()))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("old password is not correct");
     }
