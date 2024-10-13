@@ -1,6 +1,7 @@
 package application.service;
 
 import application.entity.Order;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Set;

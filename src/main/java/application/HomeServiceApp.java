@@ -78,7 +78,7 @@ public class HomeServiceApp {
                 OrderSubmissionDto.builder()
                         .dutyId(299)
                         .priceOrder(800_000)
-                        .dateTimeOrder(LocalDateTime.of(2024, 10, 30, 10, 25))
+                        .dateTimeOrderForDoingFromCustomer(LocalDateTime.of(2024, 10, 30, 10, 25))
                         .address(faker.address().streetAddress())
                         .description( "8 --- " + faker.lorem().characters(5, 20))
                         .build()

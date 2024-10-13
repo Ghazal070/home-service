@@ -24,9 +24,9 @@ public class OrderSubmissionDto  implements Serializable {
     @NotNull(message = "priceOrder description must not be null")
     private Integer priceOrder;
 
-    @NotNull(message = "dateTimeOrder must not be null")
+    @NotNull(message = "dateTimeOrderForDoingFromCustomer must not be null")
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
-    private LocalDateTime dateTimeOrder;
+    private LocalDateTime dateTimeOrderForDoingFromCustomer;
 
     @NotNull(message = "address order must not be null")
     private String address;

@@ -1,5 +1,6 @@
 package application.service;
 
+import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
 import application.entity.Offer;
 import application.entity.Order;
@@ -18,6 +19,6 @@ public interface CustomerService extends UserService<Customer>{
     Boolean orderStarted(Integer offerId);
     Boolean orderDone(Integer offerId);
 
-    void choosePayment(String paymentType, Integer offerId,Integer customerId);
+    void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto);
 
 }

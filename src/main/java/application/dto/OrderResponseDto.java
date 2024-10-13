@@ -7,7 +7,7 @@ import java.util.Set;
 public record OrderResponseDto(
         String description,
         Integer priceOrder,
-        String dateTimeOrder,
+        String dateTimeOrderForDoingFromCustomer,
         String orderStatus,
         Integer customerId,
         Integer expertId,

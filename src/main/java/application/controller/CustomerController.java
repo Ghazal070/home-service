@@ -1,10 +1,12 @@
 package application.controller;
 
+import application.dto.CardDto;
 import application.dto.OfferResponseDto;
 import application.dto.OrderResponseDto;
 import application.dto.OrderSubmissionDto;
 import application.entity.Offer;
 import application.entity.Order;
+import application.entity.enumeration.PaymentType;
 import application.entity.users.Customer;
 import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
@@ -14,6 +16,7 @@ import application.util.AuthHolder;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,11 +60,11 @@ public class CustomerController {
     }
 
     @GetMapping("/offer")
-    public ModelAndView getOffersForOrder(@RequestParam Integer orderId,@RequestParam Integer customerId) {
+    public ModelAndView getOffersForOrder(@RequestParam Integer orderId, @RequestParam Integer customerId) {
         try {
             ModelAndView view = new ModelAndView("offers");
 
-            Set<Offer> offers = customerService.getOffersForOrder(orderId,customerId);
+            Set<Offer> offers = customerService.getOffersForOrder(orderId, customerId);
             Set<OfferResponseDto> offerResponse = offerMapper.convertEntityToDto(offers);
             view.addObject("offerResponse", offerResponse);
             return view;
@@ -75,8 +78,8 @@ public class CustomerController {
         try {
             customerService.chooseExpertForOrder(offerId);
             return ResponseEntity.ok("Status change to ComingToLocationWanting");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -85,8 +88,8 @@ public class CustomerController {
         try {
             customerService.orderStarted(offerId);
             return ResponseEntity.ok("Status change to orderStarted");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -95,14 +98,27 @@ public class CustomerController {
         try {
             customerService.orderStarted(offerId);
             return ResponseEntity.ok("Status change to orderDone");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/payment/{paymentType}")
-    public String choosePayment(@PathVariable String paymentType,Integer offerId){
-        return null;
+
+    public ResponseEntity<String> payment(@PathVariable String paymentType,
+                          @RequestParam Integer offerId,
+                          @RequestParam Integer customerId
+            , @RequestBody(required = false) CardDto cardDto) {
+        try{
+            if (paymentType.equals(String.valueOf(PaymentType.AccountPayment)) && cardDto==null){
+                throw new ValidationControllerException(
+                        "Payment type equals account payment so cardDto must not be null",HttpStatus.BAD_REQUEST);
+            }
+            customerService.payment(paymentType, offerId, customerId, cardDto);
+            return ResponseEntity.ok("Payment is ok");
+        }catch (ValidationException exception){
+            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

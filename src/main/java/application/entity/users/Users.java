@@ -42,6 +42,10 @@ public class Users extends BaseEntity<Integer> {
     @Column
     private LocalDateTime dateTimeSubmission;
 
+    @Column
+    @Builder.Default
+    private Boolean isActive=true;
+
 
 
     @Lob

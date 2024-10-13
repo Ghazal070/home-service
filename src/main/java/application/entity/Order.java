@@ -38,7 +38,7 @@ public class Order extends BaseEntity<Integer> {
     @Column
     @Future
     @NotNull
-    private LocalDateTime dateTimeOrder;
+    private LocalDateTime dateTimeOrderForDoingFromCustomer;
 
     @Column
     private String address;
@@ -61,11 +61,14 @@ public class Order extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "order")
     private Set<Offer> offers;
 
+    @Column
+    private LocalDateTime doneUpdate;
+
 
 
     @Override
     public String toString() {
-        return "id='" + id +"description='" + description + '\'' + ", priceOrder=" + priceOrder + ", dateTimeOrder=" + dateTimeOrder + ", address='" + address + '\''
+        return "id='" + id +"description='" + description + '\'' + ", priceOrder=" + priceOrder + ", dateTimeOrderForDoingFromCustomer=" + dateTimeOrderForDoingFromCustomer + ", address='" + address + '\''
                 + ", orderStatus=" + orderStatus + ", customer=" + customer + ", duty=" + duty;
     }
 }

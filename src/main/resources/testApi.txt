@@ -24,7 +24,7 @@ http://localhost:8081/customers/orderSubmit/2
     "dutyId":299,
     "description": "helllo",
     "priceOrder": 100000000,
-    "dateTimeOrder":"2024-12-06 22:30",
+    "dateTimeOrderForDoingFromCustomer":"2024-12-06 22:30",
     "address":"gggggggggg"
 }
 ===================================================================

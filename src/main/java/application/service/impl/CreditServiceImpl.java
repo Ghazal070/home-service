@@ -1,5 +1,6 @@
 package application.service.impl;
 
+import application.entity.Card;
 import application.entity.Credit;
 import application.repository.CreditRepository;
 import application.service.CreditService;
@@ -11,4 +12,6 @@ public class CreditServiceImpl extends BaseEntityServiceImpl<CreditRepository, C
     public CreditServiceImpl(Validator validator, CreditRepository repository) {
         super(validator, repository);
     }
+
+
 }
