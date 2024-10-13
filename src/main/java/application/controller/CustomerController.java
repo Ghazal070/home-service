@@ -96,7 +96,7 @@ public class CustomerController {
     @PatchMapping("/offer/orderDone/{offerId}")
     public ResponseEntity<String> orderDone(@PathVariable Integer offerId) {
         try {
-            customerService.orderStarted(offerId);
+            customerService.orderDone(offerId);
             return ResponseEntity.ok("Status change to orderDone");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);

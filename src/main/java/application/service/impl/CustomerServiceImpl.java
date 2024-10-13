@@ -15,8 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Customer> implements CustomerService {
@@ -122,27 +126,22 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     @Override
     public void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto) {
         Optional<Customer> customerOptional = repository.findById(customerId);
-        if (customerOptional.isEmpty()) {
-            throw new ValidationException("Customer id is not exist");
-        }
+        if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
         Optional<Offer> offerOptional = offerService.findById(offerId);
-        if (offerOptional.isEmpty()) {
-            throw new ValidationException("This offerId is not exist");
-        }
+        if (offerOptional.isEmpty()) throw new ValidationException("This offerId is not exist");
         Offer offer = offerOptional.get();
         Order order = offer.getOrder();
-        if (!order.getOrderStatus().equals(OrderStatus.Done)) {
-            throw new ValidationException("OrderStatus for this offerId is not done ");
-        }
+        if (!order.getOrderStatus().equals(OrderStatus.Done)) throw new ValidationException("OrderStatus for this offerId is not done ");
         Customer customer = customerOptional.get();
         switch (paymentType) {
-            case "CreditPayment" ->
-                creditPayment(offer,customer);
-            case "AccountPayment" ->
-                accountPayment(cardDto,customer,offer);
-            default -> throw new ValidationException(
-                    "Please choose CreditPayment or AccountPayment");
+            case "CreditPayment" -> creditPayment(offer,customer);
+            case "AccountPayment" -> accountPayment(cardDto,customer,offer);
+            default -> throw new ValidationException("Please choose CreditPayment or AccountPayment");
         }
+        finalizePayment(offer, order);
+    }
+
+    private void finalizePayment(Offer offer, Order order) {
         order.setOrderStatus(OrderStatus.Payed);
         Expert expert = order.getExpert();
         offerService.update(offer);
@@ -158,7 +157,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         }
     }
 
-    public void creditPayment(Offer offer, Customer customer){
+    private void creditPayment(Offer offer, Customer customer){
         Credit credit = customer.getCredit();
         if (credit.getAmount() < offer.getPriceOffer()) {
             throw new ValidationException("Your credit lower than offer amount");
@@ -166,12 +165,26 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         credit.setAmount(credit.getAmount() - offer.getPriceOffer());
         creditService.update(credit);
     }
-    public void accountPayment(CardDto cardDto, Customer customer,Offer offer){
+    private void accountPayment(CardDto cardDto, Customer customer,Offer offer){
+        Map<Integer,LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
+        isStartedDuration(customer.getId(),paymentSessions);
+        if (isExpiredDuration(customer.getId(),paymentSessions)){
+            throw new ValidationException("Your payment session has expired. Please try again.");
+        }
         Card existingCard = cardService.validateCard(cardDto);
         existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
         cardService.update(existingCard);
         Credit expertCredit = offer.getExpert().getCredit();
         expertCredit.setAmount((int) (expertCredit.getAmount() +  (0.7 * offer.getPriceOffer())));
+    }
+    private void isStartedDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
+        paymentSessions.put(customerId,LocalDateTime.now());
+    }
+    private Boolean isExpiredDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
+        Duration duration = Duration.ofMinutes(10);
+        if (paymentSessions.get(customerId)==null)
+            return true;
+        return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
     }
 
 
