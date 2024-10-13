@@ -8,10 +8,7 @@ import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
 import application.repository.CustomerRepository;
-import application.service.DutyService;
-import application.service.OfferService;
-import application.service.OrderService;
-import application.service.PasswordEncodeService;
+import application.service.*;
 import application.service.impl.CustomerServiceImpl;
 import application.util.AuthHolder;
 import jakarta.validation.Validation;
@@ -60,6 +57,10 @@ class CustomerServiceImplTest {
     @Mock
     private OfferService offerService;
 
+    @Mock
+    private CreditService creditService;
+
+
     @InjectMocks
     private CustomerServiceImpl underTest;
 
@@ -67,7 +68,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, orderService, offerService);
+                passwordEncodeService, dutyService, orderService, offerService, creditService);
     }
 
     @Test

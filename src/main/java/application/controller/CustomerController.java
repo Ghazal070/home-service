@@ -100,4 +100,9 @@ public class CustomerController {
         }
     }
 
+    @PostMapping("/payment/{paymentType}")
+    public String choosePayment(@PathVariable String paymentType,Integer offerId){
+        return null;
+    }
+
 }
