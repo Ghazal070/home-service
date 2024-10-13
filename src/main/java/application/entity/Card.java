@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,8 +15,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
+@SuperBuilder
 public class Card extends BaseEntity<Integer> {
 
     @Column(unique = true)
@@ -34,12 +35,12 @@ public class Card extends BaseEntity<Integer> {
 
     @Column
     @NotNull
-    @Pattern(regexp = "^\\{4d}$")
+    @Pattern(regexp = "^\\d{4}$")
     private String ccv2;
 
     @Column
     @NotNull
-    @Pattern(regexp = "^\\{4d}$")
+    @Pattern(regexp = "^\\d{4}$")
     private String secondPassword;
 
     @Column

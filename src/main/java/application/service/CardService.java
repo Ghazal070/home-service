@@ -6,6 +6,7 @@ import application.entity.Order;
 
 import java.util.Set;
 
+
 public interface CardService extends BaseEntityService<Card,Integer>{
 
     Card validateCard(CardDto cardDto);

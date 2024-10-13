@@ -26,10 +26,10 @@ public class CardDto implements Serializable {
     private String bankName;
 
     @NotNull
-    @Pattern(regexp = "^\\{4d}$")
+    @Pattern(regexp = "^\\d{4}$")
     private String ccv2;
 
     @NotNull
-    @Pattern(regexp = "^\\{4d}$")
+    @Pattern(regexp = "^\\d{4}$")
     private String secondPassword;
 }

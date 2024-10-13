@@ -119,3 +119,17 @@ signup
 http://localhost:8081/signup/createUser
 {"firstName":"ghazal","lastName":"torabi","email":"reee@gh.com","password":"ghazal99","role":"Customer"}
 ================================================================
+customers
+http://localhost:8081/customers/payment/CreditPayment
+================================================================
+customers
+http://localhost:8081/customers/payment/َAccountingPayment
+
+{
+    "cardNumber":"1111-2222"
+    "localDateTime":"2027-10-13 16:20"
+    "bankName":"Melli"
+    "ccv2":"1111"
+    "secondPassword":"1111"
+}
+================================================================

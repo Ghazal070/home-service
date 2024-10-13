@@ -2,20 +2,15 @@ package application.service.impl;
 
 import application.dto.CardDto;
 import application.entity.Card;
-import application.entity.Order;
 import application.repository.CardRepository;
-import application.repository.OrderRepository;
 import application.service.CardService;
-import application.service.OrderService;
 import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Set;
 
 @Service
 public class CardServiceImpl extends BaseEntityServiceImpl<CardRepository, Card, Integer> implements CardService {
@@ -26,8 +21,8 @@ public class CardServiceImpl extends BaseEntityServiceImpl<CardRepository, Card,
     }
 
     @PostConstruct
-    public void init(){
-        if (repository.count()==0){
+     public void init() {
+        if (repository.count() == 0) {
             Card card_1 = Card.builder()
                     .cardNumber("1111-2222")
                     .bankName("Melli")
@@ -42,7 +37,7 @@ public class CardServiceImpl extends BaseEntityServiceImpl<CardRepository, Card,
                     .bankName("Melli")
                     .localDateTime(LocalDateTime.now().plus(3, ChronoUnit.YEARS))
                     .secondPassword("2222")
-                    .ccv2("2222")
+                    .ccv2("222200000000000")
                     .amountCard(200_000_000)
                     .build();
             repository.save(card_1);

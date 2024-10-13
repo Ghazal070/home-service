@@ -43,8 +43,8 @@ public class HomeServiceApp {
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
-        //adminService.updateExpertStatus(293);
-        //adminService.addDutyToExpert(293, 305);
+        //adminService.updateExpertStatus(46);
+        //adminService.addDutyToExpert(46, 55);
         //adminService.removeDutyFromExpert(271,283);
         //dutyService.getSelectableDuties().forEach(System.out::println);
         //orderSubmitTest(faker, customerService);
@@ -143,7 +143,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(297)
+                            .parentId(50)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -161,7 +161,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(298)
+                            .parentId(51)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)

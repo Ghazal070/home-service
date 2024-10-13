@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunTime Exception</title>
+</head>
+<body>
+<H3>Offers </H3>
+<div th:if="${offerResponse == null || offerResponse.isEmpty()}">
+<p> Offer is empty </p>
+</div>
+<div th:if="${offerResponse != null && offerResponse.size()>0}">
+    <table>
+        <tr>
+            <th>
+                <p>orderId</p>
+            </th>
+            <th>
+                <p>expertId</p>
+            </th>
+            <th>
+                <p>priceOffer</p>
+            </th>
+            <th>
+                <p>dateTimeOffer</p>
+            </th>
+            <th>
+                <p>dateTimeStartWork</p>
+            </th>
+            <th>
+                <p>lengthDays</p>
+            </th>
+        </tr>
+        <tr th:each="offer:${offerResponse}">
+            <td th:text="${offer.orderId}" />
+            <td th:text="${offer.expertId}" />
+            <td th:text="${offer.priceOffer}" />
+            <td th:text="${offer.dateTimeOffer}" />
+            <td th:text="${offer.dateTimeStartWork}" />
+            <td th:text="${offer.lengthDays}" />
+        </tr>
+
+    </table>
+
+</div>
+
+
+</body>
+</html>
