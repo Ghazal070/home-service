@@ -1,8 +1,10 @@
 package application.controller;
 
+import application.dto.CardDto;
 import application.dto.OfferResponseDto;
 import application.dto.OrderResponseDto;
 import application.dto.OrderSubmissionDto;
+import application.entity.Invoice;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.PaymentType;
@@ -11,6 +13,7 @@ import application.mapper.OfferMapper;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -20,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,14 +125,20 @@ public class CustomerController {
 
     @PostMapping("/payment")
 
-    public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response) {
+    public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response, HttpServletRequest request) {
         try {
-            if (!(paymentType.equals(String.valueOf(PaymentType.AccountPayment)) || paymentType.equals(String.valueOf(PaymentType.CreditPayment))))
-            {
+            if (!(paymentType.equals(String.valueOf(PaymentType.AccountPayment)) || paymentType.equals(String.valueOf(PaymentType.CreditPayment)))) {
                 throw new ValidationControllerException(
                         "Payment type not equals account payment or credit payment", HttpStatus.NOT_ACCEPTABLE);
             }
-            sessionPayment.put(customerId, paymentType);
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null){
+                for (int i = 0; i < cookies.length; i++) {
+                    if (cookies[i].getName().equals("payment-type")){
+                        cookies[i].setValue(paymentType);
+                    }
+                }
+            }
             Cookie cookie = new Cookie("payment-type", paymentType);
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 60);
@@ -140,15 +150,57 @@ public class CustomerController {
     }
 
     @PostMapping("/payment/credit")
-    public Boolean paymentByCredit(
+    public ModelAndView paymentByCredit(
             @CookieValue(value = "payment-type", defaultValue = "CreditPayment") String paymentType
             , @RequestParam Integer offerId, @RequestParam Integer customerId) {
+        ModelAndView view = new ModelAndView("invoice");
         try {
             if (!paymentType.equals(String.valueOf(PaymentType.CreditPayment))) {
                 throw new ValidationControllerException(
-                        "Payment type not equal to credit payment", HttpStatus.BAD_REQUEST);
+                        "Payment type not equal to credit payment", HttpStatus.PRECONDITION_FAILED);
             }
-            return customerService.creditPayment(offerId, customerId);
+            Invoice invoice = customerService.creditPayment(offerId, customerId, paymentType);
+            view.addObject("invoice", invoice);
+            return view;
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
+        }
+
+    }
+
+
+    @GetMapping("/payment/account")
+    public ModelAndView paymentByAccount(
+            @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType) {
+        try {
+            ModelAndView view = new ModelAndView("account-payment");
+            CardDto cardDto = CardDto.builder().build();
+            view.addObject("cardDto",cardDto);
+            if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
+                throw new ValidationControllerException(
+                        "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
+            }
+            return view;
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
+        }
+
+    }
+
+    @PostMapping("/payment/account")
+    public ModelAndView paymentByAccount(
+            @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType
+            , @RequestParam Integer offerId, @RequestParam Integer customerId
+            , @ModelAttribute CardDto cardDto) {
+        ModelAndView view = new ModelAndView("invoice");
+        try {
+            if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
+                throw new ValidationControllerException(
+                        "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
+            }
+            Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType,cardDto);
+            view.addObject("invoice", invoice);
+            return view;
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
         }

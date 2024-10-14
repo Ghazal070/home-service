@@ -120,10 +120,24 @@ http://localhost:8081/signup/createUser
 {"firstName":"ghazal","lastName":"torabi","email":"reee@gh.com","password":"ghazal99","role":"Customer"}
 ================================================================
 customers
+http://localhost:8080/customers/payment?paymentType=AccountPayment&customerId=45
+================================================================
+customers
 http://localhost:8080/customers/payment?paymentType=CreditPayment&customerId=45
 ================================================================
 customers
 http://localhost:8080/customers/payment/credit?customerId=45&offerId=62
+================================================================
+customers
+http://localhost:8080/customers/payment/account?customerId=45&offerId=62
+
+{
+"cardNumber":"1111-2222",
+"localDateTime":"2027-10-13 16:20:00.000000",
+"bankName":"Melli",
+"ccv2":"1111",
+"secondPassword":"1111"
+}
 ================================================================
 
 

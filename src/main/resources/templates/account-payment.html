@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Account Payment</title>
+</head>
+<body>
+<h1>Account Payment</h1>
+<form action="#" th:action="@{/payment/account}" th:object="${cardDto}" method="post">
+    <p>Card Number: <input type="text" th:field="*{cardNumber}" required /></p>
+    <p>Local Date Time: <input type="text" th:field="*{localDateTime}" required /></p>
+    <p>Bank Name: <input type="text" th:field="*{bankName}" required /></p>
+    <p>CCV2: <input type="text" th:field="*{ccv2}" required /></p>
+    <p>Second Password: <input type="password" th:field="*{secondPassword}" required /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>

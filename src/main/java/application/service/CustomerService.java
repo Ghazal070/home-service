@@ -2,6 +2,7 @@ package application.service;
 
 import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
+import application.entity.Invoice;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.users.Customer;
@@ -21,6 +22,7 @@ public interface CustomerService extends UserService<Customer>{
 
     //void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto);
 
-    Boolean creditPayment(Integer offerId, Integer customerId);
+    Invoice creditPayment(Integer offerId, Integer customerId,String paymentType);
+    Invoice accountPayment(Integer offerId, Integer customerId, String paymentType, CardDto cardDto);
 
 }

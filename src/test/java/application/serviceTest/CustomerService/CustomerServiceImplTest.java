@@ -65,6 +65,9 @@ class CustomerServiceImplTest {
     @Mock
     private ExpertService expertService;
 
+    @Mock
+    private InvoiceService invoiceService;
+
 
     @InjectMocks
     private CustomerServiceImpl underTest;
@@ -73,7 +76,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, expertService);
+                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, expertService, invoiceService);
     }
 
     @Test

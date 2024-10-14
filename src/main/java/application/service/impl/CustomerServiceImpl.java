@@ -4,6 +4,7 @@ import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
 import application.entity.*;
 import application.entity.enumeration.OrderStatus;
+import application.entity.enumeration.PaymentType;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
 import application.repository.CustomerRepository;
@@ -15,14 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import static application.entity.Order_.customer;
 
 @Service
 public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Customer> implements CustomerService {
@@ -33,8 +28,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final CreditService creditService;
     private final CardService cardService;
     private final ExpertService expertService;
+    private final InvoiceService invoiceService;
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, ExpertService expertService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, ExpertService expertService, InvoiceService invoiceService) {
         super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.orderService = orderService;
@@ -42,6 +38,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         this.creditService = creditService;
         this.cardService = cardService;
         this.expertService = expertService;
+        this.invoiceService = invoiceService;
     }
 
     @Override
@@ -179,17 +176,18 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 //        Credit expertCredit = offer.getExpert().getCredit();
 //        expertCredit.setAmount((int) (expertCredit.getAmount() +  (0.7 * offer.getPriceOffer())));
 //    }
-//    private void isStartedDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
-//        paymentSessions.put(customerId,LocalDateTime.now());
-//    }
-//    private Boolean isExpiredDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
-//        Duration duration = Duration.ofMinutes(10);
-//        if (paymentSessions.get(customerId)==null)
-//            return true;
-//        return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
-//    }
+    private void isStartedDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
+        paymentSessions.put(customerId,LocalDateTime.now());
+    }
+    private Boolean isExpiredDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
+        Duration duration = Duration.ofMinutes(10);
+        if (paymentSessions.get(customerId)==null)
+            return true;
+        return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
+    }
 
-    public Boolean creditPayment(Integer offerId, Integer customerId) {
+    @Override
+    public Invoice creditPayment(Integer offerId, Integer customerId,String paymentType) {
         Optional<Customer> customerOptional = repository.findById(customerId);
         if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
         Optional<Offer> offerOptional = offerService.findById(offerId);
@@ -201,10 +199,48 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
             throw new ValidationException("Your credit lower than offer amount");
         }
         credit.setAmount(credit.getAmount() - offer.getPriceOffer());
-        Credit updateCredit = creditService.update(credit);
+        creditService.update(credit);
         Order order = offer.getOrder();
         //finalizePayment(offer, order);
-        return updateCredit != null;
+        Invoice invoice = Invoice.builder()
+                .orderId(order.getId())
+                .customerId(customerId)
+                .paymentType(PaymentType.valueOf(paymentType))
+                .offerId(offerId)
+                .build();
+        return invoiceService.save(invoice);
+
+    }
+
+    @Override
+    public Invoice accountPayment(Integer offerId, Integer customerId, String paymentType, CardDto cardDto) {
+        Optional<Customer> customerOptional = repository.findById(customerId);
+        if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
+        Optional<Offer> offerOptional = offerService.findById(offerId);
+        if (offerOptional.isEmpty()) throw new ValidationException("This offerId is not exist");
+        Offer offer = offerOptional.get();
+        Customer customer = customerOptional.get();
+        Order order = offer.getOrder();
+        Map<Integer,LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
+        isStartedDuration(customer.getId(),paymentSessions);
+        if (isExpiredDuration(customer.getId(),paymentSessions)){
+            throw new ValidationException("Your payment session has expired. Please try again.");
+        }
+        Card existingCard = cardService.validateCard(cardDto);
+        existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
+        cardService.update(existingCard);
+        Credit expertCredit = offer.getExpert().getCredit();
+        expertCredit.setAmount((int) (expertCredit.getAmount() +  (0.7 * offer.getPriceOffer())));
+        //finalizePayment(offer, order);
+        //todo for invoice successful from bank
+        Invoice invoice = Invoice.builder()
+                .orderId(order.getId())
+                .customerId(customerId)
+                .paymentType(PaymentType.valueOf(paymentType))
+                .offerId(offerId)
+                .build();
+        return invoiceService.save(invoice);
+
     }
 
     private void finalizePayment(Offer offer, Order order) {
