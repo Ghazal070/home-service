@@ -37,7 +37,7 @@ public class CardServiceImpl extends BaseEntityServiceImpl<CardRepository, Card,
                     .bankName("Melli")
                     .localDateTime(LocalDateTime.now().plus(3, ChronoUnit.YEARS))
                     .secondPassword("2222")
-                    .ccv2("222200000000000")
+                    .ccv2("2222")
                     .amountCard(200_000_000)
                     .build();
             repository.save(card_1);

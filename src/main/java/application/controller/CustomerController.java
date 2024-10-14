@@ -1,31 +1,28 @@
 package application.controller;
 
-import application.dto.CardDto;
 import application.dto.OfferResponseDto;
 import application.dto.OrderResponseDto;
 import application.dto.OrderSubmissionDto;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.PaymentType;
-import application.entity.users.Customer;
 import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
-import application.util.AuthHolder;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.function.EntityResponse;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/customers")
@@ -35,6 +32,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final OrderMapper orderMapper;
     private final OfferMapper offerMapper;
+    private Map<Integer, String> sessionPayment = new ConcurrentHashMap<>();
 
 
     @PostMapping("/orderSubmit/{customerId}")
@@ -103,22 +101,58 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/payment/{paymentType}")
+//    @PostMapping("/payment/{paymentType}")
+//
+//    public ResponseEntity<String> payment(@PathVariable String paymentType,
+//                          @RequestParam Integer offerId,
+//                          @RequestParam Integer customerId
+//            , @RequestBody(required = false) CardDto cardDto) {
+//        try{
+//            if (paymentType.equals(String.valueOf(PaymentType.AccountPayment)) && cardDto==null){
+//                throw new ValidationControllerException(
+//                        "Payment type equals account payment so cardDto must not be null",HttpStatus.BAD_REQUEST);
+//            }
+//            customerService.payment(paymentType, offerId, customerId, cardDto);
+//            return ResponseEntity.ok("Payment is ok");
+//        }catch (ValidationException exception){
+//            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
-    public ResponseEntity<String> payment(@PathVariable String paymentType,
-                          @RequestParam Integer offerId,
-                          @RequestParam Integer customerId
-            , @RequestBody(required = false) CardDto cardDto) {
-        try{
-            if (paymentType.equals(String.valueOf(PaymentType.AccountPayment)) && cardDto==null){
+    @PostMapping("/payment")
+
+    public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response) {
+        try {
+            if (!(paymentType.equals(String.valueOf(PaymentType.AccountPayment)) || paymentType.equals(String.valueOf(PaymentType.CreditPayment))))
+            {
                 throw new ValidationControllerException(
-                        "Payment type equals account payment so cardDto must not be null",HttpStatus.BAD_REQUEST);
+                        "Payment type not equals account payment or credit payment", HttpStatus.NOT_ACCEPTABLE);
             }
-            customerService.payment(paymentType, offerId, customerId, cardDto);
-            return ResponseEntity.ok("Payment is ok");
-        }catch (ValidationException exception){
-            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+            sessionPayment.put(customerId, paymentType);
+            Cookie cookie = new Cookie("payment-type", paymentType);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 60);
+            response.addCookie(cookie);
+
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/payment/credit")
+    public Boolean paymentByCredit(
+            @CookieValue(value = "payment-type", defaultValue = "CreditPayment") String paymentType
+            , @RequestParam Integer offerId, @RequestParam Integer customerId) {
+        try {
+            if (!paymentType.equals(String.valueOf(PaymentType.CreditPayment))) {
+                throw new ValidationControllerException(
+                        "Payment type not equal to credit payment", HttpStatus.BAD_REQUEST);
+            }
+            return customerService.creditPayment(offerId, customerId);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
+        }
+
     }
 
 }

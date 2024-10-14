@@ -19,6 +19,8 @@ public interface CustomerService extends UserService<Customer>{
     Boolean orderStarted(Integer offerId);
     Boolean orderDone(Integer offerId);
 
-    void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto);
+    //void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto);
+
+    Boolean creditPayment(Integer offerId, Integer customerId);
 
 }

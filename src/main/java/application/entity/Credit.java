@@ -4,21 +4,23 @@ package application.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Entity
 
 
 public class Credit extends BaseEntity<Integer> {
 
     @Column
+    @NotNull
     @Min(value = 0)
-    private Integer amount;
+    @Builder.Default
+    private Integer amount=0;
 }

@@ -1,6 +1,7 @@
 package application.entity.users.userFactory;
 
 import application.dto.UserSignupRequestDto;
+import application.entity.Credit;
 import application.entity.users.Customer;
 import application.entity.users.Profile;
 import application.entity.users.Users;
@@ -20,6 +21,7 @@ public class CustomerFactory implements UserFactory {
                                 .email(userSignupRequestDto.getEmail())
                                 .password(userSignupRequestDto.getPassword()).build())
                 .dateTimeSubmission(LocalDateTime.now())
+                .credit(Credit.builder().amount(0).build())
                 .build();
         customer.setImage(userSignupRequestDto.getInputStream());
         return customer;
