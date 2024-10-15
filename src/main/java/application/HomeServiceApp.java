@@ -2,6 +2,7 @@ package application;
 
 import application.dto.*;
 import application.dto.projection.UserLoginProjection;
+import application.entity.Card;
 import application.entity.Duty;
 import application.entity.Order;
 import application.service.*;
@@ -30,6 +31,8 @@ public class HomeServiceApp {
         DutyService dutyService = context.getBean(DutyService.class, args);
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
+        CardService cardService = context.getBean(CardService.class,args);
+
 
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);

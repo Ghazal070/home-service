@@ -4,24 +4,19 @@ import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @StaticMetamodel(Card.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
 public abstract class Card_ extends application.entity.BaseEntity_ {
 
-	public static final String LOCAL_DATE_TIME = "localDateTime";
 	public static final String CCV2 = "ccv2";
 	public static final String SECOND_PASSWORD = "secondPassword";
 	public static final String AMOUNT_CARD = "amountCard";
 	public static final String BANK_NAME = "bankName";
+	public static final String LOCAL_DATE = "localDate";
 	public static final String CARD_NUMBER = "cardNumber";
 
-	
-	/**
-	 * @see application.entity.Card#localDateTime
-	 **/
-	public static volatile SingularAttribute<Card, LocalDateTime> localDateTime;
 	
 	/**
 	 * @see application.entity.Card#ccv2
@@ -42,6 +37,11 @@ public abstract class Card_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Card#bankName
 	 **/
 	public static volatile SingularAttribute<Card, String> bankName;
+	
+	/**
+	 * @see application.entity.Card#localDate
+	 **/
+	public static volatile SingularAttribute<Card, LocalDate> localDate;
 	
 	/**
 	 * @see application.entity.Card

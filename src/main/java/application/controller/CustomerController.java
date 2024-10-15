@@ -123,7 +123,7 @@ public class CustomerController {
 //        }
 //    }
 
-    @PostMapping("/payment")
+    @GetMapping("/payment")
 
     public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response, HttpServletRequest request) {
         try {
@@ -142,6 +142,8 @@ public class CustomerController {
             Cookie cookie = new Cookie("payment-type", paymentType);
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 60);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(request.isSecure());
             response.addCookie(cookie);
 
         } catch (ValidationException exception) {
@@ -204,7 +206,6 @@ public class CustomerController {
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
         }
-
     }
 
 }

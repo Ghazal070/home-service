@@ -6,12 +6,12 @@
 </head>
 <body>
 <h1>Invoice</h1>
-<h2 th:text="${invoice.getId()}">InvoiceId: </h2>
-<h2 th:text="${invoice.getCreateDate()}">CreateDate: </h2>
-<h2 th:text="${invoice.getCustomerId()}">CustomerId: </h2>
-<h2 th:text="${invoice.getOfferId()}">OfferId: </h2>
-<h2 th:text="${invoice.getOrderId()}">OrderId: </h2>
-<h2 th:text="${invoice.getPaymentType()}">PaymentType: </h2>
+<h2 th:text="'InvoiceId:' + ${invoice.getId()}"> </h2>
+<h2 th:text="'CreateDate:' + ${invoice.getCreateDate()}"> </h2>
+<h2 th:text="'CustomerId:' + ${invoice.getCustomerId()}"> </h2>
+<h2 th:text="'OfferId:' + ${invoice.getOfferId()}"> </h2>
+<h2 th:text="'OrderId:' + ${invoice.getOrderId()}"> </h2>
+<h2 th:text="'PaymentType:' + ${invoice.getPaymentType()}"> </h2>
 
 </body>
 </html>

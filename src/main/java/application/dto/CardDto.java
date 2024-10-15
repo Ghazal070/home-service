@@ -20,7 +20,7 @@ public class CardDto implements Serializable {
     private String cardNumber;
 
     @NotNull
-    private String localDateTime;
+    private String localDate;
 
     @NotNull
     private String bankName;
@@ -32,4 +32,6 @@ public class CardDto implements Serializable {
     @NotNull
     @Pattern(regexp = "^\\d{4}$")
     private String secondPassword;
+
+
 }

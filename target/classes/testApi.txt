@@ -133,7 +133,7 @@ http://localhost:8080/customers/payment/account?customerId=45&offerId=62
 
 {
 "cardNumber":"1111-2222",
-"localDateTime":"2027-10-13 16:20:00.000000",
+"localDate":"2027-10-15",
 "bankName":"Melli",
 "ccv2":"1111",
 "secondPassword":"1111"

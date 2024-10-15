@@ -11,4 +11,6 @@ public interface CardService extends BaseEntityService<Card,Integer>{
 
     Card validateCard(CardDto cardDto);
 
+    Card findByCardNumber(String cardNumber);
+
 }

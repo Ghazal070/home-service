@@ -34,13 +34,14 @@ public class Invoice extends BaseEntity<Integer>{
     @NotNull
     private Integer orderId;
 
-    @Column
     @NotNull
+    @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
     @Column
     @NotNull
     private Integer customerId;
+
 
     @Column
 //    @CreatedDate

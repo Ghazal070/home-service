@@ -201,6 +201,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         credit.setAmount(credit.getAmount() - offer.getPriceOffer());
         creditService.update(credit);
         Order order = offer.getOrder();
+        if (invoiceService.existByOrderId(order.getId())){
+            throw new ValidationException("This order pay.");
+        }
         //finalizePayment(offer, order);
         Invoice invoice = Invoice.builder()
                 .orderId(order.getId())
@@ -221,6 +224,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         Offer offer = offerOptional.get();
         Customer customer = customerOptional.get();
         Order order = offer.getOrder();
+        if (invoiceService.existByOrderId(order.getId())){
+            throw new ValidationException("This order pay.");
+        }
         Map<Integer,LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
         isStartedDuration(customer.getId(),paymentSessions);
         if (isExpiredDuration(customer.getId(),paymentSessions)){

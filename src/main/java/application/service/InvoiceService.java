@@ -5,7 +5,7 @@ import application.entity.Offer;
 
 import java.util.Set;
 
-public interface InvoiceService extends BaseEntityService<Invoice,Integer>{
+public interface InvoiceService extends BaseEntityService<Invoice, Integer> {
 
-
+    Boolean existByOrderId(Integer orderId);
 }

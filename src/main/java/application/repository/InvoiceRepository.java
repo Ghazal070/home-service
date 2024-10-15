@@ -11,4 +11,6 @@ import java.util.Set;
 @Repository
 public interface InvoiceRepository extends BaseEntityRepository<Invoice, Integer> {
 
+    Boolean existsInvoiceByOrderId(Integer orderId);
+
 }

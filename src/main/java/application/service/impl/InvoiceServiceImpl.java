@@ -18,5 +18,8 @@ public class InvoiceServiceImpl extends BaseEntityServiceImpl<InvoiceRepository,
         super(validator, repository);
     }
 
-
+    @Override
+    public Boolean existByOrderId(Integer orderId) {
+        return repository.existsInvoiceByOrderId(orderId);
+    }
 }
