@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Account Payment</h1>
-<form action="#" th:action="@{/customers/payment/account?customerId=45&offerId=62}" th:object="${cardDto}" method="post">
+<form action="#" th:action="@{/customers/payment/account(customerId=${customerId}, offerId=${offerId})}" th:object="${cardDto}" method="post">
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <p>Card Number: <input type="text" th:field="*{cardNumber}" required /></p>
     <p>Local Date: <input type="date" th:field="*{localDate}" required /></p>

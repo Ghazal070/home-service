@@ -173,10 +173,13 @@ public class CustomerController {
 
     @GetMapping("/payment/account")
     public ModelAndView paymentByAccount(
-            @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType) {
+            @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType,
+            @RequestParam Integer offerId, @RequestParam Integer customerId) {
         try {
             ModelAndView view = new ModelAndView("account-payment");
             CardDto cardDto = CardDto.builder().build();
+            view.addObject("offerId",offerId);
+            view.addObject("customerId",customerId);
             view.addObject("cardDto",cardDto);
             if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
                 throw new ValidationControllerException(
@@ -202,6 +205,8 @@ public class CustomerController {
             }
             Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType,cardDto);
             view.addObject("invoice", invoice);
+            view.addObject("offerId",offerId);
+            view.addObject("customerId",customerId);
             return view;
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
