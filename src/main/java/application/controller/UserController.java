@@ -75,7 +75,7 @@ public class UserController {
     public ResponseEntity<String> updatePasswordCustomer (@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
                                                @PathVariable Integer customerId){
         try {
-            Boolean updatePassword = expertService.updatePassword(userChangePasswordDto, customerId);
+            Boolean updatePassword = customerService.updatePassword(userChangePasswordDto, customerId);
             return ResponseEntity.ok("Password Change");
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);

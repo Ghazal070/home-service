@@ -120,16 +120,16 @@ http://localhost:8081/signup/createUser
 {"firstName":"ghazal","lastName":"torabi","email":"reee@gh.com","password":"ghazal99","role":"Customer"}
 ================================================================
 customers
-http://localhost:8080/customers/payment?paymentType=AccountPayment&customerId=45
+http://localhost:8080/customers/payment?paymentType=AccountPayment&customerId=350
 ================================================================
 customers
-http://localhost:8080/customers/payment?paymentType=CreditPayment&customerId=45
+http://localhost:8080/customers/payment?paymentType=CreditPayment&customerId=350
 ================================================================
 customers
-http://localhost:8080/customers/payment/credit?customerId=45&offerId=62
+http://localhost:8080/customers/payment/credit?customerId=350&offerId=367
 ================================================================
 customers
-http://localhost:8080/customers/payment/account?customerId=45&offerId=62
+http://localhost:8080/customers/payment/account?customerId=350&offerId=367
 
 {
 "cardNumber":"1111-2222",
@@ -139,8 +139,16 @@ http://localhost:8080/customers/payment/account?customerId=45&offerId=62
 "secondPassword":"1111"
 }
 ================================================================
+change password
+http://localhost:8081/users/customers/changePassword/350
 
-
+{
+"newPassword":"ghazal99",
+"oldPassword":"6v4m4668"
+}
+=============================================================
+captcha
+http://localhost:8081/customers/captcha
 
 
 

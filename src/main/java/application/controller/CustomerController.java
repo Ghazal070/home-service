@@ -1,5 +1,8 @@
 package application.controller;
 
+import application.config.captcha.CaptchaGenerator;
+import application.config.captcha.CaptchaTextProducer;
+import application.config.captcha.CaptchaUtils;
 import application.dto.CardDto;
 import application.dto.OfferResponseDto;
 import application.dto.OrderResponseDto;
@@ -12,9 +15,11 @@ import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
+import cn.apiclub.captcha.Captcha;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customers")
@@ -34,9 +40,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CaptchaGenerator captchaGenerator;
     private final OrderMapper orderMapper;
     private final OfferMapper offerMapper;
     private Map<Integer, String> sessionPayment = new ConcurrentHashMap<>();
+    String captchaNotCookie =null;
 
 
     @PostMapping("/orderSubmit/{customerId}")
@@ -105,24 +113,6 @@ public class CustomerController {
         }
     }
 
-//    @PostMapping("/payment/{paymentType}")
-//
-//    public ResponseEntity<String> payment(@PathVariable String paymentType,
-//                          @RequestParam Integer offerId,
-//                          @RequestParam Integer customerId
-//            , @RequestBody(required = false) CardDto cardDto) {
-//        try{
-//            if (paymentType.equals(String.valueOf(PaymentType.AccountPayment)) && cardDto==null){
-//                throw new ValidationControllerException(
-//                        "Payment type equals account payment so cardDto must not be null",HttpStatus.BAD_REQUEST);
-//            }
-//            customerService.payment(paymentType, offerId, customerId, cardDto);
-//            return ResponseEntity.ok("Payment is ok");
-//        }catch (ValidationException exception){
-//            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
     @GetMapping("/payment")
 
     public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response, HttpServletRequest request) {
@@ -150,6 +140,30 @@ public class CustomerController {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/captcha")
+    public String getCaptcha( HttpServletRequest request,HttpServletResponse response) {
+        CaptchaTextProducer textProducer = new CaptchaTextProducer();
+        Captcha captcha = captchaGenerator.createCaptcha(
+                100, 50, textProducer
+        );
+        String captchaString = CaptchaUtils.encodeBase64(captcha);
+        captchaNotCookie =captcha.getAnswer();
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null){
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals("captcha")){
+                    cookies[i].setValue(captcha.getAnswer());
+                }
+            }
+        }
+        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 60);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(request.isSecure());
+        response.addCookie(cookie);
+        return captchaString;
+    }
 
     @PostMapping("/payment/credit")
     public ModelAndView paymentByCredit(
@@ -174,10 +188,13 @@ public class CustomerController {
     @GetMapping("/payment/account")
     public ModelAndView paymentByAccount(
             @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType,
-            @RequestParam Integer offerId, @RequestParam Integer customerId) {
+            @RequestParam Integer offerId, @RequestParam Integer customerId,HttpServletResponse response
+    ,HttpServletRequest request) {
         try {
             ModelAndView view = new ModelAndView("account-payment");
+            String captcha = getCaptcha(request,response);
             CardDto cardDto = CardDto.builder().build();
+            view.addObject("imageCaptchaSrc",captcha);
             view.addObject("offerId",offerId);
             view.addObject("customerId",customerId);
             view.addObject("cardDto",cardDto);
@@ -196,13 +213,18 @@ public class CustomerController {
     public ModelAndView paymentByAccount(
             @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType
             , @RequestParam Integer offerId, @RequestParam Integer customerId
-            , @ModelAttribute CardDto cardDto) {
+            , @ModelAttribute CardDto cardDto,HttpServletRequest request,HttpServletResponse response) {
         ModelAndView view = new ModelAndView("invoice");
         try {
             if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
                 throw new ValidationControllerException(
                         "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
             }
+            for (Cookie cookie : request.getCookies()) {
+                System.out.println(cookie.getName());
+            }
+           // CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), request, false);
+            CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), captchaNotCookie, false);
             Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType,cardDto);
             view.addObject("invoice", invoice);
             view.addObject("offerId",offerId);

@@ -36,7 +36,7 @@ public class Order extends BaseEntity<Integer> {
     private Integer priceOrder;
 
     @Column
-    @Future
+    //@Future
     @NotNull
     private LocalDateTime dateTimeOrderForDoingFromCustomer;
 

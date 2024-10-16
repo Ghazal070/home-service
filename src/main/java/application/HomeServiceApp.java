@@ -46,31 +46,28 @@ public class HomeServiceApp {
         //updatePriceOrDescriptionTest(dutyService);
         //loadAllDuties(dutyService);
         //loadAllDutyWithChildrenTest(dutyService);
-        //adminService.updateExpertStatus(46);
-        //adminService.addDutyToExpert(46, 55);
+        //adminService.updateExpertStatus(352);
+        //adminService.addDutyToExpert(352, 359);
         //adminService.removeDutyFromExpert(271,283);
         //dutyService.getSelectableDuties().forEach(System.out::println);
         //orderSubmitTest(faker, customerService);
         //orderService.getOrdersForExpertWaitingOrChoosing(293).forEach(System.out::println);
-        //customerService.chooseExpertForOrder(325);
+        //customerService.chooseExpertForOrder(367);
         //expertCreateOffer(expertService);
         //customerService.getOffersForOrder(324,315).forEach(System.out::println);
         //dutyService.getSelectableDuties().forEach(System.out::println);
-        //orderService.getOrdersForExpertWaitingOrChoosing(327).forEach(System.out::println);
-
-
 
 
     }
 
     private static void expertCreateOffer(ExpertService expertService) {
         OfferCreationDto offerCreationDto = OfferCreationDto.builder()
-                .orderId(324)
+                .orderId(366)
                 .priceOffer(2000000)
                 .dateTimeStartWork(LocalDateTime.now().plus(2, ChronoUnit.DAYS))
                 .lengthDays(1)
                 .build();
-        expertService.sendOffer(offerCreationDto,327);
+        expertService.sendOffer(offerCreationDto,352);
     }
 
 
@@ -79,13 +76,13 @@ public class HomeServiceApp {
 
         Order cleanHouse = customerService.orderSubmit(
                 OrderSubmissionDto.builder()
-                        .dutyId(299)
+                        .dutyId(359)
                         .priceOrder(800_000)
                         .dateTimeOrderForDoingFromCustomer(LocalDateTime.of(2024, 10, 30, 10, 25))
                         .address(faker.address().streetAddress())
                         .description( "8 --- " + faker.lorem().characters(5, 20))
                         .build()
-        ,2);
+        ,350);
     }
 
     private static void loadAllDutyWithChildrenTest(DutyService dutyService) {
@@ -146,7 +143,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(50)
+                            .parentId(356)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -164,7 +161,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(51)
+                            .parentId(357)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -188,13 +185,13 @@ public class HomeServiceApp {
     }
 
     private static void passwordUpdateTest(CustomerService customerService) {
-        Integer userId=298;
+        Integer userId=350;
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
-                .oldPassword("wti94059")
+                .oldPassword("6v4m4668")
                 .newPassword("ghazal99").build();
         // Boolean aBoolean = expertService.updatePassword(userChangePassword);
         Boolean aBoolean = customerService.updatePassword(userChangePasswordDto,userId);
-        System.out.println("change Password" + aBoolean);
+        System.out.println("change Password  " + aBoolean);
     }
 
     private static void loginTestMethod(CustomerService customerService) {

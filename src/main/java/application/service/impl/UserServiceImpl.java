@@ -76,12 +76,12 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         if (userChangePasswordDto != null) {
             String oldPassword = userChangePasswordDto.getOldPassword();
             String newPassword = userChangePasswordDto.getNewPassword();
-            Optional<T> user = findById(userId);
-            if (user.isPresent()) {
+            Optional<T> users = repository.findById(userId);
+            if (users.isPresent()) {
                 String encodePassword =oldPassword;
                 if (passwordEncodeService.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
                     String encode = passwordEncodeService.encode(newPassword);
-                    int repoResponse = repository.updatePassword(user.get().getProfile().getEmail(), encode);
+                    int repoResponse = repository.updatePassword(users.get().getProfile().getEmail(), encode);
                     return repoResponse > 0;
                 } else throw new ValidationException("old password is not correct");
             } else throw new ValidationException("user from token is null");

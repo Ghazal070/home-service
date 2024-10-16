@@ -1,6 +1,7 @@
 package application.entity.users.userFactory;
 
 import application.dto.UserSignupRequestDto;
+import application.entity.Credit;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
 import application.entity.users.Profile;
@@ -23,6 +24,7 @@ public class ExpertFactory implements UserFactory {
                                 .build()
                 )
                 .dateTimeSubmission(LocalDateTime.now())
+                .credit(Credit.builder().amount(0).build())
                 .expertStatus(ExpertStatus.New)
                 .build();
         expert.setImage(userSignupRequestDto.getInputStream());

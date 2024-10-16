@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet"  href="./style_account_payment.css">
+    <link rel="stylesheet" href="./style_account_payment.css">
     <title>Account Payment</title>
 <style>
     body {
@@ -38,7 +38,16 @@
 
     input[type="text"],
     input[type="date"],
-    input[type="password"] {
+    input[type="password"]{
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+    input[id="captchaDiv"]{
+        display: flex;
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -80,7 +89,7 @@
 <body>
 <h1>Account Payment</h1>
 <form action="#" th:action="@{/customers/payment/account(customerId=${customerId}, offerId=${offerId})}" th:object="${cardDto}" method="post">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+<!--    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />-->
     <p>
         <label for="cardNumber">Card Number:</label>
         <input type="text" id="cardNumber" th:field="*{cardNumber}" required />
@@ -88,6 +97,11 @@
     <p>
         <label for="localDate">Local Date:</label>
         <input type="date" id="localDate" th:field="*{localDate}" required />
+    </p>
+    <p id = "captchaDiv">
+        <img id="captchaImage"  th:attr="src=${'data:image/png;base64,' + imageCaptchaSrc}" alt="Captcha Image" />
+        <input type="text" id="captcha" th:field="*{captcha}" required />
+<!--        <button type="button" onclick="reloadCaptcha()">Reload Captcha</button>-->
     </p>
     <p>
         <label for="bankName">Bank Name:</label>
@@ -106,5 +120,15 @@
         <input type="reset" value="Reset" />
     </p>
 </form>
+<script>
+    function reloadCaptcha() {
+        fetch('/captcha')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('captchaImage').src = data;
+            })
+            .catch(err => console.error('Failed to reload captcha:', err));
+    }
+</script>
 </body>
 </html>

@@ -122,72 +122,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         } else throw new ValidationException("Order is null");
     }
 
-//    @Override
-//    public void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto) {
-//        Optional<Customer> customerOptional = repository.findById(customerId);
-//        if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
-//        Optional<Offer> offerOptional = offerService.findById(offerId);
-//        if (offerOptional.isEmpty()) throw new ValidationException("This offerId is not exist");
-//        Offer offer = offerOptional.get();
-//        Order order = offer.getOrder();
-//        if (!order.getOrderStatus().equals(OrderStatus.Done)) throw new ValidationException("OrderStatus for this offerId is not done ");
-//        Customer customer = customerOptional.get();
-//        switch (paymentType) {
-//            case "CreditPayment" -> creditPayment(offer,customer);
-//            case "AccountPayment" -> accountPayment(cardDto,customer,offer);
-//            default -> throw new ValidationException("Please choose CreditPayment or AccountPayment");
-//        }
-//        finalizePayment(offer, order);
-//    }
-//
-//    private void finalizePayment(Offer offer, Order order) {
-//        order.setOrderStatus(OrderStatus.Payed);
-//        Expert expert = order.getExpert();
-//        offerService.update(offer);
-//        LocalDateTime expectedDateTime = offer.getDateTimeStartWork().plusDays(offer.getLengthDays());
-//        LocalDateTime realDateTime = order.getDoneUpdate();
-//        Duration duration = Duration.between(realDateTime, expectedDateTime);
-//        long hour = duration.toHours();
-//        if (hour > 0){
-//            expert.setScore(expert.getScore() - (int) hour);
-//            if (expert.getScore()<0){
-//                expert.setIsActive(false);
-//            }
-//        }
-//    }
-//
-//    public void creditPayment(Offer offer, Customer customer){
-//        Credit credit = customer.getCredit();
-//        if (credit.getAmount() < offer.getPriceOffer()) {
-//            throw new ValidationException("Your credit lower than offer amount");
-//        }
-//        credit.setAmount(credit.getAmount() - offer.getPriceOffer());
-//        creditService.update(credit);
-//    }
-//    private void accountPayment(CardDto cardDto, Customer customer,Offer offer){
-//        Map<Integer,LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
-//        isStartedDuration(customer.getId(),paymentSessions);
-//        if (isExpiredDuration(customer.getId(),paymentSessions)){
-//            throw new ValidationException("Your payment session has expired. Please try again.");
-//        }
-//        Card existingCard = cardService.validateCard(cardDto);
-//        existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
-//        cardService.update(existingCard);
-//        Credit expertCredit = offer.getExpert().getCredit();
-//        expertCredit.setAmount((int) (expertCredit.getAmount() +  (0.7 * offer.getPriceOffer())));
-//    }
-    private void isStartedDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
-        paymentSessions.put(customerId,LocalDateTime.now());
-    }
-    private Boolean isExpiredDuration(Integer customerId,Map<Integer,LocalDateTime> paymentSessions){
-        Duration duration = Duration.ofMinutes(10);
-        if (paymentSessions.get(customerId)==null)
-            return true;
-        return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
-    }
-
     @Override
-    public Invoice creditPayment(Integer offerId, Integer customerId,String paymentType) {
+    public Invoice creditPayment(Integer offerId, Integer customerId, String paymentType) {
         Optional<Customer> customerOptional = repository.findById(customerId);
         if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
         Optional<Offer> offerOptional = offerService.findById(offerId);
@@ -201,10 +137,13 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         credit.setAmount(credit.getAmount() - offer.getPriceOffer());
         creditService.update(credit);
         Order order = offer.getOrder();
-        if (invoiceService.existByOrderId(order.getId())){
+        if (!order.getOrderStatus().equals(OrderStatus.Done)) {
+            throw new ValidationException("Please first change status order to done.");
+        }
+        if (invoiceService.existByOrderId(order.getId())) {
             throw new ValidationException("This order pay.");
         }
-        //finalizePayment(offer, order);
+        finalizePayment(offer, order);
         Invoice invoice = Invoice.builder()
                 .orderId(order.getId())
                 .customerId(customerId)
@@ -224,21 +163,20 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         Offer offer = offerOptional.get();
         Customer customer = customerOptional.get();
         Order order = offer.getOrder();
-        if (invoiceService.existByOrderId(order.getId())){
+        if (invoiceService.existByOrderId(order.getId())) {
             throw new ValidationException("This order pay.");
         }
-        Map<Integer,LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
-        isStartedDuration(customer.getId(),paymentSessions);
-        if (isExpiredDuration(customer.getId(),paymentSessions)){
+        Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
+        isStartedDuration(customer.getId(), paymentSessions);
+        if (isExpiredDuration(customer.getId(), paymentSessions)) {
             throw new ValidationException("Your payment session has expired. Please try again.");
         }
         Card existingCard = cardService.validateCard(cardDto);
         existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
         cardService.update(existingCard);
         Credit expertCredit = offer.getExpert().getCredit();
-        expertCredit.setAmount((int) (expertCredit.getAmount() +  (0.7 * offer.getPriceOffer())));
-        //finalizePayment(offer, order);
-        //todo for invoice successful from bank
+        expertCredit.setAmount((int) (expertCredit.getAmount() + (0.7 * offer.getPriceOffer())));
+        finalizePayment(offer, order);
         Invoice invoice = Invoice.builder()
                 .orderId(order.getId())
                 .customerId(customerId)
@@ -251,11 +189,12 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     private void finalizePayment(Offer offer, Order order) {
         order.setOrderStatus(OrderStatus.Payed);
+        order.setExpert(offer.getExpert());
         Expert expert = order.getExpert();
-        offerService.update(offer);
+        orderService.update(order);
         LocalDateTime expectedDateTime = offer.getDateTimeStartWork().plusDays(offer.getLengthDays());
         LocalDateTime realDateTime = order.getDoneUpdate();
-        Duration duration = Duration.between(realDateTime, expectedDateTime);
+        Duration duration = Duration.between(expectedDateTime,realDateTime);
         long hour = duration.toHours();
         if (hour > 0) {
             expert.setScore(expert.getScore() - (int) hour);
@@ -265,5 +204,14 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         }
     }
 
+    private void isStartedDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
+        paymentSessions.put(customerId, LocalDateTime.now());
+    }
 
+    private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
+        Duration duration = Duration.ofMinutes(10);
+        if (paymentSessions.get(customerId) == null)
+            return true;
+        return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
+    }
 }
