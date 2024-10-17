@@ -44,8 +44,6 @@ public class CustomerController {
     private final CaptchaGenerator captchaGenerator;
     private final OrderMapper orderMapper;
     private final OfferMapper offerMapper;
-    private Map<Integer, String> captchaPayment = new ConcurrentHashMap<>();
-    String captchaNotCookie =null;
 
 
     @PostMapping("/orderSubmit/{customerId}")
@@ -130,9 +128,9 @@ public class CustomerController {
 
     private static void createCookie(String paymentType, HttpServletResponse response, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null){
+        if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("payment-type")){
+                if (cookies[i].getName().equals("payment-type")) {
                     cookies[i].setValue(paymentType);
                 }
             }
@@ -155,12 +153,12 @@ public class CustomerController {
 
         String captchaString = CaptchaUtils.encodeBase64(captcha);
 
-        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 60);
-        cookie.setHttpOnly(false);
-        cookie.setSecure(request.isSecure());
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
+//        cookie.setPath("/");
+//        cookie.setMaxAge(60 * 60 * 60);
+//        cookie.setHttpOnly(false);
+//        cookie.setSecure(request.isSecure());
+//        response.addCookie(cookie);
 
         return captchaString;
     }
@@ -189,16 +187,16 @@ public class CustomerController {
     @GetMapping("/payment/account")
     public ModelAndView paymentByAccount(
             @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType,
-            @RequestParam Integer offerId, @RequestParam Integer customerId,HttpServletResponse response
-    ,HttpServletRequest request) {
+            @RequestParam Integer offerId, @RequestParam Integer customerId, HttpServletResponse response
+            , HttpServletRequest request) {
         try {
             ModelAndView view = new ModelAndView("account-payment");
-            String captcha = getCaptcha(request,response);
+            String captcha = getCaptcha(request, response);
             CardDto cardDto = CardDto.builder().build();
-            view.addObject("imageCaptchaSrc",captcha);
-            view.addObject("offerId",offerId);
-            view.addObject("customerId",customerId);
-            view.addObject("cardDto",cardDto);
+            view.addObject("imageCaptchaSrc", captcha);
+            view.addObject("offerId", offerId);
+            view.addObject("customerId", customerId);
+            view.addObject("cardDto", cardDto);
             if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
                 throw new ValidationControllerException(
                         "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
@@ -214,23 +212,19 @@ public class CustomerController {
     public ModelAndView paymentByAccount(
             @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType
             , @RequestParam Integer offerId, @RequestParam Integer customerId
-            , @ModelAttribute CardDto cardDto,HttpServletRequest request,HttpServletResponse response,HttpSession httpSession) {
+            , @ModelAttribute CardDto cardDto, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("invoice");
         try {
             if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
                 throw new ValidationControllerException(
                         "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
             }
-            Cookie[] cookies = request.getCookies();
-            Enumeration<String> headerNames = request.getHeaderNames();
-
-
             HttpSession session = request.getSession(false);
-           CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), session, false);
-            Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType,cardDto);
+            CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), session, false);
+            Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType, cardDto);
             view.addObject("invoice", invoice);
-            view.addObject("offerId",offerId);
-            view.addObject("customerId",customerId);
+            view.addObject("offerId", offerId);
+            view.addObject("customerId", customerId);
             return view;
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
