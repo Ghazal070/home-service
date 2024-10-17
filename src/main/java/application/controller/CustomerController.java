@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,7 @@ public class CustomerController {
     private final CaptchaGenerator captchaGenerator;
     private final OrderMapper orderMapper;
     private final OfferMapper offerMapper;
-    private Map<Integer, String> sessionPayment = new ConcurrentHashMap<>();
+    private Map<Integer, String> captchaPayment = new ConcurrentHashMap<>();
     String captchaNotCookie =null;
 
 
@@ -121,49 +122,49 @@ public class CustomerController {
                 throw new ValidationControllerException(
                         "Payment type not equals account payment or credit payment", HttpStatus.NOT_ACCEPTABLE);
             }
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null){
-                for (int i = 0; i < cookies.length; i++) {
-                    if (cookies[i].getName().equals("payment-type")){
-                        cookies[i].setValue(paymentType);
-                    }
-                }
-            }
-            Cookie cookie = new Cookie("payment-type", paymentType);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60 * 60);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(request.isSecure());
-            response.addCookie(cookie);
-
+            createCookie(paymentType, response, request);
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/captcha")
-    public String getCaptcha( HttpServletRequest request,HttpServletResponse response) {
-        CaptchaTextProducer textProducer = new CaptchaTextProducer();
-        Captcha captcha = captchaGenerator.createCaptcha(
-                100, 50, textProducer
-        );
-        String captchaString = CaptchaUtils.encodeBase64(captcha);
-        captchaNotCookie =captcha.getAnswer();
+
+    private static void createCookie(String paymentType, HttpServletResponse response, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null){
             for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("captcha")){
-                    cookies[i].setValue(captcha.getAnswer());
+                if (cookies[i].getName().equals("payment-type")){
+                    cookies[i].setValue(paymentType);
                 }
             }
         }
-        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
+        Cookie cookie = new Cookie("payment-type", paymentType);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60 * 60);
         cookie.setHttpOnly(true);
         cookie.setSecure(request.isSecure());
         response.addCookie(cookie);
+    }
+
+    @GetMapping("/captcha")
+    public String getCaptcha(HttpServletRequest request, HttpServletResponse response) {
+        CaptchaTextProducer textProducer = new CaptchaTextProducer();
+        Captcha captcha = captchaGenerator.createCaptcha(100, 50, textProducer);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(CaptchaUtils.CAPTCHA, textProducer.getAnswer());
+
+        String captchaString = CaptchaUtils.encodeBase64(captcha);
+
+        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 60);
+        cookie.setHttpOnly(false);
+        cookie.setSecure(request.isSecure());
+        response.addCookie(cookie);
+
         return captchaString;
     }
+
 
     @PostMapping("/payment/credit")
     public ModelAndView paymentByCredit(
@@ -213,18 +214,19 @@ public class CustomerController {
     public ModelAndView paymentByAccount(
             @CookieValue(value = "payment-type", defaultValue = "AccountPayment") String paymentType
             , @RequestParam Integer offerId, @RequestParam Integer customerId
-            , @ModelAttribute CardDto cardDto,HttpServletRequest request,HttpServletResponse response) {
+            , @ModelAttribute CardDto cardDto,HttpServletRequest request,HttpServletResponse response,HttpSession httpSession) {
         ModelAndView view = new ModelAndView("invoice");
         try {
             if (!paymentType.equals(String.valueOf(PaymentType.AccountPayment))) {
                 throw new ValidationControllerException(
                         "Payment type not equal to account payment", HttpStatus.PRECONDITION_FAILED);
             }
-            for (Cookie cookie : request.getCookies()) {
-                System.out.println(cookie.getName());
-            }
-           // CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), request, false);
-            CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), captchaNotCookie, false);
+            Cookie[] cookies = request.getCookies();
+            Enumeration<String> headerNames = request.getHeaderNames();
+
+
+            HttpSession session = request.getSession(false);
+           CaptchaUtils.checkCaptcha(cardDto.getCaptcha(), session, false);
             Invoice invoice = customerService.accountPayment(offerId, customerId, paymentType,cardDto);
             view.addObject("invoice", invoice);
             view.addObject("offerId",offerId);

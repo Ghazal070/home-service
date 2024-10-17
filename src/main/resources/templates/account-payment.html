@@ -89,7 +89,7 @@
 <body>
 <h1>Account Payment</h1>
 <form action="#" th:action="@{/customers/payment/account(customerId=${customerId}, offerId=${offerId})}" th:object="${cardDto}" method="post">
-<!--    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />-->
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <p>
         <label for="cardNumber">Card Number:</label>
         <input type="text" id="cardNumber" th:field="*{cardNumber}" required />

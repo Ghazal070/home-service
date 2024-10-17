@@ -30,27 +30,11 @@ public abstract class CaptchaUtils {
         return null;
     }
 
-//    public static void checkCaptcha(@NotNull String captcha, HttpServletRequest request, boolean shouldRemoveCaptcha) {
-//        String storedCaptcha = null;
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies != null){
-//            for (int i = 0; i < cookies.length; i++) {
-//                if (cookies[i].getName().equals("captcha")){
-//                    storedCaptcha=cookies[i].getValue();
-//                }
-//            }
-//        }
-//
-//        if (storedCaptcha == null) {
-//            throw new ValidationControllerException("there is no captcha in server", HttpStatus.PRECONDITION_REQUIRED);
-//        }
-//        if (!captcha.equals(storedCaptcha)) {
-//            throw new ValidationControllerException("wrong captcha", HttpStatus.UNAUTHORIZED);
-//        }
-//    }
-
-    public static void checkCaptcha(@NotNull String captcha, String captchaNotCookie, boolean shouldRemoveCaptcha) {
-        String storedCaptcha = captchaNotCookie;
+    public static void checkCaptcha(@NotNull String captcha, HttpSession httpSession, boolean shouldRemoveCaptcha) {
+        String storedCaptcha = (String) httpSession.getAttribute(CaptchaUtils.CAPTCHA);
+        if (shouldRemoveCaptcha) {
+            httpSession.removeAttribute(CAPTCHA);
+        }
 
         if (storedCaptcha == null) {
             throw new ValidationControllerException("there is no captcha in server", HttpStatus.PRECONDITION_REQUIRED);
@@ -59,4 +43,5 @@ public abstract class CaptchaUtils {
             throw new ValidationControllerException("wrong captcha", HttpStatus.UNAUTHORIZED);
         }
     }
+
 }
