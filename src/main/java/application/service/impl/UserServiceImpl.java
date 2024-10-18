@@ -1,8 +1,15 @@
 package application.service.impl;
 
+import application.dto.SearchDto;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
+import application.entity.Duty_;
+import application.entity.users.Expert_;
 import application.entity.users.Users;
+import application.entity.users.Users_;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
 import application.service.PasswordEncodeService;
@@ -15,6 +22,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -31,7 +40,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
 
     public void convertByteToImage(Integer userId) {
         Optional<T> users = repository.findById(userId);
-        if (users.isPresent()){
+        if (users.isPresent()) {
             Byte[] data = users.get().getImage();
             String firstName = users.get().getFirstName();
             if (data == null || data.length == 0)
@@ -53,7 +62,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }else throw new ValidationException("UserId is not exist");
+        } else throw new ValidationException("UserId is not exist");
 
     }
 
@@ -72,13 +81,13 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
-    public Boolean updatePassword(UserChangePasswordDto userChangePasswordDto,Integer userId) {
+    public Boolean updatePassword(UserChangePasswordDto userChangePasswordDto, Integer userId) {
         if (userChangePasswordDto != null) {
             String oldPassword = userChangePasswordDto.getOldPassword();
             String newPassword = userChangePasswordDto.getNewPassword();
             Optional<T> users = repository.findById(userId);
             if (users.isPresent()) {
-                String encodePassword =oldPassword;
+                String encodePassword = oldPassword;
                 if (passwordEncodeService.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
                     String encode = passwordEncodeService.encode(newPassword);
                     int repoResponse = repository.updatePassword(users.get().getProfile().getEmail(), encode);
@@ -93,5 +102,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     public Boolean containByUniqField(String uniqField) {
         return repository.containByUniqField(uniqField);
     }
+
+
 
 }

@@ -4,6 +4,7 @@ import application.dto.DutyCreationDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
+import application.service.UserSpecification;
 import application.service.impl.AdminServiceImpl;
 import jakarta.validation.ValidationException;
 import application.repository.AdminRepository;
@@ -48,6 +49,8 @@ class AdminServiceImplTest {
     private AuthHolder authHolder;
     @Mock
     private PasswordEncodeService passwordEncodeService;
+    @Mock
+    private UserSpecification userSpecification;
 
     @InjectMocks
     private AdminServiceImpl underTest;
@@ -56,7 +59,7 @@ class AdminServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new AdminServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, expertService);
+                passwordEncodeService, dutyService, expertService, userSpecification);
     }
 
     @Test

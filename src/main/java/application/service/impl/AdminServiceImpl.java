@@ -1,21 +1,21 @@
 package application.service.impl;
 
 import application.dto.DutyCreationDto;
+import application.dto.SearchDto;
+import application.dto.UsersSearchResponse;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
-import application.entity.users.Admin;
-import application.entity.users.Expert;
-import application.service.DutyService;
-import application.service.ExpertService;
+import application.entity.users.*;
+import application.service.*;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import application.repository.AdminRepository;
-import application.service.AdminService;
-import application.service.PasswordEncodeService;
 import application.util.AuthHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,11 +26,13 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     private final DutyService dutyService;
     private final ExpertService expertService;
+    private final UserSpecification userSpecification;
 
-    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, ExpertService expertService) {
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification) {
         super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.expertService = expertService;
+        this.userSpecification = userSpecification;
     }
 
     @Override
@@ -65,12 +67,12 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
 
     @Override
     public Boolean updateExpertStatus(Integer expertId) {
-            Optional<Expert> expert = expertService.findById(expertId);
-            if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
-                expert.get().setExpertStatus(ExpertStatus.Accepted);
-                expertService.update(expert.get());
-                return true;
-            } else throw new ValidationException("ExpertStatus does not New");
+        Optional<Expert> expert = expertService.findById(expertId);
+        if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
+            expert.get().setExpertStatus(ExpertStatus.Accepted);
+            expertService.update(expert.get());
+            return true;
+        } else throw new ValidationException("ExpertStatus does not New");
     }
 
     @Override
@@ -110,5 +112,23 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         }
         expertService.update(expert);
         return true;
+    }
+
+    @Override
+    public List<UsersSearchResponse> searchUser(SearchDto searchDto) {
+        List<Users> users = userSpecification.findAllBySearchDto(searchDto);
+        List<UsersSearchResponse> usersResponse = new ArrayList<>();
+        users.forEach(u -> {
+                    UsersSearchResponse response = UsersSearchResponse.builder()
+                            .email(u.getProfile().getEmail())
+                            .dateTimeSubmission(u.getDateTimeSubmission())
+                            .firstName(u.getFirstName())
+                            .lastName(u.getLastName())
+                            .isActive(u.getIsActive())
+                            .build();
+                    usersResponse.add(response);
+                }
+        );
+        return usersResponse;
     }
 }

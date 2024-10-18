@@ -1,8 +1,11 @@
 package application.service;
 
+import application.dto.SearchDto;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
+
+import java.util.List;
 
 public interface UserService<T extends Users> extends BaseEntityService<T,Integer> {
 
@@ -10,5 +13,6 @@ public interface UserService<T extends Users> extends BaseEntityService<T,Intege
     UserLoginProjection login(String email, String password);
     Boolean updatePassword(UserChangePasswordDto userChangePasswordDto,Integer userId);
     Boolean containByUniqField(String uniqField);
+
 
 }
