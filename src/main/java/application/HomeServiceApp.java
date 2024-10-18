@@ -56,7 +56,19 @@ public class HomeServiceApp {
         //expertCreateOffer(expertService);
         //customerService.getOffersForOrder(324,315).forEach(System.out::println);
         //dutyService.getSelectableDuties().forEach(System.out::println);
+        List<UsersSearchResponse> responseList = searchAdminTest(adminService);
+        responseList.forEach(System.out::println);
 
+
+    }
+
+    private static List<UsersSearchResponse> searchAdminTest(AdminService adminService) {
+        SearchDto searchDto = SearchDto.builder()
+                .firstName("olo")
+                .email("alethia")
+                .maxScore(20)
+                .build();
+        return adminService.searchUser(searchDto);
 
     }
 
