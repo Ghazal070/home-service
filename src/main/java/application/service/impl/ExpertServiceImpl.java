@@ -1,21 +1,22 @@
 package application.service.impl;
 
 import application.dto.OfferCreationDto;
+import application.dto.ViewScoreExpertDto;
+import application.entity.Comment;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
+import application.service.*;
 import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
-import application.service.ExpertService;
-import application.service.OfferService;
-import application.service.OrderService;
-import application.service.PasswordEncodeService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,11 +25,13 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
 
     private final OrderService orderService;
     private final OfferService offerService;
+    private final CommentService commentService;
 
-    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, OrderService orderService, OfferService offerService) {
+    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, OrderService orderService, OfferService offerService, CommentService commentService) {
         super(validator, repository, authHolder, passwordEncodeService);
         this.orderService = orderService;
         this.offerService = offerService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -77,5 +80,21 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
                 } else throw new ValidationException("Error in saving offer");
             } else throw new ValidationException("Base price greater than your offer");
         } else throw new ValidationException("Order is null");
+    }
+
+    @Override
+    public List<ViewScoreExpertDto> viewScore(Integer expertId) {
+        List<Comment> commentByExpertId = commentService.getCommentByExpertId(expertId);
+        List<ViewScoreExpertDto> viewScoreExpertDtoList = new ArrayList<>();
+        commentByExpertId.forEach(c ->
+                viewScoreExpertDtoList.add(
+                        ViewScoreExpertDto.builder()
+                                .orderId(c.getOffer().getOrder().getId())
+                                .offerId(c.getOffer().getId())
+                                .score(c.getScore())
+                                .build()
+                )
+        );
+        return viewScoreExpertDtoList;
     }
 }

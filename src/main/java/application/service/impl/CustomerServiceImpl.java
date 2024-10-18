@@ -29,8 +29,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final CardService cardService;
     private final ExpertService expertService;
     private final InvoiceService invoiceService;
+    private final CommentService commentService;
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, ExpertService expertService, InvoiceService invoiceService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, ExpertService expertService, InvoiceService invoiceService, CommentService commentService) {
         super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.orderService = orderService;
@@ -39,6 +40,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         this.cardService = cardService;
         this.expertService = expertService;
         this.invoiceService = invoiceService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -108,12 +110,13 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
     @Override
-    public Boolean orderDone(Integer offerId) {
+    public Boolean orderDone(Integer offerId, String commentContent, Integer score) {
         Optional<Offer> optionalOffer = offerService.findById(offerId);
         if (optionalOffer.isPresent()) {
             Offer offer = optionalOffer.get();
             Order order = offer.getOrder();
             if (order.getOrderStatus().equals(OrderStatus.Started)) {
+                commentService.submitCustomerComment(offer, commentContent, score);
                 order.setOrderStatus(OrderStatus.Done);
                 order.setDoneUpdate(LocalDateTime.now());
                 orderService.update(order);
@@ -194,7 +197,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         orderService.update(order);
         LocalDateTime expectedDateTime = offer.getDateTimeStartWork().plusDays(offer.getLengthDays());
         LocalDateTime realDateTime = order.getDoneUpdate();
-        Duration duration = Duration.between(expectedDateTime,realDateTime);
+        Duration duration = Duration.between(expectedDateTime, realDateTime);
         long hour = duration.toHours();
         if (hour > 0) {
             expert.setScore(expert.getScore() - (int) hour);

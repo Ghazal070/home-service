@@ -6,6 +6,7 @@ import application.entity.users.Customer;
 import application.entity.users.Expert;
 import application.entity.users.Users;
 import jakarta.persistence.*;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -36,7 +37,6 @@ public class Order extends BaseEntity<Integer> {
     private Integer priceOrder;
 
     @Column
-    //@Future
     @NotNull
     private LocalDateTime dateTimeOrderForDoingFromCustomer;
 
@@ -64,7 +64,12 @@ public class Order extends BaseEntity<Integer> {
     @Column
     private LocalDateTime doneUpdate;
 
-
+    @PrePersist
+    protected void onCreate(){
+        if (dateTimeOrderForDoingFromCustomer.isBefore(LocalDateTime.now())){
+            throw new ValidationException("DateTimeOrderForDoingFromCustomer order must be after now localDateTime in persist");
+        }
+    }
 
     @Override
     public String toString() {

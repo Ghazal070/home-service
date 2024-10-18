@@ -42,7 +42,7 @@ public class BaseEntityServiceImpl<U extends BaseEntityRepository<T, ID>,
             validate(newEntity);
             return repository.save(newEntity);
         } catch (ValidationException e) {
-            throw new ValidationException("Validation failed: " + e.getMessage(), e);
+            throw new ValidationException("Validation failed order: " + e.getMessage(), e);
         }
     }
 

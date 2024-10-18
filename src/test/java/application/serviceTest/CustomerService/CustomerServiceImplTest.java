@@ -68,6 +68,9 @@ class CustomerServiceImplTest {
     @Mock
     private InvoiceService invoiceService;
 
+    @Mock
+    private CommentService commentService;
+
 
     @InjectMocks
     private CustomerServiceImpl underTest;
@@ -76,7 +79,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, expertService, invoiceService);
+                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, expertService, invoiceService, commentService);
     }
 
     @Test
@@ -273,6 +276,8 @@ class CustomerServiceImplTest {
     public void orderDoneSuccessfully() {
 
         Integer offerId = 1;
+        String commentContent="good";
+        Integer score=4;
         Order order = Order.builder()
                 .id(1)
                 .orderStatus(OrderStatus.Started)
@@ -283,7 +288,7 @@ class CustomerServiceImplTest {
         given(orderService.update(any(Order.class))).willReturn(order);
 
 
-        Boolean result = underTest.orderDone(offerId);
+        Boolean result = underTest.orderDone(offerId,commentContent, score);
 
         assertTrue(result);
         assertEquals(OrderStatus.Done, order.getOrderStatus());
@@ -292,6 +297,8 @@ class CustomerServiceImplTest {
     @Test
     public void orderDoneStatusNotStarted() {
         Integer offerId = 1;
+        String commentContent="good";
+        Integer score=4;
         Order order = Order.builder()
                 .id(1)
                 .orderStatus(OrderStatus.ComingToLocationWanting)
@@ -300,7 +307,7 @@ class CustomerServiceImplTest {
         given(offerService.findById(offerId)).willReturn(Optional.of(offer));
 
 
-        assertThatThrownBy(() -> underTest.orderDone(offerId))
+        assertThatThrownBy(() -> underTest.orderDone(offerId,commentContent,score))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Order status is not Started");
     }

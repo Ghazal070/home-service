@@ -2,10 +2,8 @@ package application.entity;
 
 
 import application.entity.users.Expert;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +40,6 @@ public class Offer extends BaseEntity<Integer>{
     private LocalDateTime dateTimeOffer;
 
     @Column
-    @Future
     @NotNull
     private LocalDateTime dateTimeStartWork;
 
@@ -55,7 +52,12 @@ public class Offer extends BaseEntity<Integer>{
 
     @PrePersist
     protected void onCreate(){
+        if (dateTimeStartWork.isBefore(LocalDateTime.now())){
+            throw new ValidationException("DateTimeStartWork offer must be after now localDateTime in persist");
+        }
         this.dateTimeOffer =LocalDateTime.now();
     }
+
+
 
 }

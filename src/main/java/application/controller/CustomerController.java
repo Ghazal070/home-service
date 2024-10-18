@@ -3,10 +3,7 @@ package application.controller;
 import application.config.captcha.CaptchaGenerator;
 import application.config.captcha.CaptchaTextProducer;
 import application.config.captcha.CaptchaUtils;
-import application.dto.CardDto;
-import application.dto.OfferResponseDto;
-import application.dto.OrderResponseDto;
-import application.dto.OrderSubmissionDto;
+import application.dto.*;
 import application.entity.Invoice;
 import application.entity.Offer;
 import application.entity.Order;
@@ -102,10 +99,11 @@ public class CustomerController {
         }
     }
 
-    @PatchMapping("/offer/orderDone/{offerId}")
-    public ResponseEntity<String> orderDone(@PathVariable Integer offerId) {
+    @PatchMapping("/offer/orderDone")
+    public ResponseEntity<String> orderDone(@RequestBody @Valid CustomerCommentDto customerCommentDto) {
         try {
-            customerService.orderDone(offerId);
+            customerService.orderDone(customerCommentDto.getOfferId()
+                    ,customerCommentDto.getContent(),customerCommentDto.getScore());
             return ResponseEntity.ok("Status change to orderDone");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);

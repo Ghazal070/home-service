@@ -10,6 +10,7 @@ import jakarta.persistence.metamodel.StaticMetamodel;
 public abstract class Comment_ extends application.entity.BaseEntity_ {
 
 	public static final String OFFER = "offer";
+	public static final String SCORE = "score";
 	public static final String CONTENT = "content";
 
 	
@@ -17,6 +18,11 @@ public abstract class Comment_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Comment#offer
 	 **/
 	public static volatile SingularAttribute<Comment, Offer> offer;
+	
+	/**
+	 * @see application.entity.Comment#score
+	 **/
+	public static volatile SingularAttribute<Comment, Integer> score;
 	
 	/**
 	 * @see application.entity.Comment

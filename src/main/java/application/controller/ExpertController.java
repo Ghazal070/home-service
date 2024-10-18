@@ -2,6 +2,7 @@ package application.controller;
 
 import application.dto.OfferCreationDto;
 import application.dto.OfferResponseDto;
+import application.dto.ViewScoreExpertDto;
 import application.entity.Offer;
 import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
@@ -10,8 +11,9 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/experts")
@@ -38,4 +40,15 @@ public class ExpertController {
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/score-on-offer/{expertId}")
+    public ResponseEntity<List<ViewScoreExpertDto>> viewScore(@PathVariable Integer expertId) {
+        try {
+            List<ViewScoreExpertDto> viewScore = expertService.viewScore(expertId);
+            return ResponseEntity.ok(viewScore);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

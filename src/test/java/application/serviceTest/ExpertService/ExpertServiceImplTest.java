@@ -7,6 +7,7 @@ import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
+import application.service.CommentService;
 import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
 import application.service.OfferService;
@@ -53,6 +54,8 @@ class ExpertServiceImplTest {
     private ExpertRepository repository;
     @Mock
     private PasswordEncodeService passwordEncodeService;
+    @Mock
+    private CommentService commentService;
 
     @Mock
     private AuthHolder authHolder;
@@ -62,7 +65,7 @@ class ExpertServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         this.underTest = new ExpertServiceImpl(validator, repository, authHolder
-                , passwordEncodeService, orderService, offerService);
+                , passwordEncodeService, orderService, offerService, commentService);
     }
 
 

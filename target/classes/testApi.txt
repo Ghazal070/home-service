@@ -45,7 +45,13 @@ http://localhost:8081/customers/offer/chooseExpert/{offerId}
 
 ================================================================
 orderDone
-http://localhost:8081/customers/offer/orderDone/{offerId}
+http://localhost:8081/customers/offer/orderDone-
+
+{
+"content":"",
+"offerId":367,
+"score":2
+}
 
 ================================================================
 orderStarted
@@ -138,6 +144,9 @@ http://localhost:8080/customers/payment/account?customerId=350&offerId=367
 "ccv2":"1111",
 "secondPassword":"1111"
 }
+================================================================
+experts
+http://localhost:8081/experts/score-on-offer/352
 ================================================================
 change password
 http://localhost:8081/users/customers/changePassword/350

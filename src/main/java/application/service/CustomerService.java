@@ -18,7 +18,7 @@ public interface CustomerService extends UserService<Customer>{
     Set<Offer> getOffersForOrder(Integer orderId,Integer customerId);
     Boolean chooseExpertForOrder(Integer offerId);
     Boolean orderStarted(Integer offerId);
-    Boolean orderDone(Integer offerId);
+    Boolean orderDone(Integer offerId,String commentContent,Integer score);
 
     //void payment(String paymentType, Integer offerId, Integer customerId,CardDto cardDto);
 

@@ -1,5 +1,6 @@
 package application.repository;
 
+import application.dto.ViewScoreExpertDto;
 import application.entity.Duty;
 import application.entity.Order;
 import application.entity.users.Expert;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface ExpertRepository extends UserRepository<Expert> {
-
 
 
 }
