@@ -2,11 +2,10 @@ package application.service.impl;
 
 import application.dto.SearchDto;
 import application.entity.Duty_;
-import application.entity.users.Expert_;
-import application.entity.users.Profile_;
-import application.entity.users.Users;
-import application.entity.users.Users_;
+import application.entity.users.*;
 import application.exception.ValidationException;
+import application.repository.CustomerRepository;
+import application.repository.ExpertRepository;
 import application.repository.UserRepository;
 import application.service.UserSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -21,9 +20,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserSpecificationImpl implements UserSpecification {
+public class UserSpecificationImpl<T extends Users> implements UserSpecification<T> {
 
-    private final UserRepository userRepository;
+    private final UserRepository<T> userRepository;
+    private final CustomerRepository customerRepository;
+    private final ExpertRepository expertRepository;
 
     @Override
     public void validate(SearchDto searchDto) {
@@ -38,37 +39,62 @@ public class UserSpecificationImpl implements UserSpecification {
     }
 
     @Override
-    public List<Users> findAllBySearchDto(SearchDto searchDto) {
+    public List findAllBySearchDto(SearchDto searchDto) {
         validate(searchDto);
-        return userRepository.findAll(
-                (root, query, cb) -> {
-                    List<Predicate> predicates = new ArrayList<>();
-                    fillUserRole(predicates, root, cb, searchDto.getUserRole());
-                    fillFirstName(predicates, root, cb, searchDto.getFirstName());
-                    fillLastName(predicates, root, cb, searchDto.getLastName());
-                    fillEmail(predicates, root, cb, searchDto.getEmail());
-                    fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
-                    fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
+        if (searchDto.getUserRole() != null) {
+            switch (searchDto.getUserRole()) {
+                case "Customer": {
+                    return customerRepository.findAll(
+                            (root, query, cb) -> {
+                                List<Predicate> predicates = new ArrayList<>();
+                                fillFirstName(predicates, root, cb, searchDto.getFirstName());
+                                fillLastName(predicates, root, cb, searchDto.getLastName());
+                                fillEmail(predicates, root, cb, searchDto.getEmail());
+                                fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
+                                fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
+                                return cb.and(predicates.toArray(new Predicate[0]));
 
-                    return cb.and(predicates.toArray(new Predicate[0]));
+                            }
+                    );
 
                 }
-        );
-    }
+                case "Expert" : {
+                    return expertRepository.findAll(
+                            (root, query, cb) -> {
+                                List<Predicate> predicates = new ArrayList<>();
+                                fillFirstName(predicates, root, cb, searchDto.getFirstName());
+                                fillLastName(predicates, root, cb, searchDto.getLastName());
+                                fillEmail(predicates, root, cb, searchDto.getEmail());
+                                fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
+                                fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
+                                return cb.and(predicates.toArray(new Predicate[0]));
 
-    private void fillUserRole(List<Predicate> predicates,
-                              Root<Users> root, CriteriaBuilder cb, String userRole) {
-        if (StringUtils.isNotBlank(userRole)) {
-            predicates.add(
-                    cb.equal(
-                            root.get("dtype"),
-                            userRole
-                    )
+                            }
+                    );
+                }
+
+                default: throw new ValidationException("User role can only be Customer or Expert or null");
+            }
+        } else {
+            return userRepository.findAll(
+                    (root, query, cb) -> {
+                        List<Predicate> predicates = new ArrayList<>();
+                        fillFirstName(predicates, root, cb, searchDto.getFirstName());
+                        fillLastName(predicates, root, cb, searchDto.getLastName());
+                        fillEmail(predicates, root, cb, searchDto.getEmail());
+                        fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
+                        fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
+                        cb.and(predicates.toArray(new Predicate[0]));
+
+                        return cb.and(predicates.toArray(new Predicate[0]));
+
+                    }
             );
         }
+
     }
 
-    private void fillFirstName(List<Predicate> predicates, Root<Users> root
+    private void fillFirstName(List<Predicate> predicates, Root root
             , CriteriaBuilder cb, String firstName) {
         if (StringUtils.isNotBlank(firstName)) {
             predicates.add(
@@ -80,7 +106,7 @@ public class UserSpecificationImpl implements UserSpecification {
         }
     }
 
-    private void fillLastName(List<Predicate> predicates, Root<Users> root
+    private void fillLastName(List<Predicate> predicates, Root root
             , CriteriaBuilder cb, String lastName) {
         if (StringUtils.isNotBlank(lastName)) {
             predicates.add(
@@ -92,7 +118,7 @@ public class UserSpecificationImpl implements UserSpecification {
         }
     }
 
-    private void fillEmail(List<Predicate> predicates, Root<Users> root
+    private void fillEmail(List<Predicate> predicates, Root root
             , CriteriaBuilder cb, String email) {
         if (StringUtils.isNotBlank(email)) {
             predicates.add(
@@ -104,7 +130,7 @@ public class UserSpecificationImpl implements UserSpecification {
         }
     }
 
-    private void fillDutyTitle(List<Predicate> predicates, Root<Users> root
+    private void fillDutyTitle(List<Predicate> predicates, Root root
             , CriteriaBuilder cb, String dutyTitle) {
         if (StringUtils.isNotBlank(dutyTitle)) {
             predicates.add(
@@ -116,7 +142,7 @@ public class UserSpecificationImpl implements UserSpecification {
         }
     }
 
-    private void fillMinScore(List<Predicate> predicates, Root<Users> root, CriteriaBuilder cb, Integer minScore, Integer maxScore) {
+    private void fillMinScore(List<Predicate> predicates, Root root, CriteriaBuilder cb, Integer minScore, Integer maxScore) {
         if (minScore != null && maxScore != null) {
             predicates.add(
                     cb.between(

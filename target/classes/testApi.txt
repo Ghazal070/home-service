@@ -45,7 +45,7 @@ http://localhost:8081/customers/offer/chooseExpert/{offerId}
 
 ================================================================
 orderDone
-http://localhost:8081/customers/offer/orderDone-
+http://localhost:8081/customers/offer/orderDone
 
 {
 "content":"",

@@ -64,9 +64,11 @@ public class HomeServiceApp {
 
     private static List<UsersSearchResponse> searchAdminTest(AdminService adminService) {
         SearchDto searchDto = SearchDto.builder()
-                .firstName("olo")
-                .email("alethia")
-                .maxScore(20)
+                .userRole("Expert")
+                .firstName("r")
+                .email("com")
+                .dutyTitle("e")
+//                .maxScore(5)
                 .build();
         return adminService.searchUser(searchDto);
 

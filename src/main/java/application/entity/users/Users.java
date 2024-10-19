@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
 @Entity
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "dtype")
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class Users extends BaseEntity<Integer> {
 
     @Column
