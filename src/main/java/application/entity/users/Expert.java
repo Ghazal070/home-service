@@ -7,6 +7,8 @@ import application.entity.enumeration.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +33,7 @@ public class Expert extends Users {
     private Set<Duty> duties = new HashSet<>();
 
     @OneToOne
+    @Cascade({CascadeType.PERSIST})
     private Credit credit;
 
     @Override

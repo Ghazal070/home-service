@@ -6,6 +6,7 @@ import application.entity.Offer;
 import java.util.Set;
 
 public record OrderExpertWaitingDto(
+        Integer orderId,
         String description,
         Integer priceOrder,
         String dateTimeOrderForDoingFromCustomer,

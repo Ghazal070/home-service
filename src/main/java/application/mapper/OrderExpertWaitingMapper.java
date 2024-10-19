@@ -16,7 +16,9 @@ public interface OrderExpertWaitingMapper extends BaseMapper<Order, OrderExpertW
     @Mappings({
             @Mapping(target = "customerId", source = "customer.id"),
             @Mapping(target = "dutyId", source = "duty.id"),
-            @Mapping(target = "expertId", source = "expert.id")
+            @Mapping(target = "expertId", source = "expert.id"),
+            @Mapping(target = "orderId", source = "id")
+
     }
     )
     OrderExpertWaitingDto convertEntityToDto(Order order);
@@ -25,7 +27,8 @@ public interface OrderExpertWaitingMapper extends BaseMapper<Order, OrderExpertW
     @Mappings({
             @Mapping(target = "customerId", source = "customer.id"),
             @Mapping(target = "dutyId", source = "duty.id"),
-            @Mapping(target = "expertId", source = "expert.id")
+            @Mapping(target = "expertId", source = "expert.id"),
+            @Mapping(target = "orderId", source = "id")
     }
     )
     Set<OrderExpertWaitingDto> convertEntityToDto(Set<Order> e);

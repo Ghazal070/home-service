@@ -56,8 +56,7 @@ public class HomeServiceApp {
         //expertCreateOffer(expertService);
         //customerService.getOffersForOrder(324,315).forEach(System.out::println);
         //dutyService.getSelectableDuties().forEach(System.out::println);
-        List<UsersSearchResponse> responseList = searchAdminTest(adminService);
-        responseList.forEach(System.out::println);
+        //List<UsersSearchResponse> responseList = searchAdminTest(adminService);
 
 
     }

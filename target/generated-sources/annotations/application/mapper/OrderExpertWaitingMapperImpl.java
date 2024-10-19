@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-19T09:48:46+0330",
+    date = "2024-10-19T16:30:49+0330",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -80,6 +80,7 @@ public class OrderExpertWaitingMapperImpl implements OrderExpertWaitingMapper {
         Integer customerId = null;
         Integer dutyId = null;
         Integer expertId = null;
+        Integer orderId = null;
         String description = null;
         Integer priceOrder = null;
         String dateTimeOrderForDoingFromCustomer = null;
@@ -88,6 +89,7 @@ public class OrderExpertWaitingMapperImpl implements OrderExpertWaitingMapper {
         customerId = orderCustomerId( order );
         dutyId = orderDutyId( order );
         expertId = orderExpertId( order );
+        orderId = order.getId();
         description = order.getDescription();
         priceOrder = order.getPriceOrder();
         if ( order.getDateTimeOrderForDoingFromCustomer() != null ) {
@@ -97,7 +99,7 @@ public class OrderExpertWaitingMapperImpl implements OrderExpertWaitingMapper {
             orderStatus = order.getOrderStatus().name();
         }
 
-        OrderExpertWaitingDto orderExpertWaitingDto = new OrderExpertWaitingDto( description, priceOrder, dateTimeOrderForDoingFromCustomer, orderStatus, customerId, expertId, dutyId );
+        OrderExpertWaitingDto orderExpertWaitingDto = new OrderExpertWaitingDto( orderId, description, priceOrder, dateTimeOrderForDoingFromCustomer, orderStatus, customerId, expertId, dutyId );
 
         return orderExpertWaitingDto;
     }
