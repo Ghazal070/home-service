@@ -158,6 +158,14 @@ http://localhost:8081/users/customers/changePassword/350
 =============================================================
 captcha
 http://localhost:8081/customers/captcha
+============================================================
+http://localhost:8081/admins/search
+{
+"userRole":"Expert",
+"firstName":"r",
+"email":"com",
+"dutyTitle":"e"
+}
 
 
 

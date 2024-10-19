@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
@@ -126,6 +127,13 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                             .lastName(u.getLastName())
                             .isActive(u.getIsActive())
                             .build();
+                    if(u instanceof Expert expert){
+                        response.setScore((expert.getScore()));
+                        Set<Duty> duties = expert.getDuties();
+                        Set<String> stringList = duties.stream().map(d -> d.getTitle()).collect(Collectors.toSet());
+                        response.setDuties(stringList);
+                        response.setExpertStatus(expert.getExpertStatus());
+                    }
                     usersResponse.add(response);
                 }
         );

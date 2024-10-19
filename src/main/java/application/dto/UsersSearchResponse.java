@@ -42,7 +42,7 @@ public class UsersSearchResponse implements Serializable {
 
     private Integer score;
 
-    private Set<Duty> duties = new HashSet<>();
+    private Set<String> duties = new HashSet<>();
 
     @Override
     public String toString() {
