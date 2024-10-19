@@ -83,3 +83,5 @@ public class UserController {
     }
 
 }
+//todo sum score expert
+//todo array integer and duty

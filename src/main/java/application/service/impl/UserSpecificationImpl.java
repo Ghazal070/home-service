@@ -58,6 +58,7 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
                     );
 
                 }
+                //todo duplicate base data and 53 line error// return switch
                 case "Expert" : {
                     return expertRepository.findAll(
                             (root, query, cb) -> {
@@ -150,5 +151,8 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
                     )
             );
         }
-    }
+    }//todo between score
+    //remove= delete
+    //method renaming
+    //all information replace with id--->cashing
 }

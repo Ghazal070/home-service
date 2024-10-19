@@ -29,7 +29,7 @@ public class ExpertController {
         return permissionExpertToServices ? ResponseEntity.ok("Expert have permission") :
                 new ResponseEntity<>("Expert dont have permission", HttpStatus.BAD_REQUEST);
     }
-
+//todo isActive true //negative score??
     @PostMapping("/offerCreation/{expertId}")
     public ResponseEntity<OfferResponseDto> sendOffer(@RequestBody OfferCreationDto offerCreationDto
             , @PathVariable Integer expertId) {

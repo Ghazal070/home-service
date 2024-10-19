@@ -46,6 +46,7 @@ public class DutyController {
     }
 
     @GetMapping("/dutiesWithSubDutiesOnlyTitle")
+//todo    @GetMapping(params="only=title")
     public List<DutyResponseControllerDto> loadAllDutyWithChildrenOnlyTitle() {
         try {
             List<DutyResponseChildrenDto> list = dutyService.loadAllDutyWithChildren();

@@ -13,9 +13,9 @@ admin create duty
 -------------------------------------------
 http://localhost:8081/admins/expertStatus/{id}
 -------------------------------------------
-http://localhost:8081/admins/addDutyToExpert?expertId=2&dutyId=9
+http://localhost:8081/admins/addDutyToExpert?expertId=352&dutyId=359
 -------------------------------------------
-http://localhost:8081/admins/removeDutyFromExpert?expertId=2&dutyId=9
+http://localhost:8081/admins/removeDutyFromExpert?expertId=352&dutyId=359
 ======================================================================
 Customers
 http://localhost:8081/customers/orderSubmit/2

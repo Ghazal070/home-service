@@ -189,7 +189,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         return invoiceService.save(invoice);
 
     }
-
+//todo payment 10minutes
     private void finalizePayment(Offer offer, Order order) {
         order.setOrderStatus(OrderStatus.Payed);
         order.setExpert(offer.getExpert());
@@ -212,7 +212,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
     private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
-        Duration duration = Duration.ofMinutes(10);
+        Duration duration = Duration.ofSeconds(5);
         if (paymentSessions.get(customerId) == null)
             return true;
         return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
