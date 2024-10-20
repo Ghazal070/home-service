@@ -12,6 +12,7 @@ import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
 import application.mapper.OrderMapper;
 import application.service.CustomerService;
+import application.service.OfferService;
 import cn.apiclub.captcha.Captcha;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final CaptchaGenerator captchaGenerator;
     private final OrderMapper orderMapper;
+    private final OfferService offerService;
     private final OfferMapper offerMapper;
 
 
@@ -213,6 +215,27 @@ public class CustomerController {
             return view;
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.PRECONDITION_FAILED);
+        }
+    }
+
+    @GetMapping("/{customerId}/offers/orders/{orderID}/ordering/price")
+    public Set<OfferResponseDto> getOfferByCustomerIdOrderByPriceOrder(
+            @PathVariable Integer customerId,@PathVariable Integer orderID){
+        try {
+            Set<Offer> offers = offerService.getOfferByCustomerIdOrderByPriceOrder(customerId, orderID);
+            return offerMapper.convertEntityToDto(offers);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/{customerId}/offers/orders/{orderID}/ordering/score")
+    public Set<OfferResponseDto> getOfferByCustomerIdOrderByScoreExpert(
+            @PathVariable Integer customerId,@PathVariable Integer orderID){
+        try {
+            Set<Offer> offers = offerService.getOfferByCustomerIdOrderByScoreExpert(customerId, orderID);
+            return offerMapper.convertEntityToDto(offers);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

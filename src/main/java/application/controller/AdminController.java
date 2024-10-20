@@ -1,7 +1,6 @@
 package application.controller;
 
 import application.dto.*;
-import application.entity.Duty;
 import application.exception.ValidationControllerException;
 import application.service.AdminService;
 import application.service.DutyService;
@@ -24,12 +23,12 @@ public class AdminController {
     private final DutyService dutyService;
 
     @PostMapping("/duties")
-    public ResponseEntity<DutyByIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
+    public ResponseEntity<DutyByIdParentIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
         try {
             adminService.createDuty(dutyCreationDto);
             //done cash duty Command Query Responsibility Segregation
             //todo cash dont return duty or use another method
-            DutyByIdDto duty = dutyService.findByTitle(dutyCreationDto.getTitle());
+            DutyByIdParentIdDto duty = dutyService.findByTitle(dutyCreationDto.getTitle());
             return new ResponseEntity<>(duty, HttpStatus.CREATED);
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);

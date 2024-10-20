@@ -1,6 +1,6 @@
 package application.repository;
 
-import application.dto.DutyByIdDto;
+import application.dto.DutyByIdParentIdDto;
 import application.entity.Duty;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -42,5 +42,5 @@ public interface DutyRepository extends BaseEntityRepository<Duty, Integer> {
 
     List<Duty> findAllBySelectableTrue();
 
-    DutyByIdDto findByTitle(String title);
+    DutyByIdParentIdDto findByTitle(String title);
 }

@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.dto.DutyByIdTitleDto;
 import application.dto.DutyResponseChildrenDto;
 import application.dto.DutyResponseControllerDto;
 import application.dto.UpdateDutyDto;
@@ -7,6 +8,7 @@ import application.entity.Duty;
 import application.exception.ValidationControllerException;
 import application.mapper.DutyControllerMapper;
 import application.mapper.DutyControllerMapperFromDuty;
+import application.mapper.DutyControllerMapperFromDutyById;
 import application.service.DutyService;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +19,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/duties")
+@RequestMapping("/v1/duties")
 @RequiredArgsConstructor
 public class DutyController {
 
     private final DutyService dutyService;
     private final DutyControllerMapper dutyControllerMapper;
     private final DutyControllerMapperFromDuty dutyControllerMapperFromDuty;
+    private final DutyControllerMapperFromDutyById DutyControllerMapperFromDutyById;
 
 
     @PatchMapping("/update")
@@ -36,7 +39,7 @@ public class DutyController {
         }
     }
 
-    @GetMapping("/dutiesWithSubDuties")
+    @GetMapping("/duties")
     public List<DutyResponseChildrenDto> loadAllDutyWithChildren() {
         try {
             return dutyService.loadAllDutyWithChildren();
@@ -45,8 +48,7 @@ public class DutyController {
         }
     }
 
-    @GetMapping("/dutiesWithSubDutiesOnlyTitle")
-//todo    @GetMapping(params="only=title")
+    @GetMapping("/duties/titles")
     public List<DutyResponseControllerDto> loadAllDutyWithChildrenOnlyTitle() {
         try {
             List<DutyResponseChildrenDto> list = dutyService.loadAllDutyWithChildren();
@@ -58,7 +60,7 @@ public class DutyController {
         }
     }
 
-    @GetMapping("/uniqField")
+    @GetMapping("/filter/uniq")
     public ResponseEntity<String> containByUniqField(
             @RequestParam String title, @RequestParam Integer parentId) {
         Boolean contain = dutyService.containByUniqField(title, parentId);
@@ -70,7 +72,7 @@ public class DutyController {
         );
     }
 
-    @GetMapping("/exitTitle")
+    @GetMapping("/filter/exits")
     public ResponseEntity<String> existsByTitle(
             @RequestParam String title) {
         Boolean contain = dutyService.existsByTitle(title);
@@ -83,11 +85,11 @@ public class DutyController {
     }
 
     @ResponseBody
-    @GetMapping("/allSelectableDuties")
-    public List<DutyResponseControllerDto> getSelectableDuties() {
+    @GetMapping("/filter/selectable")
+    public List<DutyByIdTitleDto> getSelectableDuties() {
         try {
             List<Duty> dutyList = dutyService.getSelectableDuties();
-            return dutyControllerMapperFromDuty.convertEntityToDto(dutyList);
+            return DutyControllerMapperFromDutyById.convertEntityToDto(dutyList);
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }

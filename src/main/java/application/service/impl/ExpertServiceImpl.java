@@ -38,6 +38,9 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     public Boolean havePermissionExpertToServices(Integer expertId) {
         Optional<Expert> expert = repository.findById(expertId);
         if (expert.isPresent()) {
+            if (!expert.get().getIsActive()){
+                throw new ValidationException("Account is not active.");
+            }
             if (expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
                 return true;
             }
@@ -47,6 +50,12 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
 
     @Override
     public Offer sendOffer(OfferCreationDto offerCreationDto, Integer expertId) {
+        Optional<Expert> expert = repository.findById(expertId);
+        if (expert.isPresent()){
+            if (!expert.get().getIsActive()){
+                throw new ValidationException("Account is not active.");
+            }
+        }
         Optional<Order> order = orderService.findById(offerCreationDto.getOrderId());
         if (order.isPresent()) {
             Set<Order> orderList = orderService.getOrdersForExpertWaitingOrChoosing(expertId);
@@ -62,7 +71,6 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
                 throw new ValidationException("This order is not in list expert order or not waiting");
             }
             if (basePrice != null && basePrice <= offerCreationDto.getPriceOffer()) {
-                Optional<Expert> expert = repository.findById(expertId);
                 Offer offer = Offer.builder()
                         .order(order.get())
                         .expert(expert.get())
@@ -83,7 +91,13 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     }
 
     @Override
-    public List<ViewScoreExpertDto> viewScore(Integer expertId) {
+    public List<ViewScoreExpertDto> viewScores(Integer expertId) {
+        Optional<Expert> expert = repository.findById(expertId);
+        if (expert.isPresent()){
+            if (!expert.get().getIsActive()){
+                throw new ValidationException("Account is not active.");
+            }
+        }
         List<Comment> commentByExpertId = commentService.getCommentByExpertId(expertId);
         List<ViewScoreExpertDto> viewScoreExpertDtoList = new ArrayList<>();
         commentByExpertId.forEach(c ->
@@ -96,5 +110,14 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
                 )
         );
         return viewScoreExpertDtoList;
+    }
+
+    @Override
+    public Integer viewScore(Integer expertId) {
+        Optional<Expert> expert = repository.findById(expertId);
+        if (expert.isPresent()){
+            return expert.get().getScore();
+        }
+        throw new ValidationException("Expert id not exist");
     }
 }

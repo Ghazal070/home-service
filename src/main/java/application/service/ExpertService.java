@@ -11,7 +11,8 @@ import java.util.List;
 public interface ExpertService extends UserService<Expert>{
     Boolean havePermissionExpertToServices(Integer expertId);
     Offer sendOffer(OfferCreationDto offerCreationDto,Integer expertId);
-    List<ViewScoreExpertDto> viewScore(Integer expertId);
+    List<ViewScoreExpertDto> viewScores(Integer expertId);
+    Integer viewScore(Integer expertId);
 
 
 }

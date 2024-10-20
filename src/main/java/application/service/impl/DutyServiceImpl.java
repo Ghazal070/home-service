@@ -1,6 +1,6 @@
 package application.service.impl;
 
-import application.dto.DutyByIdDto;
+import application.dto.DutyByIdParentIdDto;
 import application.dto.DutyResponseChildrenDto;
 import application.dto.UpdateDutyDto;
 import application.entity.Duty;
@@ -73,7 +73,7 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
     }
 
     @Override
-    public DutyByIdDto findByTitle(String title) {
+    public DutyByIdParentIdDto findByTitle(String title) {
         return repository.findByTitle(title);
     }
 }

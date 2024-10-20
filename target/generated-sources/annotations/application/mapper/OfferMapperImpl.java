@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-19T16:30:49+0330",
+    date = "2024-10-20T13:32:33+0330",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -29,6 +29,7 @@ public class OfferMapperImpl implements OfferMapper {
 
         Offer.OfferBuilder<?, ?> offer = Offer.builder();
 
+        offer.id( d.getId() );
         offer.priceOffer( d.getPriceOffer() );
         if ( d.getDateTimeOffer() != null ) {
             offer.dateTimeOffer( LocalDateTime.parse( d.getDateTimeOffer() ) );
@@ -79,6 +80,7 @@ public class OfferMapperImpl implements OfferMapper {
 
         offerResponseDto.orderId( offerOrderId( offer ) );
         offerResponseDto.expertId( offerExpertId( offer ) );
+        offerResponseDto.id( offer.getId() );
         offerResponseDto.priceOffer( offer.getPriceOffer() );
         if ( offer.getDateTimeOffer() != null ) {
             offerResponseDto.dateTimeOffer( DateTimeFormatter.ISO_LOCAL_DATE_TIME.format( offer.getDateTimeOffer() ) );

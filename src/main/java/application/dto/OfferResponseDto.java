@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Builder
 public class OfferResponseDto implements Serializable {
 
+    private Integer id;
     private Integer orderId;
 
     private Integer expertId;
