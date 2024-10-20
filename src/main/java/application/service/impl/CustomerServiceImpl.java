@@ -27,18 +27,17 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final OfferService offerService;
     private final CreditService creditService;
     private final CardService cardService;
-    private final ExpertService expertService;
     private final InvoiceService invoiceService;
     private final CommentService commentService;
+    Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, ExpertService expertService, InvoiceService invoiceService, CommentService commentService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService) {
         super(validator, repository, authHolder, passwordEncodeService);
         this.dutyService = dutyService;
         this.orderService = orderService;
         this.offerService = offerService;
         this.creditService = creditService;
         this.cardService = cardService;
-        this.expertService = expertService;
         this.invoiceService = invoiceService;
         this.commentService = commentService;
     }
@@ -159,20 +158,18 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     @Override
     public Invoice accountPayment(Integer offerId, Integer customerId, String paymentType, CardDto cardDto) {
+        if (isExpiredDuration(customerId, paymentSessions)){
+            throw new ValidationException("This captcha is expired");
+        }
         Optional<Customer> customerOptional = repository.findById(customerId);
         if (customerOptional.isEmpty()) throw new ValidationException("Customer id is not exist");
         Optional<Offer> offerOptional = offerService.findById(offerId);
         if (offerOptional.isEmpty()) throw new ValidationException("This offerId is not exist");
         Offer offer = offerOptional.get();
-        Customer customer = customerOptional.get();
+//        Customer customer = customerOptional.get();
         Order order = offer.getOrder();
         if (invoiceService.existByOrderId(order.getId())) {
             throw new ValidationException("This order pay.");
-        }
-        Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
-        isStartedDuration(customer.getId(), paymentSessions);
-        if (isExpiredDuration(customer.getId(), paymentSessions)) {
-            throw new ValidationException("Your payment session has expired. Please try again.");
         }
         Card existingCard = cardService.validateCard(cardDto);
         existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
@@ -189,7 +186,12 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         return invoiceService.save(invoice);
 
     }
-//todo payment 10minutes
+
+    public void putStartTimeForCaptcha(Integer customerId) {
+        paymentSessions.put(customerId, LocalDateTime.now());
+    }
+
+    //done payment 5 minutes
     private void finalizePayment(Offer offer, Order order) {
         order.setOrderStatus(OrderStatus.Payed);
         order.setExpert(offer.getExpert());
@@ -207,12 +209,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         }
     }
 
-    private void isStartedDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
-        paymentSessions.put(customerId, LocalDateTime.now());
-    }
 
     private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
-        Duration duration = Duration.ofSeconds(5);
+        Duration duration = Duration.ofMinutes(5);
         if (paymentSessions.get(customerId) == null)
             return true;
         return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));

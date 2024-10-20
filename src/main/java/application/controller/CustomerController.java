@@ -141,13 +141,15 @@ public class CustomerController {
     }
 
     @GetMapping("/captcha")
-    public String getCaptcha(HttpServletRequest request, HttpServletResponse response) {
+    public String getCaptcha(HttpServletRequest request,Integer customerId) {
         CaptchaTextProducer textProducer = new CaptchaTextProducer();
         Captcha captcha = captchaGenerator.createCaptcha(100, 50, textProducer);
         HttpSession session = request.getSession(true);
         session.setAttribute(CaptchaUtils.CAPTCHA, textProducer.getAnswer());
         String captchaString = CaptchaUtils.encodeBase64(captcha);
+        customerService.putStartTimeForCaptcha(customerId);
         return captchaString;
+
     }
 
 
@@ -178,7 +180,7 @@ public class CustomerController {
             , HttpServletRequest request) {
         try {
             ModelAndView view = new ModelAndView("account-payment");
-            String captcha = getCaptcha(request, response);
+            String captcha = getCaptcha(request, customerId);
             CardDto cardDto = CardDto.builder().build();
             view.addObject("imageCaptchaSrc", captcha);
             view.addObject("offerId", offerId);

@@ -50,8 +50,6 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
                                 fillFirstName(predicates, root, cb, searchDto.getFirstName());
                                 fillLastName(predicates, root, cb, searchDto.getLastName());
                                 fillEmail(predicates, root, cb, searchDto.getEmail());
-                                fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
-                                fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
                                 return cb.and(predicates.toArray(new Predicate[0]));
 
                             }
@@ -151,8 +149,6 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
                     )
             );
         }
-    }//todo between score
-    //remove= delete
-    //method renaming
-    //all information replace with id--->cashing
+    }
+
 }

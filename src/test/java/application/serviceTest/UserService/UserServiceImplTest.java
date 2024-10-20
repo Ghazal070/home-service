@@ -100,7 +100,6 @@ class UserServiceImplTest {
                 .hasMessageContaining("image is null");
     }
 
-    //todo png test
     @Test
     void testLoginSuccessfully() {
         String email = "user@example.com";

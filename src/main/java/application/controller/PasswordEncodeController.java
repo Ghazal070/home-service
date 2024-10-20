@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/passwordEncoder")
+@RequestMapping("/v1/auth")
 @RequiredArgsConstructor
 public class PasswordEncodeController {
     private final PasswordEncodeServiceImpl passwordEncodeService;
 
-    @GetMapping("/encoding")
+    @GetMapping("/passwords/encode")
     public ResponseEntity<String> havePermissionExpertToServices(@RequestBody String password) {
         String encode = passwordEncodeService.encode(password);
         return encode!=null ? ResponseEntity.ok("Password encode") :
                 new ResponseEntity<>("Encoding is not supported", HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/equalOLdAndEncoded")
+    @GetMapping("/passwords/verify")
     public ResponseEntity<String> isEqualEncodeDecodePass(@RequestBody PasswordRequestDto passwordRequestDto) {
         try{
             Boolean pass = passwordEncodeService.isEqualEncodeDecodePass(passwordRequestDto.getOldPassword(),

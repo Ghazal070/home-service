@@ -79,7 +79,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, expertService, invoiceService, commentService);
+                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService);
     }
 
     @Test

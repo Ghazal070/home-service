@@ -24,5 +24,6 @@ public interface CustomerService extends UserService<Customer>{
 
     Invoice creditPayment(Integer offerId, Integer customerId,String paymentType);
     Invoice accountPayment(Integer offerId, Integer customerId, String paymentType, CardDto cardDto);
+    void putStartTimeForCaptcha(Integer customerId);
 
 }

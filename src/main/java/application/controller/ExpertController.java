@@ -2,12 +2,16 @@ package application.controller;
 
 import application.dto.OfferCreationDto;
 import application.dto.OfferResponseDto;
+import application.dto.OrderExpertWaitingDto;
 import application.dto.ViewScoreExpertDto;
 import application.entity.Offer;
+import application.entity.Order;
 import application.entity.users.Expert;
 import application.exception.ValidationControllerException;
 import application.mapper.OfferMapper;
+import application.mapper.OrderExpertWaitingMapper;
 import application.service.ExpertService;
+import application.service.OrderService;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/v1/experts")
@@ -23,6 +28,8 @@ import java.util.Optional;
 public class ExpertController {
 
     private final ExpertService expertService;
+    private final OrderService orderService;
+    private final OrderExpertWaitingMapper orderExpertWaitingMapper;
     private final OfferMapper offerMapper;
 
     @GetMapping("/permission/{expertId}")
@@ -60,6 +67,17 @@ public class ExpertController {
             return ResponseEntity.ok("Sum score is %s".formatted(integer));
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{expertId}/orders")
+    public Set<OrderExpertWaitingDto> getOrdersForExpertWaitingOrChoosing(
+            @PathVariable Integer expertId){
+        try {
+            Set<Order> orders = orderService.getOrdersForExpertWaitingOrChoosing(expertId);
+            return orderExpertWaitingMapper.convertEntityToDto(orders);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
