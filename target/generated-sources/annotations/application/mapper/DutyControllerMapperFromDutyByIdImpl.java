@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-20T16:31:06+0330",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-10-20T20:02:00+0330",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
 public class DutyControllerMapperFromDutyByIdImpl implements DutyControllerMapperFromDutyById {

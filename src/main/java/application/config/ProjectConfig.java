@@ -44,6 +44,6 @@ public class ProjectConfig {
 
     @Bean
     public RequestMatcherBinder getRequestMatcherBinder() {
-        return new CustomRequestMatcherBinder();
+        return new RequestMatcherBinderImpl();
     }
 }
