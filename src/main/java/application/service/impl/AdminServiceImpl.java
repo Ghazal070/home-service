@@ -140,5 +140,5 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         return usersResponse;
     }
     //done offers.html json
-    //todo orderby offer end of get offer
+    //done orderby offer end of get offer
 }
