@@ -2,6 +2,7 @@ package application.entity.users;
 
 
 import application.entity.BaseEntity;
+import application.entity.Role;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -46,7 +48,8 @@ public class Users extends BaseEntity<Integer> {
     @Builder.Default
     private Boolean isActive=true;
 
-
+    @ManyToMany
+    private Set<Role> roles;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)

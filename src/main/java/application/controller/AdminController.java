@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.constants.AuthorityNames;
 import application.dto.*;
 import application.exception.ValidationControllerException;
 import application.service.AdminService;
@@ -9,6 +10,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class AdminController {
     private final DutyService dutyService;
 
     @PostMapping("/duties")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     public ResponseEntity<DutyByIdParentIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
         try {
             adminService.createDuty(dutyCreationDto);

@@ -94,6 +94,8 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         return repository.containByUniqField(uniqField);
     }
 
-
-
+    @Override
+    public Optional<Users> findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
 }
