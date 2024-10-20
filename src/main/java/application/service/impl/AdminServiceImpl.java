@@ -37,7 +37,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     }
 
     @Override
-    public Duty createDuty(DutyCreationDto dutyCreationDto) {
+    public void createDuty(DutyCreationDto dutyCreationDto) {
         Duty parentDuty = null;
         if (dutyCreationDto.getParentId() != null) {
             parentDuty = dutyService.findById(dutyCreationDto.getParentId())
@@ -50,7 +50,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                 throw new ValidationException("Title exists for this parent null.");
             }
         }
-        return dutyService.save(dutyCreation(dutyCreationDto, parentDuty));
+        dutyService.save(dutyCreation(dutyCreationDto, parentDuty));
     }
 
     private Duty dutyCreation(DutyCreationDto dutyCreationDto, Duty parentDuty) {

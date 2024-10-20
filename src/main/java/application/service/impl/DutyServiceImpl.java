@@ -1,5 +1,6 @@
 package application.service.impl;
 
+import application.dto.DutyByIdDto;
 import application.dto.DutyResponseChildrenDto;
 import application.dto.UpdateDutyDto;
 import application.entity.Duty;
@@ -69,5 +70,10 @@ public class DutyServiceImpl extends BaseEntityServiceImpl<DutyRepository, Duty,
 
     public List<Duty> getSelectableDuties() {
         return repository.findAllBySelectableTrue();
+    }
+
+    @Override
+    public DutyByIdDto findByTitle(String title) {
+        return repository.findByTitle(title);
     }
 }

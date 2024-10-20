@@ -69,12 +69,10 @@ class AdminServiceImplTest {
         given(dutyService.existsByTitle(dutyCreationDto.getTitle())).willReturn(false);
         given(dutyService.save(any(Duty.class))).willReturn(new Duty());
 
-        Duty underTestDuty = underTest.createDuty(dutyCreationDto);
+        underTest.createDuty(dutyCreationDto);
 
         verify(dutyService).existsByTitle(dutyCreationDto.getTitle());
         verify(dutyService).save(any(Duty.class));
-        assertNotNull(underTestDuty);
-
     }
 
     @Test
@@ -99,12 +97,11 @@ class AdminServiceImplTest {
         given(dutyService.containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId())).willReturn(false);
         given(dutyService.save(any(Duty.class))).willReturn(new Duty());
 
-        Duty underTestDuty = underTest.createDuty(dutyCreationDto);
+        underTest.createDuty(dutyCreationDto);
 
         verify(dutyService).findById(dutyCreationDto.getParentId());
         verify(dutyService).containByUniqField(dutyCreationDto.getTitle(), dutyCreationDto.getParentId());
         verify(dutyService).save(any(Duty.class));
-        assertNotNull(underTestDuty);
     }
     @Test
     public void testCreateDutyWithParentDuplicateTitle() {

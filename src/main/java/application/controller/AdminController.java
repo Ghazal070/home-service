@@ -1,12 +1,10 @@
 package application.controller;
 
-import application.dto.DutyCreationDto;
-import application.dto.DutyResponseDto;
-import application.dto.SearchDto;
-import application.dto.UsersSearchResponse;
+import application.dto.*;
 import application.entity.Duty;
 import application.exception.ValidationControllerException;
 import application.service.AdminService;
+import application.service.DutyService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -18,46 +16,27 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/admins")
+@RequestMapping("/v1/admins")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
+    private final DutyService dutyService;
 
-    @PostMapping("/dutyCreation")
-    public ResponseEntity<DutyResponseDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
+    @PostMapping("/duties")
+    public ResponseEntity<DutyByIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
         try {
-            Duty duty = adminService.createDuty(dutyCreationDto);
-            //todo cash duty Command Query Responsibility Segregation
-            //todo cash dont return duty
-            DutyResponseDto dutyResponseDto = DutyResponseDto.builder()
-                    .id(duty.getId())
-                    .title(duty.getTitle())
-                    .basePrice(duty.getBasePrice())
-                    .parent(duty.getParent() != null ?
-                            DutyResponseDto.builder().id(duty.getParent().getId())
-                                    .title(duty.getParent().getTitle())
-                                    .basePrice(duty.getBasePrice())
-                                    .build() : null)//todo recursive for parent
-                    //todo return id seprate for create and get duty method call service
-                    .selectable(dutyCreationDto.getSelectable())
-                    .build();
-
-            return new ResponseEntity<>(dutyResponseDto, HttpStatus.CREATED);
+            adminService.createDuty(dutyCreationDto);
+            //done cash duty Command Query Responsibility Segregation
+            //todo cash dont return duty or use another method
+            DutyByIdDto duty = dutyService.findByTitle(dutyCreationDto.getTitle());
+            return new ResponseEntity<>(duty, HttpStatus.CREATED);
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-//todo duties
-    //todo
-    @PatchMapping("/expertStatus/{expertId}")
-    //todo {expertId} Accepted سجاد فرحانی‌زاده
-    //7:44 PM
-    ///management/experts/{expertId}/status/accept
-    //
-    //سجاد فرحانی‌زاده
-    //7:44 PM
-    ///management/experts/{expertId}?status=accept
+    @PatchMapping("/management/experts/{expertId}/status/accept")
+    //done or management/experts/{expertId}?status=accept
     public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId) {
         try {
             adminService.updateExpertStatus(expertId);
@@ -67,7 +46,7 @@ public class AdminController {
         }
     }
 
-    @PatchMapping("/addDutyToExpert")
+    @PatchMapping("/experts/duties")
     public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
         try {
             adminService.addDutyToExpert(expertId, dutyId);
@@ -77,7 +56,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/removeDutyFromExpert")
+    @DeleteMapping("/experts/duties")
     public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
         try {
             adminService.removeDutyFromExpert(expertId, dutyId);

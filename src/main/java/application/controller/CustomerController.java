@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/v1/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -43,7 +43,7 @@ public class CustomerController {
     private final OfferMapper offerMapper;
 
 
-    @PostMapping("/orderSubmit/{customerId}")
+    @PostMapping("/{customerId}/orders")
     public ResponseEntity<OrderResponseDto> orderSubmit(@RequestBody @Valid OrderSubmissionDto orderSubmissionDto, @PathVariable Integer customerId) {
         try {
             customerService.isCustomerAuthenticated(customerId);
@@ -65,21 +65,18 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/offer")
-    public ModelAndView getOffersForOrder(@RequestParam Integer orderId, @RequestParam Integer customerId) {
+    @GetMapping("/orders/offers")
+    public ResponseEntity<Set<OfferResponseDto> > getOffersForOrder(@RequestParam Integer orderId, @RequestParam Integer customerId) {
         try {
-            ModelAndView view = new ModelAndView("offers");
-
             Set<Offer> offers = customerService.getOffersForOrder(orderId, customerId);
             Set<OfferResponseDto> offerResponse = offerMapper.convertEntityToDto(offers);
-            view.addObject("offerResponse", offerResponse);
-            return view;
+            return ResponseEntity.ok(offerResponse);
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PatchMapping("/offer/chooseExpert/{offerId}")
+    @PatchMapping("/orders/offers/{offerId}/experts")
     public ResponseEntity<String> chooseExpertForOrder(@PathVariable Integer offerId) {
         try {
             customerService.chooseExpertForOrder(offerId);
@@ -89,7 +86,7 @@ public class CustomerController {
         }
     }
 
-    @PatchMapping("/offer/orderStarted/{offerId}")
+    @PatchMapping("/orders/status/started/offers/{offerId}")
     public ResponseEntity<String> orderStarted(@PathVariable Integer offerId) {
         try {
             customerService.orderStarted(offerId);
@@ -99,7 +96,7 @@ public class CustomerController {
         }
     }
 
-    @PatchMapping("/offer/orderDone")
+    @PatchMapping("/orders/status/done/offers")
     public ResponseEntity<String> orderDone(@RequestBody @Valid CustomerCommentDto customerCommentDto) {
         try {
             customerService.orderDone(customerCommentDto.getOfferId()
@@ -110,9 +107,9 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/payment")
+    @GetMapping("/paymentType/{paymentType}")
 
-    public void selectPaymentType(@RequestParam String paymentType, @RequestParam Integer customerId, HttpServletResponse response, HttpServletRequest request) {
+    public void selectPaymentType(@PathVariable String paymentType,HttpServletResponse response, HttpServletRequest request) {
         try {
             if (!(paymentType.equals(String.valueOf(PaymentType.AccountPayment)) || paymentType.equals(String.valueOf(PaymentType.CreditPayment)))) {
                 throw new ValidationControllerException(
@@ -145,19 +142,9 @@ public class CustomerController {
     public String getCaptcha(HttpServletRequest request, HttpServletResponse response) {
         CaptchaTextProducer textProducer = new CaptchaTextProducer();
         Captcha captcha = captchaGenerator.createCaptcha(100, 50, textProducer);
-
         HttpSession session = request.getSession(true);
         session.setAttribute(CaptchaUtils.CAPTCHA, textProducer.getAnswer());
-
         String captchaString = CaptchaUtils.encodeBase64(captcha);
-
-//        Cookie cookie = new Cookie("captcha", captcha.getAnswer());
-//        cookie.setPath("/");
-//        cookie.setMaxAge(60 * 60 * 60);
-//        cookie.setHttpOnly(false);
-//        cookie.setSecure(request.isSecure());
-//        response.addCookie(cookie);
-
         return captchaString;
     }
 
