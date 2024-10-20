@@ -1,18 +1,11 @@
 package application.service.impl;
 
-import application.dto.SearchDto;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
-import application.entity.Duty_;
-import application.entity.users.Expert_;
 import application.entity.users.Users;
-import application.entity.users.Users_;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.service.UserService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
@@ -22,20 +15,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
-    protected final PasswordEncodeService passwordEncodeService;
+    protected final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService) {
+    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncoder passwordEncoder) {
         super(validator, repository);
         this.authHolder = authHolder;
-        this.passwordEncodeService = passwordEncodeService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void convertByteToImage(Integer userId) {
@@ -88,8 +79,8 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             Optional<T> users = repository.findById(userId);
             if (users.isPresent()) {
                 String encodePassword = oldPassword;
-                if (passwordEncodeService.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
-                    String encode = passwordEncodeService.encode(newPassword);
+                if (passwordEncoder.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
+                    String encode = passwordEncoder.encode(newPassword);
                     int repoResponse = repository.updatePassword(users.get().getProfile().getEmail(), encode);
                     return repoResponse > 0;
                 } else throw new ValidationException("old password is not correct");

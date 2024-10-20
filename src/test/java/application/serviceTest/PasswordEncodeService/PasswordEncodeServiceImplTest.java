@@ -1,6 +1,6 @@
 package application.serviceTest.PasswordEncodeService;
 
-import application.service.impl.PasswordEncodeServiceImpl;
+import application.service.impl.PasswordEncoderImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PasswordEncodeServiceImplTest {
 
     @Autowired
-    private PasswordEncodeServiceImpl underTest;
+    private PasswordEncoderImpl underTest;
 
     @Test
     public void testEncode() {

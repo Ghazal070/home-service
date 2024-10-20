@@ -10,7 +10,7 @@ import application.repository.AdminRepository;
 import application.service.AdminService;
 import application.service.DutyService;
 import application.service.ExpertService;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.util.AuthHolder;
 import com.github.javafaker.Faker;
 import jakarta.validation.Validator;
@@ -49,7 +49,7 @@ public class AdminServiceIntegrationTest {
     @Autowired
     private AuthHolder authHolder;
     @Autowired
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
     private Faker faker;
 
     @BeforeEach

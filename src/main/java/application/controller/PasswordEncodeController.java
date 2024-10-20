@@ -2,7 +2,7 @@ package application.controller;
 
 import application.dto.PasswordRequestDto;
 import application.exception.ValidationControllerException;
-import application.service.impl.PasswordEncodeServiceImpl;
+import application.service.impl.PasswordEncoderImpl;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
 public class PasswordEncodeController {
-    private final PasswordEncodeServiceImpl passwordEncodeService;
+    private final PasswordEncoderImpl passwordEncodeService;
 
     @GetMapping("/passwords/encode")
     public ResponseEntity<String> havePermissionExpertToServices(@RequestBody String password) {

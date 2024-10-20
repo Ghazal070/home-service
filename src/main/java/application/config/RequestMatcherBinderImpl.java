@@ -2,6 +2,7 @@ package application.config;
 
 
 import java.util.Collection;
+import java.util.List;
 
 public class RequestMatcherBinderImpl implements RequestMatcherBinder {
 
@@ -16,6 +17,52 @@ public class RequestMatcherBinderImpl implements RequestMatcherBinder {
     @Override
     public Collection<AuthorityPair> getAuthorityPair() {
 
-        return null;
+        return List.of(
+                new AuthorityPair() {
+                    @Override
+                    public String[] getUrls() {
+                        return new String[]{
+                                "/v1/admin/**"
+                        };
+                    }
+
+                    @Override
+                    public String[] getAuthorities() {
+                        return new String[]{
+                                "admin-manage"
+                        };
+                    }
+                },
+                new AuthorityPair() {
+                    @Override
+                    public String[] getUrls() {
+                        return new String[]{
+                                "/v1/customers/**"
+                        };
+                    }
+
+                    @Override
+                    public String[] getAuthorities() {
+                        return new String[]{
+                                "customer-manage"
+                        };
+                    }
+                },
+                new AuthorityPair() {
+                    @Override
+                    public String[] getUrls() {
+                        return new String[]{
+                                "/v1/experts/**"
+                        };
+                    }
+
+                    @Override
+                    public String[] getAuthorities() {
+                        return new String[]{
+                                "expert-manage"
+                        };
+                    }
+                }
+        );
     }
 }

@@ -31,8 +31,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final CommentService commentService;
     Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService) {
-        super(validator, repository, authHolder, passwordEncodeService);
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService) {
+        super(validator, repository, authHolder, passwordEncoder);
         this.dutyService = dutyService;
         this.orderService = orderService;
         this.offerService = offerService;

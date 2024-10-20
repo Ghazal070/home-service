@@ -10,7 +10,7 @@ import jakarta.validation.ValidationException;
 import application.repository.AdminRepository;
 import application.service.DutyService;
 import application.service.ExpertService;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.util.AuthHolder;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -48,7 +48,7 @@ class AdminServiceImplTest {
     @Mock
     private AuthHolder authHolder;
     @Mock
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
     @Mock
     private UserSpecification userSpecification;
 
@@ -59,7 +59,7 @@ class AdminServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new AdminServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, expertService, userSpecification);
+                passwordEncoder, dutyService, expertService, userSpecification);
     }
 
     @Test

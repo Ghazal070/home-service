@@ -29,8 +29,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     private final ExpertService expertService;
     private final UserSpecification userSpecification;
 
-    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification) {
-        super(validator, repository, authHolder, passwordEncodeService);
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification) {
+        super(validator, repository, authHolder, passwordEncoder);
         this.dutyService = dutyService;
         this.expertService = expertService;
         this.userSpecification = userSpecification;

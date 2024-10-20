@@ -9,7 +9,7 @@ import application.entity.users.userFactory.ExpertFactory;
 import jakarta.validation.ValidationException;
 import application.service.CustomerService;
 import application.service.ExpertService;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.service.SignupService;
 import application.util.AuthHolder;
 import jakarta.validation.ConstraintViolation;
@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,16 +31,16 @@ public class SignupServiceImpl implements SignupService {
 
     private final ExpertService expertService;
     private final CustomerService customerService;
-    private final PasswordEncodeService passwordEncodeService;
+    private final PasswordEncoder passwordEncoder;
     private final AuthHolder authHolder;
     private final ExpertFactory expertFactory;
     private final CustomerFactory customerFactory;
     private final Validator validator;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncodeService passwordEncodeService, AuthHolder authHolder, ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncoder passwordEncoder, AuthHolder authHolder, ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
         this.expertService = expertService;
         this.customerService = customerService;
-        this.passwordEncodeService = passwordEncodeService;
+        this.passwordEncoder = passwordEncoder;
         this.authHolder = authHolder;
         this.expertFactory = expertFactory;
         this.customerFactory = customerFactory;
@@ -74,7 +71,7 @@ public class SignupServiceImpl implements SignupService {
                     throw new ValidationException("Email must be unique");
                 }
                 userSignupRequestDto.setPassword(
-                        passwordEncodeService.encode(userSignupRequestDto.getPassword())
+                        passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequestDto);
                 expert = expertService.save(expert);
@@ -87,7 +84,7 @@ public class SignupServiceImpl implements SignupService {
                     throw new ValidationException("Email must be unique");
                 }
                 userSignupRequestDto.setPassword(
-                        passwordEncodeService.encode(userSignupRequestDto.getPassword())
+                        passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequestDto);
                 customer = customerService.save(customer);

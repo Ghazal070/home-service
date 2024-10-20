@@ -2,7 +2,6 @@ package application.serviceTest.SignupService;
 
 import application.dto.UserSignupRequestDto;
 import application.entity.users.Customer;
-import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
 import application.entity.users.userFactory.CustomerFactory;
@@ -10,11 +9,10 @@ import application.entity.users.userFactory.ExpertFactory;
 import jakarta.validation.ValidationException;
 import application.service.CustomerService;
 import application.service.ExpertService;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.service.impl.SignupServiceImpl;
 import application.util.AuthHolder;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
@@ -48,7 +45,7 @@ class SignupServiceImplTest {
     private CustomerService customerService;
 
     @Mock
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private AuthHolder authHolder;
@@ -68,7 +65,7 @@ class SignupServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.underTest = new SignupServiceImpl(expertService, customerService, passwordEncodeService, authHolder, expertFactory, customerFactory, validator);
+        this.underTest = new SignupServiceImpl(expertService, customerService, passwordEncoder, authHolder, expertFactory, customerFactory, validator);
     }
 
     @Test
@@ -90,7 +87,7 @@ class SignupServiceImplTest {
                 .build()).build();
         given(customerService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
         given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
-        given(passwordEncodeService.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
+        given(passwordEncoder.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
         given(customerFactory.createUser(any(UserSignupRequestDto.class))).willReturn(customer);
         given(customerService.save(any(Customer.class))).willReturn(customer);
 
@@ -98,7 +95,7 @@ class SignupServiceImplTest {
 
         assertNotNull(actual);
         verify(customerService).containByUniqField(userSignupRequestDto.getEmail());
-        verify(passwordEncodeService).encode(userSignupRequestDto.getPassword());
+        verify(passwordEncoder).encode(userSignupRequestDto.getPassword());
         verify(customerFactory).createUser(userSignupRequestDto);
         verify(customerService).save(any(Customer.class));
         assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());
@@ -123,7 +120,7 @@ class SignupServiceImplTest {
                 .build()).build();
         given(customerService.containByUniqField(userSignupRequestDto.getEmail())).willReturn(false);
         given(validator.validate(userSignupRequestDto)).willReturn(Set.of());
-        given(passwordEncodeService.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
+        given(passwordEncoder.encode(userSignupRequestDto.getPassword())).willReturn("pass1234");
         given(customerFactory.createUser(any(UserSignupRequestDto.class))).willReturn(customer);
         given(customerService.save(any(Customer.class))).willReturn(customer);
 
@@ -131,7 +128,7 @@ class SignupServiceImplTest {
 
         assertNotNull(actual);
         verify(customerService).containByUniqField(userSignupRequestDto.getEmail());
-        verify(passwordEncodeService).encode(userSignupRequestDto.getPassword());
+        verify(passwordEncoder).encode(userSignupRequestDto.getPassword());
         verify(customerFactory).createUser(userSignupRequestDto);
         verify(customerService).save(any(Customer.class));
         assertEquals(userSignupRequestDto.getEmail(), actual.getProfile().getEmail());

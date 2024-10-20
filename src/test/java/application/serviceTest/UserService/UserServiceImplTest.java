@@ -7,7 +7,7 @@ import application.entity.users.Profile;
 import application.entity.users.Users;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.service.impl.UserServiceImpl;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 
-import static application.entity.users.Users_.firstName;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -43,7 +42,7 @@ class UserServiceImplTest {
     @Mock
     private AuthHolder authHolder;
     @Mock
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
     @Mock
     private UserRepository repository;
 
@@ -54,7 +53,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.underTest = new UserServiceImpl<>(validator, repository, authHolder, passwordEncodeService);
+        this.underTest = new UserServiceImpl<>(validator, repository, authHolder, passwordEncoder);
         new File(tempDir).mkdirs();
     }
 
@@ -149,17 +148,17 @@ class UserServiceImplTest {
                 .oldPassword(oldPassword).build();
         Users users = Users.builder().id(1).profile(Profile.builder().email("user@example.com").build()).build();
         given(repository.findById(1)).willReturn(Optional.of(users));
-        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+        given(passwordEncoder.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword())).willReturn(true);
-        given(passwordEncodeService.encode(userChangePasswordDto.getNewPassword())).willReturn(newPassword);
+        given(passwordEncoder.encode(userChangePasswordDto.getNewPassword())).willReturn(newPassword);
         given(repository.updatePassword(email, newPassword)).willReturn(1);
 
         Boolean actual = underTest.updatePassword(userChangePasswordDto,users.getId());
 
         assertTrue(actual);
         verify(repository).findById(1);
-        verify(passwordEncodeService).encode(userChangePasswordDto.getNewPassword());
-        verify(passwordEncodeService).isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+        verify(passwordEncoder).encode(userChangePasswordDto.getNewPassword());
+        verify(passwordEncoder).isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword());
         verify(repository).updatePassword(email, newPassword);
     }
@@ -196,7 +195,7 @@ class UserServiceImplTest {
         given(repository.findById(1)).willReturn(Optional.of(users));
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder().newPassword(newPassword)
                 .oldPassword(oldPassword).build();
-        given(passwordEncodeService.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
+        given(passwordEncoder.isEqualEncodeDecodePass(userChangePasswordDto.getOldPassword()
                 , userChangePasswordDto.getOldPassword())).willReturn(false);
 
 

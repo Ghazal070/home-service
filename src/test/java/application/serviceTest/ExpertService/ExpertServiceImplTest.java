@@ -12,7 +12,7 @@ import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
 import application.service.OfferService;
 import application.service.OrderService;
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import application.service.impl.ExpertServiceImpl;
 import application.util.AuthHolder;
 
@@ -53,7 +53,7 @@ class ExpertServiceImplTest {
     @Mock
     private ExpertRepository repository;
     @Mock
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
     @Mock
     private CommentService commentService;
 
@@ -65,7 +65,7 @@ class ExpertServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         this.underTest = new ExpertServiceImpl(validator, repository, authHolder
-                , passwordEncodeService, orderService, offerService, commentService);
+                , passwordEncoder, orderService, offerService, commentService);
     }
 
 

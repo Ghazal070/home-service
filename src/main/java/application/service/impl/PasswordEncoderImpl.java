@@ -1,10 +1,10 @@
 package application.service.impl;
 
-import application.service.PasswordEncodeService;
+import application.service.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PasswordEncodeServiceImpl implements PasswordEncodeService {
+public class PasswordEncoderImpl implements PasswordEncoder {
     @Override
     public String encode(String password) {
         return password;

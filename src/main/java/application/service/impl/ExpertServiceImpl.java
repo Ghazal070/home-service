@@ -27,8 +27,8 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     private final OfferService offerService;
     private final CommentService commentService;
 
-    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncodeService passwordEncodeService, OrderService orderService, OfferService offerService, CommentService commentService) {
-        super(validator, repository, authHolder, passwordEncodeService);
+    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, OrderService orderService, OfferService offerService, CommentService commentService) {
+        super(validator, repository, authHolder, passwordEncoder);
         this.orderService = orderService;
         this.offerService = offerService;
         this.commentService = commentService;

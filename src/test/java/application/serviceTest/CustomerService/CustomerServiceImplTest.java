@@ -53,7 +53,7 @@ class CustomerServiceImplTest {
     private AuthHolder authHolder;
 
     @Mock
-    private PasswordEncodeService passwordEncodeService;
+    private PasswordEncoder passwordEncoder;
     @Mock
     private OfferService offerService;
 
@@ -79,7 +79,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncodeService, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService);
+                passwordEncoder, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService);
     }
 
     @Test
