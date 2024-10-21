@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -25,5 +26,10 @@ public class RoleServiceImpl implements RoleService {
         role.setAuthorities(authorities);
         repository.save(role);
 
+    }
+
+    @Override
+    public Optional<Role> findByName(String name) {
+        return repository.findByName(name);
     }
 }

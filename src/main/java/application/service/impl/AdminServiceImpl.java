@@ -1,9 +1,9 @@
 package application.service.impl;
 
+import application.constants.AuthorityNames;
 import application.constants.RoleNames;
 import application.dto.DutyCreationDto;
 import application.dto.SearchDto;
-import application.dto.UserSignupRequestDto;
 import application.dto.UsersSearchResponse;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
@@ -18,7 +18,6 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,12 +30,14 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     private final DutyService dutyService;
     private final ExpertService expertService;
     private final UserSpecification userSpecification;
+    private final RoleService roleService;
 
-    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification) {
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification, RoleService roleService) {
         super(validator, repository, authHolder, passwordEncoder);
         this.dutyService = dutyService;
         this.expertService = expertService;
         this.userSpecification = userSpecification;
+        this.roleService = roleService;
     }
 
     @SneakyThrows
@@ -44,8 +45,6 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     public void init() {
         if (repository.count() == 0) {
             String rawPassword = "admin123";
-            HashSet<String> set = new HashSet<>();
-            set.add(RoleNames.ADMIN);
             Admin admin = Admin.builder()
                     .firstName("admin")
                     .lastName("admin")
@@ -56,8 +55,11 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                                     .build()
                     )
                     .dateTimeSubmission(LocalDateTime.now())
-                    .image(new Byte[]{100,120})
-                    .roles()
+                    .image(new Byte[]{100, 120})
+                    .roles(Set.of(
+                            roleService.findByName(
+                                    RoleNames.ADMIN)
+                                    .get()))
                     .build();
             repository.save(admin);
         }

@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-21T17:05:46+0330",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-10-21T20:39:04+0330",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
 public class OrderExpertWaitingMapperImpl implements OrderExpertWaitingMapper {
