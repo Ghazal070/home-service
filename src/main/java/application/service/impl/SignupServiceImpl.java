@@ -32,7 +32,7 @@ public class SignupServiceImpl implements SignupService {
     private final CustomerFactory customerFactory;
     private final Validator validator;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncoder passwordEncoder,ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncoder passwordEncoder, ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
         this.expertService = expertService;
         this.customerService = customerService;
         this.passwordEncoder = passwordEncoder;

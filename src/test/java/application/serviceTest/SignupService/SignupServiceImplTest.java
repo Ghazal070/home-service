@@ -57,6 +57,7 @@ class SignupServiceImplTest {
     @Mock
     private CustomerFactory customerFactory;
 
+
     @Mock
     private Validator validator;
 

@@ -44,6 +44,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     public void init() {
         if (repository.count() == 0) {
             String rawPassword = "admin123";
+            HashSet<String> set = new HashSet<>();
+            set.add(RoleNames.ADMIN);
             Admin admin = Admin.builder()
                     .firstName("admin")
                     .lastName("admin")
@@ -55,6 +57,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                     )
                     .dateTimeSubmission(LocalDateTime.now())
                     .image(new Byte[]{100,120})
+                    .roles()
                     .build();
             repository.save(admin);
         }
