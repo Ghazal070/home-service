@@ -95,7 +95,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
-    public Optional<Users> findByEmail(String email) {
+    public Optional<T> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 }

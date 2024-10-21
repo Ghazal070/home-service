@@ -14,7 +14,7 @@ public interface UserService<T extends Users> extends BaseEntityService<T,Intege
     UserLoginProjection login(String email, String password);
     Boolean updatePassword(UserChangePasswordDto userChangePasswordDto,Integer userId);
     Boolean containByUniqField(String uniqField);
-    Optional<Users> findByEmail(String email);
+    Optional<T> findByEmail(String email);
 
 
 

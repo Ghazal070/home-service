@@ -1,5 +1,11 @@
 package application.config;
 
+import application.entity.users.Admin;
+import application.entity.users.Customer;
+import application.entity.users.Expert;
+import application.entity.users.Users;
+import application.service.PasswordEncoder;
+import application.service.impl.PasswordEncoderImpl;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,5 +51,25 @@ public class ProjectConfig {
     @Bean
     public RequestMatcherBinder getRequestMatcherBinder() {
         return new RequestMatcherBinderImpl();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new PasswordEncoderImpl();
+    }
+
+    @Bean
+    public Users admin() {
+        return new Admin();
+    }
+
+    @Bean
+    public Users customer() {
+        return new Customer();
+    }
+
+    @Bean
+    public Users expert() {
+        return new Expert();
     }
 }

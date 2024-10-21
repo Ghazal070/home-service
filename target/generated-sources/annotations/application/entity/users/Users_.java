@@ -1,7 +1,9 @@
 package application.entity.users;
 
+import application.entity.Role;
 import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.SetAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ public abstract class Users_ extends application.entity.BaseEntity_ {
 	public static final String LAST_NAME = "lastName";
 	public static final String IMAGE = "image";
 	public static final String PROFILE = "profile";
+	public static final String ROLES = "roles";
 	public static final String DATE_TIME_SUBMISSION = "dateTimeSubmission";
 	public static final String IS_ACTIVE = "isActive";
 
@@ -37,6 +40,11 @@ public abstract class Users_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.users.Users#profile
 	 **/
 	public static volatile SingularAttribute<Users, Profile> profile;
+	
+	/**
+	 * @see application.entity.users.Users#roles
+	 **/
+	public static volatile SetAttribute<Users, Role> roles;
 	
 	/**
 	 * @see application.entity.users.Users#dateTimeSubmission

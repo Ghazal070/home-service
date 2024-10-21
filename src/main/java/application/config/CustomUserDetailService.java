@@ -15,11 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomUserDetailService<T extends Users> implements UserDetailsService {
 
-    private final UserService<T> userService;
+    private final UserService<T> service;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> optionalUsers = userService.findByEmail(username);
+        Optional<T> optionalUsers = service.findByEmail(username);
         if (optionalUsers.isPresent()){
             return new CustomUserDetail(optionalUsers.get());
         }

@@ -17,14 +17,14 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Getter
-public class CustomUserDetail implements UserDetails {
-    private final Users users;
+public class CustomUserDetail<T extends Users> implements UserDetails {
+    private final T user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities=new ArrayList<>();
-        if (!CollectionUtils.isEmpty(users.getRoles())){
-            users.getRoles().forEach(
+        if (!CollectionUtils.isEmpty(user.getRoles())){
+            user.getRoles().forEach(
                     role -> {
                         authorities.add(new SimpleGrantedAuthority(role.getName()));
                         if (!role.getAuthorities().isEmpty()){
@@ -42,11 +42,11 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return users.getProfile().getPassword();
+        return user.getProfile().getPassword();
     }
 
     @Override
     public String getUsername() {
-        return users.getProfile().getEmail();
+        return user.getProfile().getEmail();
     }
 }
