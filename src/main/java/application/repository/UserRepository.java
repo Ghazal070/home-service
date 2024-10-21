@@ -27,6 +27,7 @@ public interface UserRepository<T extends Users> extends BaseEntityRepository<T,
     @Query("select count(u)>0 from Users u where u.profile.email=:uniqField")
     Boolean containByUniqField(String uniqField);
 
+    @Query("select u from Users u where u.profile.email= :email")
     Optional<T> findByEmail(String email);
 
 

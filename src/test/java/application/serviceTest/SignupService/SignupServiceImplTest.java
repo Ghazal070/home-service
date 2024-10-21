@@ -44,6 +44,7 @@ class SignupServiceImplTest {
     @Mock
     private CustomerService customerService;
 
+
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -65,7 +66,7 @@ class SignupServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.underTest = new SignupServiceImpl(expertService, customerService, passwordEncoder, authHolder, expertFactory, customerFactory, validator);
+        this.underTest = new SignupServiceImpl(expertService, customerService, passwordEncoder, expertFactory, customerFactory, validator);
     }
 
     @Test

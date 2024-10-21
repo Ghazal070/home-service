@@ -1,23 +1,26 @@
 package application.service.impl;
 
+import application.constants.RoleNames;
 import application.dto.DutyCreationDto;
 import application.dto.SearchDto;
+import application.dto.UserSignupRequestDto;
 import application.dto.UsersSearchResponse;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.*;
 import application.service.*;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import application.repository.AdminRepository;
 import application.util.AuthHolder;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.FileInputStream;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +37,27 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         this.dutyService = dutyService;
         this.expertService = expertService;
         this.userSpecification = userSpecification;
+    }
+
+    @SneakyThrows
+    @PostConstruct
+    public void init() {
+        if (repository.count() == 0) {
+            String rawPassword = "admin123";
+            Admin admin = Admin.builder()
+                    .firstName("admin")
+                    .lastName("admin")
+                    .profile(
+                            Profile.builder()
+                                    .email("admin@admin.com")
+                                    .password(passwordEncoder.encode(rawPassword))
+                                    .build()
+                    )
+                    .dateTimeSubmission(LocalDateTime.now())
+                    .image(new Byte[]{100,120})
+                    .build();
+            repository.save(admin);
+        }
     }
 
     @Override
@@ -127,7 +151,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                             .lastName(u.getLastName())
                             .isActive(u.getIsActive())
                             .build();
-                    if(u instanceof Expert expert){
+                    if (u instanceof Expert expert) {
                         response.setScore((expert.getScore()));
                         Set<Duty> duties = expert.getDuties();
                         Set<String> stringList = duties.stream().map(d -> d.getTitle()).collect(Collectors.toSet());

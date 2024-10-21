@@ -1,7 +1,6 @@
 package application.config;
 
-import application.entity.Authority;
-import application.entity.users.Users;
+import application.entity.users.Admin;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,14 +16,14 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Getter
-public class CustomUserDetail<T extends Users> implements UserDetails {
-    private final T user;
+public class CustomAdminDetail implements UserDetails {
+    private final Admin admin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities=new ArrayList<>();
-        if (!CollectionUtils.isEmpty(user.getRoles())){
-            user.getRoles().forEach(
+        if (!CollectionUtils.isEmpty(admin.getRoles())){
+            admin.getRoles().forEach(
                     role -> {
                         authorities.add(new SimpleGrantedAuthority(role.getName()));
                         if (!role.getAuthorities().isEmpty()){
@@ -42,11 +41,11 @@ public class CustomUserDetail<T extends Users> implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getProfile().getPassword();
+        return admin.getProfile().getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getProfile().getEmail();
+        return admin.getProfile().getEmail();
     }
 }

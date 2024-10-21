@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @DiscriminatorValue("Admin")
+@Component
 public class Admin extends Users {
 
 

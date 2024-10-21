@@ -3,6 +3,8 @@ package application.entity.users;
 
 import application.entity.BaseEntity;
 import application.entity.Role;
+import application.service.PasswordEncoder;
+import application.service.impl.PasswordEncoderImpl;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,6 +31,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class Users extends BaseEntity<Integer> {
+
 
     @Column
     @Pattern(regexp = "^[a-zA-Z]{3,}$", message = "Name must contain only letters")
@@ -86,7 +90,5 @@ public class Users extends BaseEntity<Integer> {
     public String toString() {
         return id + "- " + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + profile + ", dateTimeSubmission=" + dateTimeSubmission;
     }
-
-
 
 }

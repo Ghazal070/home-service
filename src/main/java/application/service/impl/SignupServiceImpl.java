@@ -6,12 +6,8 @@ import application.entity.users.Expert;
 import application.entity.users.Users;
 import application.entity.users.userFactory.CustomerFactory;
 import application.entity.users.userFactory.ExpertFactory;
+import application.service.*;
 import jakarta.validation.ValidationException;
-import application.service.CustomerService;
-import application.service.ExpertService;
-import application.service.PasswordEncoder;
-import application.service.SignupService;
-import application.util.AuthHolder;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
@@ -32,16 +28,14 @@ public class SignupServiceImpl implements SignupService {
     private final ExpertService expertService;
     private final CustomerService customerService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthHolder authHolder;
     private final ExpertFactory expertFactory;
     private final CustomerFactory customerFactory;
     private final Validator validator;
 
-    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncoder passwordEncoder, AuthHolder authHolder, ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
+    public SignupServiceImpl(ExpertService expertService, CustomerService customerService, PasswordEncoder passwordEncoder,ExpertFactory expertFactory, CustomerFactory customerFactory, Validator validator) {
         this.expertService = expertService;
         this.customerService = customerService;
         this.passwordEncoder = passwordEncoder;
-        this.authHolder = authHolder;
         this.expertFactory = expertFactory;
         this.customerFactory = customerFactory;
         this.validator = validator;
@@ -74,10 +68,7 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequestDto);
-                expert = expertService.save(expert);
-                authHolder.tokenName = expert.getProfile().getEmail();
-                authHolder.tokenId = expert.getId();
-                return expert;
+                return expertService.save(expert);
             }
             case "Customer" -> {
                 if (customerService.containByUniqField(userSignupRequestDto.getEmail())) {
@@ -87,10 +78,7 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequestDto);
-                customer = customerService.save(customer);
-                authHolder.tokenId = customer.getId();
-                authHolder.tokenName = customer.getProfile().getEmail();
-                return customer;
+                return customerService.save(customer);
             }
             default -> throw new IllegalArgumentException("Only Expert or Customer can sign up");
         }

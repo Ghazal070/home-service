@@ -1,17 +1,15 @@
 package application.config;
 
-import application.entity.users.Admin;
-import application.entity.users.Customer;
-import application.entity.users.Expert;
-import application.entity.users.Users;
-import application.service.PasswordEncoder;
-import application.service.impl.PasswordEncoderImpl;
+
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collection;
@@ -33,8 +31,8 @@ public class ProjectConfig {
                         request.requestMatchers(permitsAllUrls).permitAll();
                     }
                     Collection<RequestMatcherBinder.AuthorityPair> authorityPairs = requestMatcherBinder.getAuthorityPair();
-                    if (authorityPairs !=null && !authorityPairs.isEmpty()){
-                        for (RequestMatcherBinder.AuthorityPair pair:authorityPairs) {
+                    if (authorityPairs != null && !authorityPairs.isEmpty()) {
+                        for (RequestMatcherBinder.AuthorityPair pair : authorityPairs) {
                             request.requestMatchers(pair.getUrls())
                                     .hasAnyAuthority(pair.getAuthorities());
                         }
@@ -53,23 +51,13 @@ public class ProjectConfig {
         return new RequestMatcherBinderImpl();
     }
 
+    //    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new PasswordEncoderImpl();
+    public PasswordEncoder getPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
-    @Bean
-    public Users admin() {
-        return new Admin();
-    }
-
-    @Bean
-    public Users customer() {
-        return new Customer();
-    }
-
-    @Bean
-    public Users expert() {
-        return new Expert();
-    }
 }

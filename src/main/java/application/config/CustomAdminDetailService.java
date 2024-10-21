@@ -1,8 +1,9 @@
 package application.config;
 
-import application.entity.users.Users;
-import application.exception.ValidationException;
-import application.service.UserService;
+
+import application.entity.users.Admin;
+import application.service.AdminService;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +14,15 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CustomUserDetailService<T extends Users> implements UserDetailsService {
+public class CustomAdminDetailService implements UserDetailsService {
 
-    private final UserService<T> service;
+    private final AdminService adminService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<T> optionalUsers = service.findByEmail(username);
-        if (optionalUsers.isPresent()){
-            return new CustomUserDetail(optionalUsers.get());
+        Optional<Admin> optionalAdmin = adminService.findByEmail(username);
+        if (optionalAdmin.isPresent()){
+            return new CustomAdminDetail(optionalAdmin.get());
         }
         throw new ValidationException(username + " not found");
     }

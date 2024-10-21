@@ -9,6 +9,7 @@ import application.service.PasswordEncoder;
 import application.service.UserService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -95,6 +96,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<T> findByEmail(String email) {
         return repository.findByEmail(email);
     }

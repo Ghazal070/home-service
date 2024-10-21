@@ -1,7 +1,7 @@
 package application.service;
 
 
-public interface PasswordEncoder {
+public interface PasswordEncoder{
     String encode (String password);
     Boolean isEqualEncodeDecodePass(String oldPassword,String encodedPassword);
 }
