@@ -52,7 +52,7 @@ public class Users extends BaseEntity<Integer> {
     @Builder.Default
     private Boolean isActive=true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     @Lob

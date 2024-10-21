@@ -2,6 +2,7 @@ package application.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,6 @@ public class Role extends BaseEntity<Integer>{
     @Column
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Authority>  authorities;
 }
