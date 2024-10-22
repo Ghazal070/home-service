@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,56 +32,62 @@ public class UserController {
 
 
     @GetMapping("/customers/{userId}/image")
+    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
     public ResponseEntity<String> convertByteToImage(@PathVariable Integer userId) {
-        try{
+        try {
             customerService.convertByteToImage(userId);
             return ResponseEntity.ok("Convert done");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/customers/login")
-    public ResponseEntity<String> customerLogin (@RequestParam String username, @RequestParam String password){
+    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
+    public ResponseEntity<String> customerLogin(@RequestParam String username, @RequestParam String password) {
         try {
-            UserLoginProjection login = customerService.login(username, password);
+            Boolean login = customerService.login(username, password);
             return ResponseEntity.ok("Customer is Authenticate");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/experts/login")
-    public ResponseEntity<String> expertLogin (@RequestParam String username, @RequestParam String password){
+    @PreAuthorize("hasAuthority(AuthorityNames.EXPERT)")
+    public ResponseEntity<String> expertLogin(@RequestParam String username, @RequestParam String password) {
         try {
-            UserLoginProjection login = expertService.login(username, password);
+            Boolean login = expertService.login(username, password);
             return ResponseEntity.ok("Expert is Authenticate");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/experts/{expertId}/password")
-    public ResponseEntity<String> updatePasswordExpert (@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
-                                               @PathVariable Integer expertId){
+    @PreAuthorize("hasAuthority(AuthorityNames.EXPERT)")
+    public ResponseEntity<String> updatePasswordExpert(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
+                                                       @PathVariable Integer expertId) {
         try {
             Boolean updatePassword = expertService.updatePassword(userChangePasswordDto, expertId);
             return ResponseEntity.ok("Password Change");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/customers/{customerId}/password")
-    public ResponseEntity<String> updatePasswordCustomer (@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
-                                               @PathVariable Integer customerId){
+    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
+    public ResponseEntity<String> updatePasswordCustomer(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
+                                                         @PathVariable Integer customerId) {
         try {
             Boolean updatePassword = customerService.updatePassword(userChangePasswordDto, customerId);
             return ResponseEntity.ok("Password Change");
-        }catch (ValidationException exception){
-            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //todo modelAttribute
     public ResponseEntity<String> signup(

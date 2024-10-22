@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserService<T extends Users> extends BaseEntityService<T,Integer> {
 
     void convertByteToImage(Integer userId);
-    UserLoginProjection login(String email, String password);
+    Boolean login(String email, String password);
     Boolean updatePassword(UserChangePasswordDto userChangePasswordDto,Integer userId);
     Boolean containByUniqField(String uniqField);
     Optional<T> findByEmail(String email);

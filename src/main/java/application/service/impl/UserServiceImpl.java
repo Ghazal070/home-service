@@ -59,17 +59,23 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     }
 
     @Override
-    public UserLoginProjection login(String email, String password) {
-        if (!email.isBlank() && !password.isBlank()) {
-            Optional<UserLoginProjection> loginUser = repository.login(email, password);
-            if (loginUser.isPresent()) {
-                authHolder.tokenId = loginUser.get().getId();
-                authHolder.tokenName = loginUser.get().getProfile().getEmail();
-                return loginUser.get();
-            }
-            throw new ValidationException("Invalid login credentials");
-        } else
+    @Transactional(readOnly = true)
+    public Boolean login(String email, String password) {
+        if (email.isBlank() || password.isBlank()) {
             throw new ValidationException("Email or Password must not be empty");
+        }
+        Optional<T> user = repository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new ValidationException("Invalid login credentials email");
+        }
+        Boolean matchPass = passwordEncoder.isEqualEncodeDecodePass(password, user.get().getProfile().getPassword());
+
+        if (!matchPass){
+            throw new ValidationException("Invalid login credentials password");
+        }
+        authHolder.tokenId = user.get().getId();
+        authHolder.tokenName = user.get().getProfile().getEmail();
+        return true;
     }
 
     @Override
@@ -79,7 +85,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
             String newPassword = userChangePasswordDto.getNewPassword();
             Optional<T> users = repository.findById(userId);
             if (users.isPresent()) {
-                String encodePassword = oldPassword;
+                String encodePassword = users.get().getProfile().getPassword();
                 if (passwordEncoder.isEqualEncodeDecodePass(oldPassword, encodePassword)) {
                     String encode = passwordEncoder.encode(newPassword);
                     int repoResponse = repository.updatePassword(users.get().getProfile().getEmail(), encode);

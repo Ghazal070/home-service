@@ -57,9 +57,9 @@ public class UserIntegrationTest {
         assertThat(newUser).isNotNull();
         assertThat(newUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
 
-        UserLoginProjection loginUser = customerService.login(userSignupRequestDto.getEmail(), originalPassword);
+        Boolean loginUser = customerService.login(userSignupRequestDto.getEmail(), originalPassword);
         assertThat(loginUser).isNotNull();
-        assertThat(loginUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
+        assertThat(loginUser).isTrue();
 
         String newPassword = "PASS5678";
 
@@ -68,12 +68,12 @@ public class UserIntegrationTest {
                 .newPassword(newPassword)
                 .build();
 
-        Boolean isUpdated = customerService.updatePassword(userChangePasswordDto,loginUser.getId());
+        Boolean isUpdated = customerService.updatePassword(userChangePasswordDto,newUser.getId());
         assertThat(isUpdated).isTrue();
 
-        UserLoginProjection updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
+        Boolean updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
         assertThat(updatedLoginUser).isNotNull();
-        assertThat(updatedLoginUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
+        assertThat(updatedLoginUser).isTrue();
 
         List<Duty> selectableDuties = dutyService.getSelectableDuties();
 
@@ -87,7 +87,7 @@ public class UserIntegrationTest {
                 .address(faker.address().streetAddress())
                 .description("8 --- " + faker.lorem().characters(5, 20))
                 .build();
-        Order order = customerService.orderSubmit(orderSubmissionDto,loginUser.getId());
+        Order order = customerService.orderSubmit(orderSubmissionDto,newUser.getId());
          assertNotNull(order);
          assertThat(order.getDuty().getId()).isEqualTo(orderSubmissionDto.getDutyId());
 

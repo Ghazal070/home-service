@@ -110,9 +110,9 @@ class UserServiceImplTest {
         given(userLoginProjection.getProfile()).willReturn(profile);
         given(profile.getEmail()).willReturn(email);
 
-        UserLoginProjection actual = underTest.login(email, password);
+        Boolean actual = underTest.login(email, password);
 
-        assertNotNull(actual);
+        assertTrue(actual);
         assertEquals(userLoginProjection, actual);
     }
 
