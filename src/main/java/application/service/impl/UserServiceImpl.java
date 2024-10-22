@@ -9,6 +9,8 @@ import application.service.PasswordEncoder;
 import application.service.UserService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
@@ -16,13 +18,16 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
     protected final PasswordEncoder passwordEncoder;
+
 
     public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncoder passwordEncoder) {
         super(validator, repository);
@@ -106,4 +111,11 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
     public Optional<T> findByEmail(String email) {
         return repository.findByEmail(email);
     }
+
+    @Override
+    public Optional<T> findByVerificationToken(String token) {
+        return repository.findByVerificationToken(token);
+    }
+
+
 }

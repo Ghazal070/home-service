@@ -30,6 +30,6 @@ public interface UserRepository<T extends Users> extends BaseEntityRepository<T,
     @Query("select u from Users u where u.profile.email= :email")
     Optional<T> findByEmail(String email);
 
-
+    Optional<T> findByVerificationToken(String token);
 
 }

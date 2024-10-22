@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -68,7 +70,11 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Expert expert = (Expert) expertFactory.createUser(userSignupRequestDto);
+                String token = expertService.sendVerificationToken(userSignupRequestDto.getEmail());
+                expert.setVerificationToken(token);
+                expert.setExpiryDateVerificationToken(LocalDateTime.now().plus(1,ChronoUnit.DAYS));
                 return expertService.save(expert);
+
             }
             case "Customer" -> {
                 if (customerService.containByUniqField(userSignupRequestDto.getEmail())) {
@@ -78,7 +84,11 @@ public class SignupServiceImpl implements SignupService {
                         passwordEncoder.encode(userSignupRequestDto.getPassword())
                 );
                 Customer customer = (Customer) customerFactory.createUser(userSignupRequestDto);
+                String token = customerService.sendVerificationToken(userSignupRequestDto.getEmail());
+                customer.setVerificationToken(token);
+                customer.setExpiryDateVerificationToken(LocalDateTime.now().plus(1,ChronoUnit.DAYS));
                 return customerService.save(customer);
+
             }
             default -> throw new IllegalArgumentException("Only Expert or Customer can sign up");
         }

@@ -14,11 +14,13 @@ public abstract class Users_ extends application.entity.BaseEntity_ {
 
 	public static final String FIRST_NAME = "firstName";
 	public static final String LAST_NAME = "lastName";
+	public static final String EXPIRY_DATE_VERIFICATION_TOKEN = "expiryDateVerificationToken";
 	public static final String IMAGE = "image";
 	public static final String PROFILE = "profile";
 	public static final String ROLES = "roles";
+	public static final String VERIFICATION_TOKEN = "verificationToken";
 	public static final String DATE_TIME_SUBMISSION = "dateTimeSubmission";
-	public static final String IS_ACTIVE = "isActive";
+	public static final String ENABLED = "enabled";
 
 	
 	/**
@@ -30,6 +32,11 @@ public abstract class Users_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.users.Users#lastName
 	 **/
 	public static volatile SingularAttribute<Users, String> lastName;
+	
+	/**
+	 * @see application.entity.users.Users#expiryDateVerificationToken
+	 **/
+	public static volatile SingularAttribute<Users, LocalDateTime> expiryDateVerificationToken;
 	
 	/**
 	 * @see application.entity.users.Users#image
@@ -47,19 +54,24 @@ public abstract class Users_ extends application.entity.BaseEntity_ {
 	public static volatile SetAttribute<Users, Role> roles;
 	
 	/**
+	 * @see application.entity.users.Users#verificationToken
+	 **/
+	public static volatile SingularAttribute<Users, String> verificationToken;
+	
+	/**
 	 * @see application.entity.users.Users#dateTimeSubmission
 	 **/
 	public static volatile SingularAttribute<Users, LocalDateTime> dateTimeSubmission;
 	
 	/**
-	 * @see application.entity.users.Users#isActive
-	 **/
-	public static volatile SingularAttribute<Users, Boolean> isActive;
-	
-	/**
 	 * @see application.entity.users.Users
 	 **/
 	public static volatile EntityType<Users> class_;
+	
+	/**
+	 * @see application.entity.users.Users#enabled
+	 **/
+	public static volatile SingularAttribute<Users, Boolean> enabled;
 
 }
 

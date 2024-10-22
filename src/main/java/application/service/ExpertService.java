@@ -13,6 +13,8 @@ public interface ExpertService extends UserService<Expert>{
     Offer sendOffer(OfferCreationDto offerCreationDto,Integer expertId);
     List<ViewScoreExpertDto> viewScores(Integer expertId);
     Integer viewScore(Integer expertId);
+    Boolean validateVerificationToken(String token);
+    String sendVerificationToken(String email);
 
 
 }

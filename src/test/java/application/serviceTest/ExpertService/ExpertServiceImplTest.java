@@ -25,6 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -60,12 +62,14 @@ class ExpertServiceImplTest {
     @Mock
     private AuthHolder authHolder;
     private Validator validator;
+    @Mock
+    private JavaMailSender mailSender;
 
     @BeforeEach
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         this.underTest = new ExpertServiceImpl(validator, repository, authHolder
-                , passwordEncoder, orderService, offerService, commentService);
+                , passwordEncoder, orderService, offerService, commentService, mailSender);
     }
 
 

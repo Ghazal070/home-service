@@ -47,4 +47,9 @@ public class CustomUserDetail implements UserDetails {
     public String getUsername() {
         return user.getProfile().getEmail();
     }
+
+    @Override
+    public boolean isEnabled() {
+        return user.getEnabled();
+    }
 }

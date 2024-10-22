@@ -37,7 +37,7 @@ public class UsersSearchResponse implements Serializable {
 
     private LocalDateTime dateTimeSubmission;
 
-    private Boolean isActive=true;
+    private Boolean enabled=true;
     private ExpertStatus expertStatus;
 
     private Integer score;
@@ -47,7 +47,7 @@ public class UsersSearchResponse implements Serializable {
     @Override
     public String toString() {
         return "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' +
-                ", dateTimeSubmission=" + dateTimeSubmission + ", isActive=" + isActive + ", expertStatus=" + expertStatus +
+                ", dateTimeSubmission=" + dateTimeSubmission + ", enabled=" + enabled + ", expertStatus=" + expertStatus +
                 ", score=" + score + ", duties=" + duties;
     }
 }

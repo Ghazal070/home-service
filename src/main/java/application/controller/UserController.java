@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -105,6 +106,25 @@ public class UserController {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
             throw new RuntimeException("Failed to read image file", e);
+        }
+    }
+
+    @GetMapping("/customers/activate")
+    public ResponseEntity<String> activateCustomerAccount(@RequestParam String token) {
+        Boolean tokenValidation = customerService.validateVerificationToken(token);
+        if (tokenValidation) {
+            return ResponseEntity.ok("Your account has been activated. Please wait for admin approval.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired activation link.");
+        }
+    }
+    @GetMapping("/experts/activate")
+    public ResponseEntity<String> activateExpertAccount(@RequestParam String token) {
+        Boolean tokenValidation = expertService.validateVerificationToken(token);
+        if (tokenValidation) {
+            return ResponseEntity.ok("Your account has been activated. Please wait for admin approval.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired activation link.");
         }
     }
 }

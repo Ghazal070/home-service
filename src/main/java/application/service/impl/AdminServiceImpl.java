@@ -1,6 +1,5 @@
 package application.service.impl;
 
-import application.constants.AuthorityNames;
 import application.constants.RoleNames;
 import application.dto.DutyCreationDto;
 import application.dto.SearchDto;
@@ -154,7 +153,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
                             .dateTimeSubmission(u.getDateTimeSubmission())
                             .firstName(u.getFirstName())
                             .lastName(u.getLastName())
-                            .isActive(u.getIsActive())
+                            .enabled(u.getEnabled())
                             .build();
                     if (u instanceof Expert expert) {
                         response.setScore((expert.getScore()));

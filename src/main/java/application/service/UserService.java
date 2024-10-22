@@ -16,6 +16,6 @@ public interface UserService<T extends Users> extends BaseEntityService<T,Intege
     Boolean containByUniqField(String uniqField);
     Optional<T> findByEmail(String email);
 
-
+    Optional<T> findByVerificationToken(String token);
 
 }

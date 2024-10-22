@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -71,6 +72,8 @@ class CustomerServiceImplTest {
     @Mock
     private CommentService commentService;
 
+    @Mock
+    private JavaMailSender mailSender;
 
     @InjectMocks
     private CustomerServiceImpl underTest;
@@ -79,7 +82,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncoder, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService);
+                passwordEncoder, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService, mailSender);
     }
 
     @Test

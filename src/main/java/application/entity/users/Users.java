@@ -50,10 +50,14 @@ public class Users extends BaseEntity<Integer> {
 
     @Column
     @Builder.Default
-    private Boolean isActive=true;
+    private Boolean enabled=false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
+
+    private String verificationToken;
+
+    private LocalDateTime expiryDateVerificationToken;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)

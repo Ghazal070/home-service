@@ -10,7 +10,9 @@ public class RequestMatcherBinderImpl implements RequestMatcherBinder {
     public String[] getPermitsAllUrls() {
 
         return new String[]{
-                "/v1/users/signup"
+                "/v1/users/signup",
+                "v1/users/customers/activate",
+                "v1/users/experts/activate"
         };
     }
 

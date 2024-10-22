@@ -12,6 +12,8 @@ import application.service.*;
 import application.util.AuthHolder;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -29,9 +31,11 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     private final CardService cardService;
     private final InvoiceService invoiceService;
     private final CommentService commentService;
+    private final JavaMailSender mailSender;
+
     Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService) {
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService, JavaMailSender mailSender) {
         super(validator, repository, authHolder, passwordEncoder);
         this.dutyService = dutyService;
         this.orderService = orderService;
@@ -40,6 +44,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         this.cardService = cardService;
         this.invoiceService = invoiceService;
         this.commentService = commentService;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -204,7 +209,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         if (hour > 0) {
             expert.setScore(expert.getScore() - (int) hour);
             if (expert.getScore() < 0) {
-                expert.setIsActive(false);
+                expert.setEnabled(false);
             }
         }
     }
@@ -215,5 +220,29 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         if (paymentSessions.get(customerId) == null)
             return true;
         return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));
+    }
+
+    @Override
+    public String sendVerificationToken(String email) {
+        String token = UUID.randomUUID().toString();
+        String confirmationUrl = "http://localhost:8080/v1/users/customers/activate?token=" + token;
+        String subject = "Activate Your Account";
+        String text = "Email Verification, Click the link to verify your email::\n" + confirmationUrl;
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+        return token;
+    }
+    public Boolean validateVerificationToken(String token) {
+        Customer user = repository.findByVerificationToken(token).orElse(null);
+        if (user == null || user.getExpiryDateVerificationToken().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Invalid or expire token");
+        }
+        user.setEnabled(true);
+        repository.save(user);
+        user.setVerificationToken(null);
+        return true;
     }
 }
