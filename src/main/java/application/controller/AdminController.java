@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class AdminController {
     private final DutyService dutyService;
 
     @PostMapping("/duties")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<DutyByIdParentIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
         try {
             adminService.createDuty(dutyCreationDto);
@@ -38,7 +40,7 @@ public class AdminController {
         }
     }
     @PatchMapping("/management/experts/{expertId}/status/accept")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAuthority('admin-manage')")
     //done or management/experts/{expertId}?status=accept
     public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId) {
         try {
@@ -50,7 +52,7 @@ public class AdminController {
     }
 
     @PatchMapping("/experts/duties")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
         try {
             adminService.addDutyToExpert(expertId, dutyId);
@@ -61,8 +63,10 @@ public class AdminController {
     }
 
     @DeleteMapping("/experts/duties")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("User: " + authentication.getName() + " Authorities: " + authentication.getAuthorities());
         try {
             adminService.removeDutyFromExpert(expertId, dutyId);
             return ResponseEntity.ok("Remove duty = %s to expert = %s ".formatted(expertId, dutyId));
@@ -72,7 +76,7 @@ public class AdminController {
     }
 
     @PostMapping("/search")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<List<UsersSearchResponse>> adminSearchUser(@RequestBody @Valid SearchDto searchDto) {
         try {
             return ResponseEntity.ok(adminService.searchUser(searchDto));

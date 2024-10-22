@@ -16,6 +16,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ExpertController {
     private final OfferMapper offerMapper;
 
     @GetMapping("/permission/{expertId}")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
     public ResponseEntity<String> havePermissionExpertToServices(@PathVariable Integer expertId) {
         Boolean permissionExpertToServices = expertService.havePermissionExpertToServices(expertId);
         return permissionExpertToServices ? ResponseEntity.ok("Expert have permission") :
@@ -40,6 +42,7 @@ public class ExpertController {
     }
 //done isActive true handle it in service //negative score??
     @PostMapping("/{expertId}/offers")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
     public ResponseEntity<OfferResponseDto> sendOffer(@RequestBody OfferCreationDto offerCreationDto
             , @PathVariable Integer expertId) {
         try {
@@ -51,6 +54,7 @@ public class ExpertController {
     }
 
     @GetMapping("/{expertId}/scores")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
     public ResponseEntity<List<ViewScoreExpertDto>> viewScores(@PathVariable Integer expertId) {
         try {
             List<ViewScoreExpertDto> viewScore = expertService.viewScores(expertId);
@@ -61,6 +65,7 @@ public class ExpertController {
     }
 
     @GetMapping("/{expertId}/score")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
     public ResponseEntity<String> viewScore(@PathVariable Integer expertId) {
         try {
             Integer integer = expertService.viewScore(expertId);
@@ -71,6 +76,7 @@ public class ExpertController {
     }
 
     @GetMapping("/{expertId}/orders")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
     public Set<OrderExpertWaitingDto> getOrdersForExpertWaitingOrChoosing(
             @PathVariable Integer expertId){
         try {

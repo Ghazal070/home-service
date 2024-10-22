@@ -23,6 +23,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -46,6 +47,7 @@ public class CustomerController {
 
 
     @PostMapping("/{customerId}/orders")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<OrderResponseDto> orderSubmit(@RequestBody @Valid OrderSubmissionDto orderSubmissionDto, @PathVariable Integer customerId) {
         try {
             customerService.isCustomerAuthenticated(customerId);
@@ -57,7 +59,8 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/authenticate/{customerId}")
+    @GetMapping("/authenticate/{customerId}")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> isCustomerAuthenticated(@PathVariable Integer customerId) {
         try {
             customerService.isCustomerAuthenticated(customerId);
@@ -68,6 +71,7 @@ public class CustomerController {
     }
 
     @GetMapping("/orders/offers")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<Set<OfferResponseDto> > getOffersForOrder(@RequestParam Integer orderId, @RequestParam Integer customerId) {
         try {
             Set<Offer> offers = customerService.getOffersForOrder(orderId, customerId);
@@ -79,6 +83,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/orders/offers/{offerId}/experts")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> chooseExpertForOrder(@PathVariable Integer offerId) {
         try {
             customerService.chooseExpertForOrder(offerId);
@@ -89,6 +94,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/orders/status/started/offers/{offerId}")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> orderStarted(@PathVariable Integer offerId) {
         try {
             customerService.orderStarted(offerId);
@@ -99,6 +105,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/orders/status/done/offers")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> orderDone(@RequestBody @Valid CustomerCommentDto customerCommentDto) {
         try {
             customerService.orderDone(customerCommentDto.getOfferId()
@@ -110,7 +117,7 @@ public class CustomerController {
     }
 
     @GetMapping("/paymentType/{paymentType}")
-
+    @PreAuthorize("hasAuthority('customer-manage')")
     public void selectPaymentType(@PathVariable String paymentType,HttpServletResponse response, HttpServletRequest request) {
         try {
             if (!(paymentType.equals(String.valueOf(PaymentType.AccountPayment)) || paymentType.equals(String.valueOf(PaymentType.CreditPayment)))) {
@@ -154,6 +161,7 @@ public class CustomerController {
 
 
     @PostMapping("/payment/credit")
+
     public ModelAndView paymentByCredit(
             @CookieValue(value = "payment-type", defaultValue = "CreditPayment") String paymentType
             , @RequestParam Integer offerId, @RequestParam Integer customerId) {
@@ -221,6 +229,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}/offers/orders/{orderID}/ordering/price")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public Set<OfferResponseDto> getOfferByCustomerIdOrderByPriceOrder(
             @PathVariable Integer customerId,@PathVariable Integer orderID){
         try {
@@ -231,6 +240,7 @@ public class CustomerController {
         }
     }
     @GetMapping("/{customerId}/offers/orders/{orderID}/ordering/score")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public Set<OfferResponseDto> getOfferByCustomerIdOrderByScoreExpert(
             @PathVariable Integer customerId,@PathVariable Integer orderID){
         try {

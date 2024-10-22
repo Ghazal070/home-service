@@ -17,7 +17,7 @@ public class PasswordEncodeController {
     private final PasswordEncoderImpl passwordEncodeService;
 
     @GetMapping("/passwords/encode")
-    public ResponseEntity<String> havePermissionExpertToServices(@RequestBody String password) {
+    public ResponseEntity<String> encoding(@RequestBody String password) {
         String encode = passwordEncodeService.encode(password);
         return encode!=null ? ResponseEntity.ok("Password encode") :
                 new ResponseEntity<>("Encoding is not supported", HttpStatus.BAD_REQUEST);

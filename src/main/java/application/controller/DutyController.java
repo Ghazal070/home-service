@@ -31,6 +31,7 @@ public class DutyController {
 
 
     @PatchMapping("/update")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<String> updateDutyPriceOrDescription(@RequestBody UpdateDutyDto updateDutyDto) {
         try {
             dutyService.updateDutyPriceOrDescription(updateDutyDto);
@@ -41,7 +42,7 @@ public class DutyController {
     }
 
     @GetMapping("/duties")
-    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
+    @PreAuthorize("hasAnyAuthority('admin-manage','customer-manage','expert-manage')")
     public List<DutyResponseChildrenDto> loadAllDutyWithChildren() {
         try {
             return dutyService.loadAllDutyWithChildren();
@@ -51,6 +52,7 @@ public class DutyController {
     }
 
     @GetMapping("/duties/titles")
+    @PreAuthorize("hasAnyAuthority('admin-manage','customer-manage','expert-manage')")
     public List<DutyResponseControllerDto> loadAllDutyWithChildrenOnlyTitle() {
         try {
             List<DutyResponseChildrenDto> list = dutyService.loadAllDutyWithChildren();
@@ -63,6 +65,7 @@ public class DutyController {
     }
 
     @GetMapping("/filter/uniq")
+    @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<String> containByUniqField(
             @RequestParam String title, @RequestParam Integer parentId) {
         Boolean contain = dutyService.containByUniqField(title, parentId);
@@ -75,6 +78,7 @@ public class DutyController {
     }
 
     @GetMapping("/filter/exits")
+    @PreAuthorize("hasAnyAuthority('admin-manage','customer-manage','expert-manage')")
     public ResponseEntity<String> existsByTitle(
             @RequestParam String title) {
         Boolean contain = dutyService.existsByTitle(title);
@@ -88,6 +92,7 @@ public class DutyController {
 
     @ResponseBody
     @GetMapping("/filter/selectable")
+    @PreAuthorize("hasAnyAuthority('admin-manage','customer-manage','expert-manage')")
     public List<DutyByIdTitleDto> getSelectableDuties() {
         try {
             List<Duty> dutyList = dutyService.getSelectableDuties();

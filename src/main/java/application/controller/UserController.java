@@ -32,7 +32,7 @@ public class UserController {
 
 
     @GetMapping("/customers/{userId}/image")
-    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> convertByteToImage(@PathVariable Integer userId) {
         try {
             customerService.convertByteToImage(userId);
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/customers/login")
-    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> customerLogin(@RequestParam String username, @RequestParam String password) {
         try {
             Boolean login = customerService.login(username, password);
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/experts/login")
-    @PreAuthorize("hasAuthority(AuthorityNames.EXPERT)")
+    @PreAuthorize("hasAuthority('expert-manage')")
     public ResponseEntity<String> expertLogin(@RequestParam String username, @RequestParam String password) {
         try {
             Boolean login = expertService.login(username, password);
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/experts/{expertId}/password")
-    @PreAuthorize("hasAuthority(AuthorityNames.EXPERT)")
+    @PreAuthorize("hasAuthority('expert-manage')")
     public ResponseEntity<String> updatePasswordExpert(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
                                                        @PathVariable Integer expertId) {
         try {
@@ -77,7 +77,7 @@ public class UserController {
     }
 
     @PostMapping("/customers/{customerId}/password")
-    @PreAuthorize("hasAuthority(AuthorityNames.CUSTOMER)")
+    @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> updatePasswordCustomer(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
                                                          @PathVariable Integer customerId) {
         try {
