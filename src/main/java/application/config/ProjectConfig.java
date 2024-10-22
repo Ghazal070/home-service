@@ -42,7 +42,7 @@ public class ProjectConfig {
                 }
         );
         http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
+        http.httpBasic(Customizer.withDefaults());//todo session //jwt service
         return http.build();
     }
 

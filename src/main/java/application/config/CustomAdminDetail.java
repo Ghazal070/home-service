@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 @Getter
 public class CustomAdminDetail implements UserDetails {

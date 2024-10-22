@@ -14,6 +14,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class DutyController {
     }
 
     @GetMapping("/duties")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     public List<DutyResponseChildrenDto> loadAllDutyWithChildren() {
         try {
             return dutyService.loadAllDutyWithChildren();

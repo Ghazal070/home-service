@@ -38,6 +38,7 @@ public class AdminController {
         }
     }
     @PatchMapping("/management/experts/{expertId}/status/accept")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     //done or management/experts/{expertId}?status=accept
     public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId) {
         try {
@@ -49,6 +50,7 @@ public class AdminController {
     }
 
     @PatchMapping("/experts/duties")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     public ResponseEntity<String> addDutyToExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
         try {
             adminService.addDutyToExpert(expertId, dutyId);
@@ -59,6 +61,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/experts/duties")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     public ResponseEntity<String> removeDutyFromExpert(@RequestParam Integer expertId, @RequestParam Integer dutyId) {
         try {
             adminService.removeDutyFromExpert(expertId, dutyId);
@@ -69,6 +72,7 @@ public class AdminController {
     }
 
     @PostMapping("/search")
+    @PreAuthorize("hasAuthority(AuthorityNames.ADMIN)")
     public ResponseEntity<List<UsersSearchResponse>> adminSearchUser(@RequestBody @Valid SearchDto searchDto) {
         try {
             return ResponseEntity.ok(adminService.searchUser(searchDto));
