@@ -16,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
             throw new ValidationException("UserType must be Customer or Expert");
         }
         if (searchDto.getUserRole() != null && searchDto.getUserRole().equals("Customer")) {
-            if (searchDto.getDutyTitle() != null || searchDto.getMinScore() != null || searchDto.getMaxScore() != null) {
+            if (searchDto.getDutyId() != null || searchDto.getMinScore() != null || searchDto.getMaxScore() != null) {
                 throw new ValidationException("Customer don't have score or duty title");
             }
         }
@@ -57,7 +59,7 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
             return expertRepository.findAll((root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
                 populateCommonPredicates(predicates, root, cb, searchDto);
-                fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
+                fillDutyId(predicates, root, cb, searchDto.getDutyId());
                 fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
                 return cb.and(predicates.toArray(new Predicate[0]));
             });
@@ -70,7 +72,7 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
         return userRepository.findAll((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             populateCommonPredicates(predicates, root, cb, searchDto);
-            fillDutyTitle(predicates, root, cb, searchDto.getDutyTitle());
+            fillDutyId(predicates, root, cb, searchDto.getDutyId());
             fillMinScore(predicates, root, cb, searchDto.getMinScore(), searchDto.getMaxScore());
             return cb.and(predicates.toArray(new Predicate[0]));
         });
@@ -100,9 +102,15 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
         }
     }
 
-    private void fillDutyTitle(List<Predicate> predicates, Root root, CriteriaBuilder cb, String dutyTitle) {
-        if (StringUtils.isNotBlank(dutyTitle)) {
-            predicates.add(cb.like(root.join(Expert_.DUTIES).get(Duty_.TITLE), "%" + dutyTitle + "%"));
+    private void fillDutyId(List<Predicate> predicates, Root root, CriteriaBuilder cb, Set<Integer> dutyId) {
+        List<Predicate> orPredicates=new ArrayList<>();
+        if (dutyId!=null && !dutyId.isEmpty()) {
+            for (int id:dutyId) {
+                orPredicates.add(
+                        cb.equal(
+                                root.join(Expert_.DUTIES).get(Duty_.ID), id));
+            }
+            predicates.add(cb.or(orPredicates.toArray(new Predicate[0])));
         }
     }
 

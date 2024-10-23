@@ -2,7 +2,6 @@ package application.controller;
 
 import application.dto.UserChangePasswordDto;
 import application.dto.UserSignupRequestDto;
-import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
 import application.exception.ValidationControllerException;
 import application.service.*;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -47,7 +45,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('customer-manage')")
     public ResponseEntity<String> customerLogin(@RequestParam String username, @RequestParam String password) {
         try {
-            Boolean login = customerService.login(username, password);
+            customerService.login(username, password);
             return ResponseEntity.ok("Customer is Authenticate");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -58,7 +56,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('expert-manage')")
     public ResponseEntity<String> expertLogin(@RequestParam String username, @RequestParam String password) {
         try {
-            Boolean login = expertService.login(username, password);
+            expertService.login(username, password);
             return ResponseEntity.ok("Expert is Authenticate");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -70,7 +68,7 @@ public class UserController {
     public ResponseEntity<String> updatePasswordExpert(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
                                                        @PathVariable Integer expertId) {
         try {
-            Boolean updatePassword = expertService.updatePassword(userChangePasswordDto, expertId);
+            expertService.updatePassword(userChangePasswordDto, expertId);
             return ResponseEntity.ok("Password Change");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -82,7 +80,7 @@ public class UserController {
     public ResponseEntity<String> updatePasswordCustomer(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto,
                                                          @PathVariable Integer customerId) {
         try {
-            Boolean updatePassword = customerService.updatePassword(userChangePasswordDto, customerId);
+            customerService.updatePassword(userChangePasswordDto, customerId);
             return ResponseEntity.ok("Password Change");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -111,22 +109,34 @@ public class UserController {
 
     @GetMapping("/customers/activate")
     public ResponseEntity<String> activateCustomerAccount(@RequestParam String token) {
-        Boolean tokenValidation = customerService.validateVerificationToken(token);
-        if (tokenValidation) {
-            return ResponseEntity.ok("Your account has been activated.");
-        } else {
-            return ResponseEntity.badRequest().body("Invalid or expired activation link.");
+        try {
+            Boolean tokenValidation = customerService.validateVerificationToken(token);
+            if (tokenValidation) {
+                return ResponseEntity.ok("Your account has been activated.");
+            } else {
+                return ResponseEntity.badRequest().body("Account not activated.");
+            }
+        } catch (ValidationException exception) {
+
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping("/experts/activate")
     public ResponseEntity<String> activateExpertAccount(@RequestParam String token) {
-        Boolean tokenValidation = expertService.validateVerificationToken(token);
-        if (tokenValidation) {
-            return ResponseEntity.ok("Your account has been activated. Please wait for admin Accepted.");
-        } else {
-            return ResponseEntity.badRequest().body("Invalid or expired activation link.");
+        try {
+            Boolean tokenValidation = expertService.validateVerificationToken(token);
+            if (tokenValidation) {
+                return ResponseEntity.ok("Your account has been activated. Please wait for admin Accepted.");
+            } else {
+                return ResponseEntity.badRequest().body("Account not activated.");
+            }
+        } catch (ValidationException exception) {
+
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 }
 
 

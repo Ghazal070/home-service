@@ -163,7 +163,7 @@ http://localhost:8081/admins/search
 "userRole":"Expert",
 "firstName":"r",
 "email":"com",
-"dutyTitle":"e"
+"dutyId":[416,365]
 }
 
 

@@ -7,6 +7,7 @@ import jakarta.validation.ValidationException;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class SearchDto implements Serializable {
 
     private String email;
 
-    private String dutyTitle;
+    private Set<Integer> dutyId;
 
     private Integer minScore;
     private Integer maxScore;

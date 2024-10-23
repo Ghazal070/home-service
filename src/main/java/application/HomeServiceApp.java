@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 public class HomeServiceApp {
@@ -66,7 +67,7 @@ public class HomeServiceApp {
                 .userRole("Expert")
                 .firstName("r")
                 .email("com")
-                .dutyTitle("e")
+                .dutyId(Set.of(416,350))
 //                .maxScore(5)
                 .build();
         return adminService.searchUser(searchDto);
