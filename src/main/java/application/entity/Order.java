@@ -64,11 +64,15 @@ public class Order extends BaseEntity<Integer> {
     @Column
     private LocalDateTime doneUpdate;
 
+    @Column
+    private LocalDateTime orderDateCreation;
+
     @PrePersist
     protected void onCreate(){
         if (dateTimeOrderForDoingFromCustomer.isBefore(LocalDateTime.now())){
             throw new ValidationException("DateTimeOrderForDoingFromCustomer order must be after now localDateTime in persist");
         }
+        this.orderDateCreation=LocalDateTime.now();
     }
 
     @Override

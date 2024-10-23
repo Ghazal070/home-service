@@ -3,8 +3,10 @@ package application.controller;
 import application.constants.AuthorityNames;
 import application.dto.*;
 import application.exception.ValidationControllerException;
+import application.service.AdminReportByUser;
 import application.service.AdminService;
 import application.service.DutyService;
+import application.service.OrderService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final DutyService dutyService;
+    private final AdminReportByUser adminReportByUser;
 
     @PostMapping("/duties")
     @PreAuthorize("hasAuthority('admin-manage')")
@@ -82,6 +85,18 @@ public class AdminController {
             return ResponseEntity.ok(adminService.searchUser(searchDto));
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/users/{userRole}/{userId}/report")
+    @PreAuthorize("hasAuthority('admin-manage')")
+    public ResponseEntity<List<OrderReportDto>> getOrdersByUsers(@PathVariable Integer userId,
+                                                                 @PathVariable String userRole){
+        try {
+            List<OrderReportDto> ordersByUsers = adminReportByUser.getOrdersByUser(userId,userRole);
+            return ResponseEntity.ok(ordersByUsers);
+        }catch (ValidationException exception){
+            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -1,5 +1,6 @@
 package application.service;
 
+import application.dto.OrderReportDto;
 import application.dto.SearchDto;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
@@ -15,7 +16,4 @@ public interface UserService<T extends Users> extends BaseEntityService<T,Intege
     Boolean updatePassword(UserChangePasswordDto userChangePasswordDto,Integer userId);
     Boolean containByUniqField(String uniqField);
     Optional<T> findByEmail(String email);
-
-    Optional<T> findByVerificationToken(String token);
-
 }

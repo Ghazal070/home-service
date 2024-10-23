@@ -9,6 +9,7 @@ import jakarta.validation.Validator;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,5 +29,13 @@ public class OfferServiceImpl extends BaseEntityServiceImpl<OfferRepository, Off
         return repository.getOfferByCustomerIdOrderByPriceOrder(customerId,orderId);
     }
 
+    @Override
+    public Optional<Offer> findOfferByOrderId(Integer orderId) {
+        return repository.findOfferByOrderId(orderId);
+    }
 
+    @Override
+    public Set<Offer> findAllByExpertId(Integer expertId) {
+        return repository.findAllByExpertId(expertId);
+    }
 }

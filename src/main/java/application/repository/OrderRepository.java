@@ -22,4 +22,7 @@ public interface OrderRepository extends BaseEntityRepository<Order,Integer>{
             """)
     Set<Order> getOrdersForExpertWaitingOrChoosing(@Param("expertId") Integer expertId);
 
+
+    Set<Order> findAllByCustomerId(Integer customerId);
+
 }

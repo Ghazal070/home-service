@@ -1,7 +1,6 @@
 package application.config;
 
 
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

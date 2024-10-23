@@ -1,5 +1,6 @@
 package application.service.impl;
 
+import application.dto.OrderReportDto;
 import application.dto.UserChangePasswordDto;
 import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
@@ -19,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -112,10 +114,6 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         return repository.findByEmail(email);
     }
 
-    @Override
-    public Optional<T> findByVerificationToken(String token) {
-        return repository.findByVerificationToken(token);
-    }
 
 
 }

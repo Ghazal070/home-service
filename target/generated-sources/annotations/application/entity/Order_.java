@@ -23,6 +23,7 @@ public abstract class Order_ extends application.entity.BaseEntity_ {
 	public static final String DATE_TIME_ORDER_FOR_DOING_FROM_CUSTOMER = "dateTimeOrderForDoingFromCustomer";
 	public static final String ORDER_STATUS = "orderStatus";
 	public static final String DUTY = "duty";
+	public static final String ORDER_DATE_CREATION = "orderDateCreation";
 	public static final String CUSTOMER = "customer";
 
 	
@@ -75,6 +76,11 @@ public abstract class Order_ extends application.entity.BaseEntity_ {
 	 * @see application.entity.Order
 	 **/
 	public static volatile EntityType<Order> class_;
+	
+	/**
+	 * @see application.entity.Order#orderDateCreation
+	 **/
+	public static volatile SingularAttribute<Order, LocalDateTime> orderDateCreation;
 	
 	/**
 	 * @see application.entity.Order#customer

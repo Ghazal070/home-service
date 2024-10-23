@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -32,4 +33,8 @@ public interface OfferRepository extends BaseEntityRepository<Offer, Integer> {
 
     @Query("update Offer f set f.order.orderStatus = :orderStatus where f.id = :offerId")
     Offer updateByOrderStatus(@Param("orderStatus") String orderStatus, @Param("offerId") Integer offerId);
+
+    Optional<Offer> findOfferByOrderId(Integer orderId);
+    Set<Offer> findAllByExpertId(Integer expertId);
+
 }

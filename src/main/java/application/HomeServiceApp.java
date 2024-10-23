@@ -33,6 +33,7 @@ public class HomeServiceApp {
         OrderService orderService =context.getBean(OrderService.class,args);
         OfferService offerService =context.getBean(OfferService.class,args);
         CardService cardService = context.getBean(CardService.class,args);
+        AdminReportByUser reportByUser = context.getBean(AdminReportByUser.class, args);
 
 
         //signupCustomerTestMethod(customerService, signupService);
@@ -58,6 +59,8 @@ public class HomeServiceApp {
         //customerService.getOffersForOrder(324,315).forEach(System.out::println);
         //dutyService.getSelectableDuties().forEach(System.out::println);
         //List<UsersSearchResponse> responseList = searchAdminTest(adminService);
+        //List<OrderReportDto> orders = reportByUser.getOrdersByUser(389, "Expert");
+        //orders.forEach(System.out::println);
 
 
     }
