@@ -1,6 +1,9 @@
 package application.repository;
 
+import application.dto.ResponseSearchOrderDto;
+import application.dto.SearchOrderDto;
 import application.entity.Order;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface OrderRepository extends BaseEntityRepository<Order,Integer>{
+public interface OrderRepository extends BaseEntityRepository<Order,Integer> , JpaSpecificationExecutor<Order> {
 
     @Query("""  
             SELECT o FROM Order o  
@@ -24,5 +27,6 @@ public interface OrderRepository extends BaseEntityRepository<Order,Integer>{
 
 
     Set<Order> findAllByCustomerId(Integer customerId);
+
 
 }

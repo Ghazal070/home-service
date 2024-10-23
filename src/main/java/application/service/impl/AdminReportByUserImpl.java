@@ -8,6 +8,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AdminReportByUserImpl implements AdminReportByUser  {
-    
+public class AdminReportByUserImpl implements AdminReportByUser {
+
     private final ExpertService expertService;
     private final CustomerService customerService;
     private final OrderService orderService;
@@ -27,11 +28,11 @@ public class AdminReportByUserImpl implements AdminReportByUser  {
 
 
     @Override
-    public List<OrderReportDto> getOrdersByUser(Integer userId,String userRole) {
+    public List<OrderReportDto> getOrdersByUser(Integer userId, String userRole) {
         List<OrderReportDto> reportDto = new ArrayList<>();
-        
-        switch (userRole){
-            case "Customer"->{
+
+        switch (userRole) {
+            case "Customer" -> {
                 Set<Order> orders = getCustomerOrders(userId);
                 orders.forEach(
                         order -> {
@@ -40,15 +41,15 @@ public class AdminReportByUserImpl implements AdminReportByUser  {
                         }
                 );
             }
-            case "Expert"->{
+            case "Expert" -> {
                 Set<Offer> offers = getExpertOffers(userId);
                 Set<Order> orders = getExpertOrders(offers);
                 orders.forEach(
                         order -> {
-                            Offer offer=null;
-                            for (Offer offerTemp:offers) {
-                                if (offerTemp.getOrder().getId().equals(order.getId())){
-                                    offer =offerTemp;
+                            Offer offer = null;
+                            for (Offer offerTemp : offers) {
+                                if (offerTemp.getOrder().getId().equals(order.getId())) {
+                                    offer = offerTemp;
                                     break;
                                 }
                             }
@@ -69,7 +70,7 @@ public class AdminReportByUserImpl implements AdminReportByUser  {
     }
 
     private Set<Order> getExpertOrders(Set<Offer> offers) {
-        Set<Order> orders= offers.stream().map(Offer::getOrder).collect(Collectors.toSet());
+        Set<Order> orders = offers.stream().map(Offer::getOrder).collect(Collectors.toSet());
         if (orders.isEmpty()) {
             throw new ValidationException("OrdersList is empty");
         }
@@ -88,25 +89,25 @@ public class AdminReportByUserImpl implements AdminReportByUser  {
     }
 
     private void orderToOrderReportDto(List<OrderReportDto> reportDto, Order order, Offer offer) {
-        Duration duration = (offer != null && order.getDoneUpdate()!=null) ?
-                (Duration.between(offer.getDateTimeStartWork().plus(offer.getLengthDays(), ChronoUnit.DAYS),order.getDoneUpdate()))
+        Duration duration = (offer != null && order.getDoneUpdate() != null) ?
+                (Duration.between(offer.getDateTimeStartWork().plus(offer.getLengthDays(), ChronoUnit.DAYS), order.getDoneUpdate()))
                 : null;
-         reportDto.add(
+        reportDto.add(
                 OrderReportDto.builder()
                         .orderId(order.getId())
                         .orderStatus(order.getOrderStatus())
                         .priceOrder(order.getPriceOrder())
-                        .priceOffer(offer!=null?offer.getPriceOffer():null)
+                        .priceOffer(offer != null ? offer.getPriceOffer() : null)
                         .orderDateCreation(order.getOrderDateCreation())
                         .dateForDoingFromCustomer(order.getDateTimeOrderForDoingFromCustomer())
-                        .dateTimeStartOffer(offer!=null?offer.getDateTimeStartWork():null)
-                        .dateTimeEndOffer(offer!=null?offer.getDateTimeStartWork().plus(offer.getLengthDays(), ChronoUnit.DAYS):null)
-                        .expertId(order.getExpert()!=null?order.getExpert().getId():null)
+                        .dateTimeStartOffer(offer != null ? offer.getDateTimeStartWork() : null)
+                        .dateTimeEndOffer(offer != null ? offer.getDateTimeStartWork().plus(offer.getLengthDays(), ChronoUnit.DAYS) : null)
+                        .expertId(order.getExpert() != null ? order.getExpert().getId() : null)
                         .dateDone(order.getDoneUpdate())
-                        .delayExpertHours(duration!=null?duration.toHours():0L)
+                        .delayExpertHours(duration != null ? duration.toHours() : 0L)
                         .dutyId(order.getDuty().getId())
                         .countOffer(order.getOffers().size())
-                        .acceptOfferId(offer!=null?offer.getId():null)
+                        .acceptOfferId(offer != null ? offer.getId() : null)
                         .build());
     }
 }

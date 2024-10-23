@@ -1,8 +1,6 @@
 package application;
 
 import application.dto.*;
-import application.dto.projection.UserLoginProjection;
-import application.entity.Card;
 import application.entity.Duty;
 import application.entity.Order;
 import application.service.*;
@@ -14,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -34,6 +33,7 @@ public class HomeServiceApp {
         OfferService offerService =context.getBean(OfferService.class,args);
         CardService cardService = context.getBean(CardService.class,args);
         AdminReportByUser reportByUser = context.getBean(AdminReportByUser.class, args);
+        OrderSpecification orderSpecification = context.getBean(OrderSpecification.class, args);
 
 
         //signupCustomerTestMethod(customerService, signupService);
@@ -61,8 +61,20 @@ public class HomeServiceApp {
         //List<UsersSearchResponse> responseList = searchAdminTest(adminService);
         //List<OrderReportDto> orders = reportByUser.getOrdersByUser(389, "Expert");
         //orders.forEach(System.out::println);
+        adminOrderSearch(orderSpecification);
 
 
+    }
+
+    private static void adminOrderSearch(OrderSpecification orderSpecification) {
+        SearchOrderDto searchOrderDto = SearchOrderDto.builder()
+                .orderStatus("Done")
+                .startDate(LocalDate.of(2020, 05, 06))
+                .endDate(LocalDate.of(2025, 05, 06))
+                .dutyId(Set.of(416,365))
+                .build();
+        orderSpecification.findAllBySearchOrderDto(searchOrderDto)
+                .forEach(System.out::println);
     }
 
     private static List<UsersSearchResponse> searchAdminTest(AdminService adminService) {
@@ -70,7 +82,7 @@ public class HomeServiceApp {
                 .userRole("Expert")
                 .firstName("r")
                 .email("com")
-                .dutyId(Set.of(416,350))
+                .dutyId(Set.of(416,358))
 //                .maxScore(5)
                 .build();
         return adminService.searchUser(searchDto);

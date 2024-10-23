@@ -165,7 +165,14 @@ http://localhost:8081/admins/search
 "email":"com",
 "dutyId":[416,365]
 }
-
+==========================================================
+http://localhost:8081/v1/admins/orders/search
+{
+    "startDate":"2020-05-06",
+    "endDate":"2025-05-06",
+    "orderStatus":"Done",
+    "dutyId":[416,365]
+}
 
 
 

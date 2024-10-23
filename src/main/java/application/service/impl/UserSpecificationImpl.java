@@ -69,7 +69,8 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
     }
 //done edit duplicate code
     private List handleGenericUserSearch(SearchDto searchDto, UserRepository<T> userRepository) {
-        return userRepository.findAll((root, query, cb) -> {
+        return userRepository.findAll(
+                (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             populateCommonPredicates(predicates, root, cb, searchDto);
             fillDutyId(predicates, root, cb, searchDto.getDutyId());
