@@ -113,7 +113,7 @@ public class UserController {
     public ResponseEntity<String> activateCustomerAccount(@RequestParam String token) {
         Boolean tokenValidation = customerService.validateVerificationToken(token);
         if (tokenValidation) {
-            return ResponseEntity.ok("Your account has been activated. Please wait for admin approval.");
+            return ResponseEntity.ok("Your account has been activated.");
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired activation link.");
         }
@@ -122,7 +122,7 @@ public class UserController {
     public ResponseEntity<String> activateExpertAccount(@RequestParam String token) {
         Boolean tokenValidation = expertService.validateVerificationToken(token);
         if (tokenValidation) {
-            return ResponseEntity.ok("Your account has been activated. Please wait for admin approval.");
+            return ResponseEntity.ok("Your account has been activated. Please wait for admin Accepted.");
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired activation link.");
         }

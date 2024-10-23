@@ -15,6 +15,7 @@ import jakarta.validation.Validator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -225,7 +226,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     @Override
     public String sendVerificationToken(String email) {
         String token = UUID.randomUUID().toString();
-        String confirmationUrl = "http://localhost:8080/v1/users/customers/activate?token=" + token;
+        String confirmationUrl = "http://localhost:8081/v1/users/customers/activate?token=" + token;
         String subject = "Activate Your Account";
         String text = "Email Verification, Click the link to verify your email::\n" + confirmationUrl;
         SimpleMailMessage message = new SimpleMailMessage();
@@ -235,6 +236,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         mailSender.send(message);
         return token;
     }
+    @Override
+    @Transactional
     public Boolean validateVerificationToken(String token) {
         Customer user = repository.findByVerificationToken(token).orElse(null);
         if (user == null || user.getExpiryDateVerificationToken().isBefore(LocalDateTime.now())) {

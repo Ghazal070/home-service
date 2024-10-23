@@ -16,6 +16,7 @@ import jakarta.validation.Validator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -40,7 +41,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     public Boolean havePermissionExpertToServices(Integer expertId) {
         Optional<Expert> expert = repository.findById(expertId);
         if (expert.isPresent()) {
-            if (!expert.get().getEnabled()) {
+            if (!expert.get().getEnabled() && !expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
                 throw new ValidationException("Account is not active.");
             }
             return expert.get().getExpertStatus().equals(ExpertStatus.Accepted);
@@ -52,7 +53,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     public Offer sendOffer(OfferCreationDto offerCreationDto, Integer expertId) {
         Optional<Expert> expert = repository.findById(expertId);
         if (expert.isPresent()) {
-            if (!expert.get().getEnabled()) {
+            if (!expert.get().getEnabled() && !expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
                 throw new ValidationException("Account is not active.");
             }
         }
@@ -94,7 +95,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     public List<ViewScoreExpertDto> viewScores(Integer expertId) {
         Optional<Expert> expert = repository.findById(expertId);
         if (expert.isPresent()) {
-            if (!expert.get().getEnabled()) {
+            if (!expert.get().getEnabled() && !expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
                 throw new ValidationException("Account is not active.");
             }
         }
@@ -116,12 +117,18 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     public Integer viewScore(Integer expertId) {
         Optional<Expert> expert = repository.findById(expertId);
         if (expert.isPresent()) {
+            if (!expert.get().getEnabled() && !expert.get().getExpertStatus().equals(ExpertStatus.Accepted)) {
+                throw new ValidationException("Account is not active.");
+            }
+        }
+        if (expert.isPresent()) {
             return expert.get().getScore();
         }
         throw new ValidationException("Expert id not exist");
     }
 
     @Override
+    @Transactional
     public Boolean validateVerificationToken(String token) {
         Expert user = repository.findByVerificationToken(token).orElse(null);
         if (user == null || user.getExpiryDateVerificationToken().isBefore(LocalDateTime.now())) {
@@ -138,8 +145,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     @Override
     public String sendVerificationToken(String email) {
         String token = UUID.randomUUID().toString();
-        String confirmationUrl = "http://localhost:8080/v1/users/experts/activate?token=" + token;
-
+        String confirmationUrl = "http://localhost:8081/v1/users/experts/activate?token=" + token;
         String subject = "Activate Your Account";
         String text = "Email Verification, Click the link to verify your email::\n" + confirmationUrl;
         SimpleMailMessage message = new SimpleMailMessage();
