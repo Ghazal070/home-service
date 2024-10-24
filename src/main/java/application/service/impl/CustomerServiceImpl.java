@@ -2,6 +2,7 @@ package application.service.impl;
 
 import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
+import application.dto.ReportCustomerByOrderDTO;
 import application.dto.projection.UserOrderCount;
 import application.entity.*;
 import application.entity.enumeration.OrderStatus;
@@ -165,7 +166,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     @Override
     public Invoice accountPayment(Integer offerId, Integer customerId, String paymentType, CardDto cardDto) {
-        if (isExpiredDuration(customerId, paymentSessions)){
+        if (isExpiredDuration(customerId, paymentSessions)) {
             throw new ValidationException("This captcha is expired");
         }
         Optional<Customer> customerOptional = repository.findById(customerId);
@@ -237,6 +238,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         mailSender.send(message);
         return token;
     }
+
     @Override
     @Transactional
     public Boolean validateVerificationToken(String token) {
@@ -253,5 +255,27 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     @Override
     public List<UserOrderCount> getCustomerOrderCounts() {
         return repository.getCustomerOrderCounts();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<ReportCustomerByOrderDTO> getCustomerOrders(Integer customerId) {
+        Set<Order> orders = orderService.findAllByCustomerId(customerId);
+        Set<ReportCustomerByOrderDTO> customerReports = new HashSet<>();
+        if (orders != null && !orders.isEmpty())
+            orders.forEach(order -> customerReports.add(
+                    ReportCustomerByOrderDTO.builder()
+                            .orderId(order.getId())
+                            .orderStatus(order.getOrderStatus())
+                            .countOffers(order.getOffers().size())
+                            .build())
+        );
+        return customerReports;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getCreditFindByCustomerId(Integer customerId) {
+        return repository.getCreditFindByCustomerId(customerId);
     }
 }

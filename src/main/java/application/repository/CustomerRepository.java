@@ -30,4 +30,7 @@ public interface CustomerRepository extends UserRepository<Customer> {
                 c.id  
         """)
     List<UserOrderCount> getCustomerOrderCounts();
+
+    @Query("SELECT c.credit.amount FROM Customer c WHERE c.id = :customerId")
+    Integer getCreditFindByCustomerId(Integer customerId);
 }

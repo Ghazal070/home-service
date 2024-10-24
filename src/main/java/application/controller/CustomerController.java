@@ -27,10 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -246,6 +243,27 @@ public class CustomerController {
         try {
             Set<Offer> offers = offerService.getOfferByCustomerIdOrderByScoreExpert(customerId, orderID);
             return offerMapper.convertEntityToDto(offers);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/{customerId}/reports/orders")
+    @PreAuthorize("hasAuthority('customer-manage')")
+    public ResponseEntity<Set<ReportCustomerByOrderDTO>> customerReportOrders(
+            @PathVariable Integer customerId){
+        try {
+            return ResponseEntity.ok(customerService.getCustomerOrders(customerId));
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{customerId}/credit")
+    @PreAuthorize("hasAuthority('customer-manage')")
+    public ResponseEntity<Integer> getCreditFindByCustomerId(
+            @PathVariable Integer customerId){
+        try {
+            return ResponseEntity.ok(customerService.getCreditFindByCustomerId(customerId));
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

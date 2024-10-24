@@ -3,6 +3,8 @@ package application.dto;
 
 import application.entity.enumeration.OrderStatus;
 import lombok.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseSearchOrderDto {
+public class ResponseSearchOrderDto implements Serializable {
 
     private Integer orderId;
     private Integer priceOrder;
@@ -24,19 +26,4 @@ public class ResponseSearchOrderDto {
     private Integer countOffers;
     private LocalDateTime doneUpdate;
 
-    @Override
-    public String toString() {
-        return "ResponseSearchOrderDto{" +
-                "orderId=" + orderId +
-                ", priceOrder=" + priceOrder +
-                ", orderDateCreation=" + orderDateCreation +
-                ", dateTimeOrderForDoingFromCustomer=" + dateTimeOrderForDoingFromCustomer +
-                ", orderStatus=" + orderStatus +
-                ", customerId=" + customerId +
-                ", expertId=" + expertId +
-                ", dutyId=" + dutyId +
-                ", countOffers=" + countOffers +
-                ", doneUpdate=" + doneUpdate +
-                '}';
-    }
 }

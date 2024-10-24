@@ -2,6 +2,7 @@ package application.service;
 
 import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
+import application.dto.ReportCustomerByOrderDTO;
 import application.dto.projection.UserOrderCount;
 import application.entity.Invoice;
 import application.entity.Offer;
@@ -29,5 +30,7 @@ public interface CustomerService extends UserService<Customer>{
     Boolean validateVerificationToken(String token);
     String sendVerificationToken(String email);
     List<UserOrderCount> getCustomerOrderCounts();
+    Set<ReportCustomerByOrderDTO> getCustomerOrders(Integer customerId);
+    Integer getCreditFindByCustomerId(Integer customerId);
 
 }

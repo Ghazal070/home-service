@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderServiceImpl extends BaseEntityServiceImpl<OrderRepository, Order, Integer> implements OrderService {
 
 
