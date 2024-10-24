@@ -38,4 +38,7 @@ public interface ExpertRepository extends UserRepository<Expert> {
     """)
     List<UserOrderCount> getExpertOrderCounts();
 
+    @Query("SELECT c.credit.amount FROM Expert c WHERE c.id = :expertId")
+    Integer getCreditFindByExpertId(Integer expertId);
+
 }

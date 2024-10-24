@@ -1,9 +1,6 @@
 package application.controller;
 
-import application.dto.OfferCreationDto;
-import application.dto.OfferResponseDto;
-import application.dto.OrderExpertWaitingDto;
-import application.dto.ViewScoreExpertDto;
+import application.dto.*;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.users.Expert;
@@ -82,6 +79,28 @@ public class ExpertController {
         try {
             Set<Order> orders = orderService.getOrdersForExpertWaitingOrChoosing(expertId);
             return orderExpertWaitingMapper.convertEntityToDto(orders);
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{expertId}/reports/offers")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
+    public ResponseEntity<Set<ReportExpertByOrderDTO>> expertReportOrders(
+            @PathVariable Integer expertId){
+        try {
+            return ResponseEntity.ok(expertService.getExpertOffers(expertId));
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{expertId}/credit")
+    @PreAuthorize("hasAnyAuthority('expert-manage')")
+    public ResponseEntity<Integer> getCreditFindByCustomerId(
+            @PathVariable Integer expertId){
+        try {
+            return ResponseEntity.ok(expertService.getCreditFindByExpertId(expertId));
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -1,6 +1,8 @@
 package application.service.impl;
 
 import application.dto.OfferCreationDto;
+import application.dto.ReportCustomerByOrderDTO;
+import application.dto.ReportExpertByOrderDTO;
 import application.dto.ViewScoreExpertDto;
 import application.dto.projection.UserOrderCount;
 import application.entity.Comment;
@@ -160,5 +162,29 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     @Override
     public List<UserOrderCount> getExpertOrderCounts() {
         return repository.getExpertOrderCounts();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<ReportExpertByOrderDTO> getExpertOffers(Integer expertId) {
+        Set<Offer> offers = offerService.findAllByExpertId(expertId);
+        Set<ReportExpertByOrderDTO> expertReports = new HashSet<>();
+        if (offers != null && !offers.isEmpty())
+            offers.forEach(offer -> expertReports.add(
+                    ReportExpertByOrderDTO.builder()
+                            .offerId(offer.getId())
+                            .orderId(offer.getOrder().getId())
+                            .orderStatus(offer.getOrder().getOrderStatus())
+                            .isDoneThisExpertId(
+                                    offer.getOrder().getExpert() != null && Objects.equals(offer.getExpert().getId(), offer.getOrder().getExpert().getId()))
+                            .build())
+            );
+        return expertReports;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getCreditFindByExpertId(Integer expertId) {
+        return repository.getCreditFindByExpertId(expertId);
     }
 }
