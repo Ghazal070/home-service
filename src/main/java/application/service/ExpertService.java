@@ -2,6 +2,7 @@ package application.service;
 
 import application.dto.OfferCreationDto;
 import application.dto.ViewScoreExpertDto;
+import application.dto.projection.UserOrderCount;
 import application.entity.Comment;
 import application.entity.Offer;
 import application.entity.users.Expert;
@@ -15,6 +16,8 @@ public interface ExpertService extends UserService<Expert>{
     Integer viewScore(Integer expertId);
     Boolean validateVerificationToken(String token);
     String sendVerificationToken(String email);
+
+    List<UserOrderCount> getExpertOrderCounts();
 
 
 }

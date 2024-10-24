@@ -1,6 +1,7 @@
 package application;
 
 import application.dto.*;
+import application.dto.projection.UserOrderCount;
 import application.entity.Duty;
 import application.entity.Order;
 import application.service.*;
@@ -34,6 +35,8 @@ public class HomeServiceApp {
         CardService cardService = context.getBean(CardService.class,args);
         AdminReportByUser reportByUser = context.getBean(AdminReportByUser.class, args);
         OrderSpecification orderSpecification = context.getBean(OrderSpecification.class, args);
+        AdminReportRequestUser reportRequestUser = context.getBean(AdminReportRequestUser.class, args);
+
 
 
         //signupCustomerTestMethod(customerService, signupService);
@@ -61,7 +64,9 @@ public class HomeServiceApp {
         //List<UsersSearchResponse> responseList = searchAdminTest(adminService);
         //List<OrderReportDto> orders = reportByUser.getOrdersByUser(389, "Expert");
         //orders.forEach(System.out::println);
-        adminOrderSearch(orderSpecification);
+        //adminOrderSearch(orderSpecification);
+//        List<UserOrderCount> reportRequest = reportRequestUser.mergeUserReportRequest();
+//        reportRequest.forEach(System.out::println);
 
 
     }

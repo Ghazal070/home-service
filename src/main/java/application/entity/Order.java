@@ -23,7 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders-home-service")
+@Table(name = "orders_home_service")
 @SuperBuilder
 
 public class Order extends BaseEntity<Integer> {

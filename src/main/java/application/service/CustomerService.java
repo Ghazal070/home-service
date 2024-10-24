@@ -2,12 +2,13 @@ package application.service;
 
 import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
+import application.dto.projection.UserOrderCount;
 import application.entity.Invoice;
 import application.entity.Offer;
 import application.entity.Order;
 import application.entity.users.Customer;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,5 +28,6 @@ public interface CustomerService extends UserService<Customer>{
     void putStartTimeForCaptcha(Integer customerId);
     Boolean validateVerificationToken(String token);
     String sendVerificationToken(String email);
+    List<UserOrderCount> getCustomerOrderCounts();
 
 }

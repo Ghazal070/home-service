@@ -2,6 +2,7 @@ package application.service.impl;
 
 import application.dto.CardDto;
 import application.dto.OrderSubmissionDto;
+import application.dto.projection.UserOrderCount;
 import application.entity.*;
 import application.entity.enumeration.OrderStatus;
 import application.entity.enumeration.PaymentType;
@@ -247,5 +248,10 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         repository.save(user);
         user.setVerificationToken(null);
         return true;
+    }
+
+    @Override
+    public List<UserOrderCount> getCustomerOrderCounts() {
+        return repository.getCustomerOrderCounts();
     }
 }

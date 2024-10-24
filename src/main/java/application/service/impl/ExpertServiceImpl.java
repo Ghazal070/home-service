@@ -2,6 +2,7 @@ package application.service.impl;
 
 import application.dto.OfferCreationDto;
 import application.dto.ViewScoreExpertDto;
+import application.dto.projection.UserOrderCount;
 import application.entity.Comment;
 import application.entity.Offer;
 import application.entity.Order;
@@ -154,5 +155,10 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
         message.setText(text);
         mailSender.send(message);
         return token;
+    }
+
+    @Override
+    public List<UserOrderCount> getExpertOrderCounts() {
+        return repository.getExpertOrderCounts();
     }
 }

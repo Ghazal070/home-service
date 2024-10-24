@@ -95,4 +95,5 @@ public class OrderSpecificationImpl implements OrderSpecification {
             predicates.add(cb.or(orPredicate.toArray(new Predicate[0])));
         }
     }
+
 }

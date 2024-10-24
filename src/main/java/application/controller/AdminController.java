@@ -2,6 +2,7 @@ package application.controller;
 
 import application.constants.AuthorityNames;
 import application.dto.*;
+import application.dto.projection.UserOrderCount;
 import application.exception.ValidationControllerException;
 import application.service.*;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class AdminController {
     private final DutyService dutyService;
     private final AdminReportByUser adminReportByUser;
     private final OrderSpecification orderSpecification;
+    private final AdminReportRequestUser adminReportRequestUser;
 
     @PostMapping("/duties")
     @PreAuthorize("hasAuthority('admin-manage')")
@@ -86,9 +88,9 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/users/{userRole}/{userId}/report")
+    @GetMapping("/reports/users/{userRole}/{userId}")
     @PreAuthorize("hasAuthority('admin-manage')")
-    public ResponseEntity<List<OrderReportDto>> getOrdersByUsers(@PathVariable Integer userId,
+    public ResponseEntity<List<OrderReportDto>> adminGetOrdersByUsers(@PathVariable Integer userId,
                                                                  @PathVariable String userRole){
         try {
             List<OrderReportDto> ordersByUsers = adminReportByUser.getOrdersByUser(userId,userRole);
@@ -102,6 +104,16 @@ public class AdminController {
     public ResponseEntity<List<ResponseSearchOrderDto>> adminSearchOrder(@RequestBody @Valid SearchOrderDto searchDto) {
         try {
             return ResponseEntity.ok(orderSpecification.findAllBySearchOrderDto(searchDto));
+        }catch (ValidationException exception){
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/reports/users/requests")
+    @PreAuthorize("hasAuthority('admin-manage')")
+    public ResponseEntity<List<UserOrderCount>> adminReportRequestUsers() {
+        try {
+            return ResponseEntity.ok(adminReportRequestUser.mergeUserReportRequest());
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

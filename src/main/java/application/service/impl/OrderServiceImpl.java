@@ -1,15 +1,12 @@
 package application.service.impl;
 
-import application.dto.OrderReportDto;
 import application.entity.Order;
 import application.repository.OrderRepository;
 import application.service.OrderService;
-import application.service.UserService;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -30,4 +27,5 @@ public class OrderServiceImpl extends BaseEntityServiceImpl<OrderRepository, Ord
     public Set<Order> findAllByCustomerId(Integer customerId) {
         return repository.findAllByCustomerId(customerId);
     }
+
 }
