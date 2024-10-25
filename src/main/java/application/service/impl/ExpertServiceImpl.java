@@ -176,7 +176,8 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
                             .orderId(offer.getOrder().getId())
                             .orderStatus(offer.getOrder().getOrderStatus())
                             .isDoneThisExpertId(
-                                    offer.getOrder().getExpert() != null && Objects.equals(offer.getExpert().getId(), offer.getOrder().getExpert().getId()))
+                                    offer.getOrder().getExpert() != null &&
+                                            Objects.equals(offer.getExpert().getId(), offer.getOrder().getExpert().getId()))
                             .build())
             );
         return expertReports;

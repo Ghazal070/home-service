@@ -217,7 +217,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         }
     }
 
-
+//todo admin filter base on register date
+    //todo check credit and score for expert
+    //todo add jwt
     private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
         Duration duration = Duration.ofMinutes(5);
         if (paymentSessions.get(customerId) == null)
