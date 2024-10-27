@@ -18,7 +18,6 @@ public class AdminReportRequestUserImpl implements AdminReportRequestUser {
 
 
     private final CustomerService customerService;
-    private final OrderService orderService;
     private final ExpertService expertService;
 
     @Override

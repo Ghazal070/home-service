@@ -75,7 +75,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/search")
+    @PostMapping("/users/search")
     @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<List<UsersSearchResponse>> adminSearchUser(@RequestBody @Valid SearchDto searchDto) {
         try {
@@ -106,7 +106,7 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/reports/users/requests")
+    @GetMapping("/filter/users/requests")
     @PreAuthorize("hasAuthority('admin-manage')")
     public ResponseEntity<List<UserOrderCount>> adminReportRequestUsers() {
         try {

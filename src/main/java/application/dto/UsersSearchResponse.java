@@ -44,10 +44,5 @@ public class UsersSearchResponse implements Serializable {
 
     private Set<String> duties = new HashSet<>();
 
-    @Override
-    public String toString() {
-        return "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' +
-                ", dateTimeSubmission=" + dateTimeSubmission + ", enabled=" + enabled + ", expertStatus=" + expertStatus +
-                ", score=" + score + ", duties=" + duties;
-    }
+
 }
