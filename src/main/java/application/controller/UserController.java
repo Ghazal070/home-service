@@ -88,7 +88,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    //todo modelAttribute
     public ResponseEntity<String> signup(
             @RequestPart("user") @Valid String userJson,
             @RequestPart("image") MultipartFile imageFile) {
@@ -139,5 +138,3 @@ public class UserController {
 
 }
 
-
-//done sum score expert

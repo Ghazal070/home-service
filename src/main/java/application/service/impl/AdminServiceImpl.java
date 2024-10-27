@@ -97,7 +97,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     @Override
     public Boolean updateExpertStatus(Integer expertId) {
         Optional<Expert> expert = expertService.findById(expertId);
-        if (expert.get().getExpertStatus().equals(ExpertStatus.New)) {
+        if (expert.get().getExpertStatus().equals(ExpertStatus.AcceptWaiting)) {
             expert.get().setExpertStatus(ExpertStatus.Accepted);
             expertService.update(expert.get());
             return true;
@@ -167,10 +167,4 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         );
         return usersResponse;
     }
-
-
-
-
-    //done offers.html json
-    //done orderby offer end of get offer
 }

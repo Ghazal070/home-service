@@ -27,7 +27,7 @@ public class CustomerFactory implements UserFactory {
                                 .email(userSignupRequestDto.getEmail())
                                 .password(userSignupRequestDto.getPassword()).build())
                 .dateTimeSubmission(LocalDateTime.now())
-                .credit(Credit.builder().amount(0).build())
+                .credit(Credit.builder().amount(0.0).build())
                 .roles(Set.of(roleService.findByName(RoleNames.CUSTOMER).get()))
                 .build();
         customer.setImage(userSignupRequestDto.getInputStream());

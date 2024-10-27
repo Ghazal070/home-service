@@ -15,7 +15,7 @@ public abstract class Credit_ extends application.entity.BaseEntity_ {
 	/**
 	 * @see application.entity.Credit#amount
 	 **/
-	public static volatile SingularAttribute<Credit, Integer> amount;
+	public static volatile SingularAttribute<Credit, Double> amount;
 	
 	/**
 	 * @see application.entity.Credit

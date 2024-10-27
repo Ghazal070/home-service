@@ -174,7 +174,6 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         Optional<Offer> offerOptional = offerService.findById(offerId);
         if (offerOptional.isEmpty()) throw new ValidationException("This offerId is not exist");
         Offer offer = offerOptional.get();
-//        Customer customer = customerOptional.get();
         Order order = offer.getOrder();
         if (invoiceService.existByOrderId(order.getId())) {
             throw new ValidationException("This order pay.");
@@ -182,8 +181,6 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         Card existingCard = cardService.validateCard(cardDto);
         existingCard.setAmountCard(existingCard.getAmountCard() - offer.getPriceOffer());
         cardService.update(existingCard);
-        Credit expertCredit = offer.getExpert().getCredit();
-        expertCredit.setAmount((int) (expertCredit.getAmount() + (0.7 * offer.getPriceOffer())));
         finalizePayment(offer, order);
         Invoice invoice = Invoice.builder()
                 .orderId(order.getId())
@@ -199,8 +196,10 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         paymentSessions.put(customerId, LocalDateTime.now());
     }
 
-    //done payment 5 minutes
     private void finalizePayment(Offer offer, Order order) {
+        Credit expertCredit = offer.getExpert().getCredit();
+        expertCredit.setAmount(expertCredit.getAmount() + (0.7 * offer.getPriceOffer()));
+        creditService.update(expertCredit);
         order.setOrderStatus(OrderStatus.Payed);
         order.setExpert(offer.getExpert());
         Expert expert = order.getExpert();
@@ -218,10 +217,9 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
     }
 
 //todo admin filter base on register date
-    //todo check credit and score for expert
-    //todo add jwt
+
     private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
-        Duration duration = Duration.ofMinutes(5);
+        Duration duration = Duration.ofMinutes(1);
         if (paymentSessions.get(customerId) == null)
             return true;
         return LocalDateTime.now().isAfter(paymentSessions.get(customerId).plus(duration));

@@ -30,7 +30,7 @@ public class ExpertFactory implements UserFactory {
                                 .build()
                 )
                 .dateTimeSubmission(LocalDateTime.now())
-                .credit(Credit.builder().amount(0).build())
+                .credit(Credit.builder().amount(0.0).build())
                 .expertStatus(ExpertStatus.New)
                 .roles(Set.of(roleService.findByName(RoleNames.Expert).get()))
                 .build();

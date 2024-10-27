@@ -22,5 +22,5 @@ public class Credit extends BaseEntity<Integer> {
     @NotNull
     @Min(value = 0)
     @Builder.Default
-    private Integer amount=0;
+    private Double amount=0.0;
 }

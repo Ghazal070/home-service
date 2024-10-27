@@ -37,7 +37,6 @@ public class ExpertController {
         return permissionExpertToServices ? ResponseEntity.ok("Expert have permission") :
                 new ResponseEntity<>("Expert dont have permission", HttpStatus.BAD_REQUEST);
     }
-//done enabled true handle it in service //negative score??
     @PostMapping("/{expertId}/offers")
     @PreAuthorize("hasAnyAuthority('expert-manage')")
     public ResponseEntity<OfferResponseDto> sendOffer(@RequestBody OfferCreationDto offerCreationDto

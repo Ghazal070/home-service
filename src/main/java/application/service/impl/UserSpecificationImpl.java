@@ -65,7 +65,6 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
             throw new ValidationException("User role can only be Customer or Expert or null");
         }
     }
-//done edit duplicate code
     private List handleGenericUserSearch(SearchDto searchDto, UserRepository<T> userRepository) {
         return userRepository.findAll(
                 (root, query, cb) -> {
@@ -124,5 +123,4 @@ public class UserSpecificationImpl<T extends Users> implements UserSpecification
             predicates.add(cb.between(root.get(Expert_.SCORE), Integer.MIN_VALUE,maxScore));
         }
     }
-//done handle min Score , infighting
 }

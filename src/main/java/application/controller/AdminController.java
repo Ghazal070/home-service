@@ -34,8 +34,6 @@ public class AdminController {
     public ResponseEntity<DutyByIdParentIdDto> createDuty(@RequestBody @Valid DutyCreationDto dutyCreationDto) {
         try {
             adminService.createDuty(dutyCreationDto);
-            //done cash duty Command Query Responsibility Segregation
-            //todo cash dont return duty or use another method
             DutyByIdParentIdDto duty = dutyService.findByTitle(dutyCreationDto.getTitle());
             return new ResponseEntity<>(duty, HttpStatus.CREATED);
         } catch (ValidationException exception) {
@@ -44,7 +42,6 @@ public class AdminController {
     }
     @PatchMapping("/management/experts/{expertId}/status/accept")
     @PreAuthorize("hasAuthority('admin-manage')")
-    //done or management/experts/{expertId}?status=accept
     public ResponseEntity<String> updateExpertStatus(@PathVariable Integer expertId) {
         try {
             adminService.updateExpertStatus(expertId);
