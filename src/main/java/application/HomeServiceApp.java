@@ -71,6 +71,7 @@ public class HomeServiceApp {
         UserReportFilterAdmin filterAdmin = UserReportFilterAdmin.builder()
                 .registerDateStart(String.valueOf(LocalDateTime.now().minusMonths(2)))
                 .minTotalRequests(1)
+                .minDoneOrders(1)
                 .build();
         List<UserOrderCountReportDto> usersByAdminSearch = requestSpecification.getUsersByAdminSearch(filterAdmin);
         usersByAdminSearch.forEach(System.out::println);

@@ -4,6 +4,7 @@ import application.constants.RoleNames;
 import application.dto.UserOrderCountReportDto;
 import application.dto.UserReportFilterAdmin;
 import application.dto.projection.UserOrderCount;
+import application.entity.Role;
 import application.entity.Role_;
 import application.entity.users.Users;
 import application.entity.users.Users_;
@@ -11,10 +12,7 @@ import application.mapper.UserOrderReportMapper;
 import application.repository.CustomerRepository;
 import application.repository.ExpertRepository;
 import application.repository.UserRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -43,21 +42,32 @@ public class UserRequestSpecificationImpl {
                     return cb.and(predicates.toArray(new Predicate[0]));
                 }
         );
-        List<UserOrderCount> orderCounts = getOrderCountsForUsers(users);
+        List<UserOrderCount> orderCountsCustomer = getOrderCountsForCustomer(users);
+        List<UserOrderCount> orderCountsExpert = getOrderCountsForExpert(users);
         List<UserOrderCountReportDto> dtoList = new ArrayList<>();
         for (Users user : users) {
-            Optional<UserOrderCount> orderCount = findOrderCountForUser(user.getId(), orderCounts);
-            UserOrderCountReportDto dto = userOrderReportMapper.convertEntityToDto(user,orderCount);
-            dtoList.add(dto);
-        }
+            Set<Role> roles = user.getRoles();
 
+            if (roles.stream().anyMatch(role -> role.getName().equals(RoleNames.CUSTOMER))) {
+                Optional<UserOrderCount> orderCountCustomer = findOrderCountForUser(user.getId(), orderCountsCustomer);
+                UserOrderCountReportDto dtoCustomer = userOrderReportMapper.convertEntityToDto(user, orderCountCustomer);
+                dtoList.add(dtoCustomer);
+            } else if (roles.stream().anyMatch(role -> role.getName().equals(RoleNames.EXPERT))) {
+                Optional<UserOrderCount> orderCountExpert = findOrderCountForUser(user.getId(), orderCountsExpert);
+                UserOrderCountReportDto dtoExpert = userOrderReportMapper.convertEntityToDto(user, orderCountExpert);
+                dtoList.add(dtoExpert);
+            }
+        }
         return dtoList;
     }
 
 
-    private List<UserOrderCount> getOrderCountsForUsers(List<Users> users) {
-
+    private List<UserOrderCount> getOrderCountsForCustomer(List<Users> users) {
         return customerRepository.getCustomerOrderCounts();
+    }
+
+    private List<UserOrderCount> getOrderCountsForExpert(List<Users> users) {
+        return expertRepository.getExpertOrderCounts();
     }
 
     private Optional<UserOrderCount> findOrderCountForUser(Integer userId, List<UserOrderCount> orderCounts) {
@@ -69,12 +79,12 @@ public class UserRequestSpecificationImpl {
 
     private void fillRegistrationDate(List<Predicate> predicates, Root<Users> root
             , CriteriaBuilder cb, String registerDateStart, String registerDateEnd) {
-        LocalDateTime startDateTime=null;
-        LocalDateTime endDateTime=null;
-        if (registerDateStart!=null){
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        if (registerDateStart != null) {
             startDateTime = LocalDateTime.parse(registerDateStart);
         }
-        if (registerDateEnd!=null){
+        if (registerDateEnd != null) {
             endDateTime = LocalDateTime.parse(registerDateEnd);
         }
         if (registerDateStart != null && registerDateEnd != null) {
@@ -96,88 +106,74 @@ public class UserRequestSpecificationImpl {
     }
 
 
-    private void fillRequestCounts(List<Predicate> predicates, Root<Users> root
-            , CriteriaBuilder cb, Integer minRequests, Integer maxRequests) {
-        Path<Object> objectPath = root.join(Users_.ROLES).get(Role_.NAME);
-        String customer = RoleNames.CUSTOMER;
-        boolean equals = root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.CUSTOMER);
-        if (root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.CUSTOMER)) {
-            List<UserOrderCount> customerOrderCounts = customerRepository.getCustomerOrderCounts();
-            completeRequestCounts(predicates, root, cb, minRequests, maxRequests, customerOrderCounts, true);
+    private void fillRequestCounts(List<Predicate> predicates, Root<Users> root, CriteriaBuilder cb,
+                                   Integer minRequests, Integer maxRequests) {
+        List<UserOrderCount> customerOrderCounts = customerRepository.getCustomerOrderCounts();
+        List<UserOrderCount> expertOrderCounts = expertRepository.getExpertOrderCounts();
+        List<Predicate> requestPredicates = new ArrayList<>();
+        createRequestPredicates(requestPredicates, cb, customerOrderCounts, minRequests, maxRequests, root);
+        createRequestPredicates(requestPredicates, cb, expertOrderCounts, minRequests, maxRequests, root);
 
-        } else if (root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.EXPERT)) {
-            List<UserOrderCount> expertOrderCounts = expertRepository.getExpertOrderCounts();
-            completeRequestCounts(predicates, root, cb, minRequests, maxRequests, expertOrderCounts, false);
+        if (!requestPredicates.isEmpty()) {
+            predicates.add(cb.or(requestPredicates.toArray(new Predicate[0])));
         }
     }
 
-    private void completeRequestCounts(List<Predicate> predicates, Root<Users> root, CriteriaBuilder cb,
-                                       Integer minRequests, Integer maxRequests, List<UserOrderCount> orderCounts, boolean isCustomer) {
+    private void createRequestPredicates(List<Predicate> requestPredicates, CriteriaBuilder cb,
+                                         List<UserOrderCount> orderCounts, Integer minRequests,
+                                         Integer maxRequests, Root<Users> root) {
         for (UserOrderCount orderCount : orderCounts) {
+            Expression<Long> totalRequestsExpr = cb.literal(orderCount.getTotalRequests());
             Predicate userPredicate = cb.equal(root.get(Users_.ID), orderCount.getUserId());
-            Predicate requestCountPredicate = null;
-            Long totalRequests = orderCount.getTotalRequests();
+
+            Predicate countPredicate = null;
 
             if (minRequests != null && maxRequests != null) {
-                requestCountPredicate = cb.between(
-                        cb.literal(totalRequests),
-                        cb.literal(minRequests.longValue()),
-                        cb.literal(maxRequests.longValue())
-                );
+                countPredicate = cb.between(totalRequestsExpr, minRequests.longValue(), maxRequests.longValue());
             } else if (minRequests != null) {
-                requestCountPredicate = cb.greaterThan(
-                        cb.literal(totalRequests),
-                        cb.literal(minRequests.longValue())
-                );
+                countPredicate = cb.greaterThanOrEqualTo(totalRequestsExpr, minRequests.longValue());
             } else if (maxRequests != null) {
-                requestCountPredicate = cb.lessThanOrEqualTo(
-                        cb.literal(totalRequests),
-                        cb.literal(maxRequests.longValue())
-                );
+                countPredicate = cb.lessThanOrEqualTo(totalRequestsExpr, maxRequests.longValue());
             }
-            if (requestCountPredicate != null) {
-                predicates.add(cb.and(userPredicate, requestCountPredicate));
+
+            if (countPredicate != null) {
+                requestPredicates.add(cb.and(userPredicate, countPredicate));
             }
         }
     }
 
     private void fillDoneCounts(List<Predicate> predicates, Root<Users> root, CriteriaBuilder cb,
-                                    Integer minDoneCount, Integer maxDoneCount) {
-        if (root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.CUSTOMER)){
-            List<UserOrderCount> customerOrderCounts = customerRepository.getCustomerOrderCounts();
-            completeDoneCounts(predicates,root,cb,customerOrderCounts,minDoneCount,maxDoneCount);
-        } else if (root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.EXPERT)){
-            List<UserOrderCount> expertOrderCounts = expertRepository.getExpertOrderCounts();
-            completeDoneCounts(predicates,root,cb,expertOrderCounts,minDoneCount,maxDoneCount);
+                                Integer minDoneCount, Integer maxDoneCount) {
+        List<UserOrderCount> customerOrderCounts = customerRepository.getCustomerOrderCounts();
+        List<UserOrderCount> expertOrderCounts = expertRepository.getExpertOrderCounts();
+        List<Predicate> doneCountsPredicates = new ArrayList<>();
+        createDoneOrderPredicates(doneCountsPredicates, cb, customerOrderCounts, minDoneCount, maxDoneCount, root);
+        createDoneOrderPredicates(doneCountsPredicates, cb, expertOrderCounts, minDoneCount, maxDoneCount, root);
+
+        if (!doneCountsPredicates.isEmpty()) {
+            predicates.add(cb.or(doneCountsPredicates.toArray(new Predicate[0])));
         }
     }
 
-    private void completeDoneCounts(List<Predicate> predicates,Root<Users> root,CriteriaBuilder cb,List<UserOrderCount> orderCounts
-            ,Integer minDoneCount,Integer maxDoneCount){
+    private void createDoneOrderPredicates(List<Predicate> doneCountsPredicates, CriteriaBuilder cb,
+                                           List<UserOrderCount> orderCounts, Integer minDoneCount,
+                                           Integer maxDoneCount, Root<Users> root) {
         for (UserOrderCount orderCount : orderCounts) {
+            Expression<Long> totalRequestsExpr = cb.literal(orderCount.getTotalRequests());
             Predicate userPredicate = cb.equal(root.get(Users_.ID), orderCount.getUserId());
-            Predicate doneCountPredicate = null;
-            Long doneRequests = orderCount.getDoneOrders();
+
+            Predicate countPredicate = null;
 
             if (minDoneCount != null && maxDoneCount != null) {
-                doneCountPredicate = cb.between(
-                        cb.literal(doneRequests),
-                        cb.literal(minDoneCount.longValue()),
-                        cb.literal(maxDoneCount.longValue())
-                );
+                countPredicate = cb.between(totalRequestsExpr, minDoneCount.longValue(), maxDoneCount.longValue());
             } else if (minDoneCount != null) {
-                doneCountPredicate = cb.greaterThan(
-                        cb.literal(doneRequests),
-                        cb.literal(minDoneCount.longValue())
-                );
+                countPredicate = cb.greaterThanOrEqualTo(totalRequestsExpr, minDoneCount.longValue());
             } else if (maxDoneCount != null) {
-                doneCountPredicate = cb.lessThanOrEqualTo(
-                        cb.literal(doneRequests),
-                        cb.literal(maxDoneCount.longValue())
-                );
+                countPredicate = cb.lessThanOrEqualTo(totalRequestsExpr, maxDoneCount.longValue());
             }
-            if (doneCountPredicate != null) {
-                predicates.add(cb.and(userPredicate, doneCountPredicate));
+
+            if (countPredicate != null) {
+                doneCountsPredicates.add(cb.and(userPredicate, countPredicate));
             }
         }
     }
