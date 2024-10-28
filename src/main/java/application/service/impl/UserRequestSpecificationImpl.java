@@ -12,6 +12,7 @@ import application.repository.CustomerRepository;
 import application.repository.ExpertRepository;
 import application.repository.UserRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +98,9 @@ public class UserRequestSpecificationImpl {
 
     private void fillRequestCounts(List<Predicate> predicates, Root<Users> root
             , CriteriaBuilder cb, Integer minRequests, Integer maxRequests) {
+        Path<Object> objectPath = root.join(Users_.ROLES).get(Role_.NAME);
+        String customer = RoleNames.CUSTOMER;
+        boolean equals = root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.CUSTOMER);
         if (root.join(Users_.ROLES).get(Role_.NAME).equals(RoleNames.CUSTOMER)) {
             List<UserOrderCount> customerOrderCounts = customerRepository.getCustomerOrderCounts();
             completeRequestCounts(predicates, root, cb, minRequests, maxRequests, customerOrderCounts, true);
