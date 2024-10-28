@@ -4,6 +4,6 @@ public class RoleNames {
     public static final String ADMIN = "admin";
     public static final String CUSTOMER = "customer";
 
-    public static final String Expert = "expert";
+    public static final String EXPERT = "expert";
 
 }

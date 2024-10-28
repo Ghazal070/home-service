@@ -3,6 +3,8 @@ package application.entity.users;
 
 import application.entity.Credit;
 import application.entity.Duty;
+import application.entity.Offer;
+import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +37,9 @@ public class Expert extends Users {
     @OneToOne
     @Cascade({CascadeType.PERSIST})
     private Credit credit;
+
+    @OneToMany(mappedBy = "expert")
+    private Set<Offer> offers = new HashSet<>();
 
     @Override
     public String toString() {

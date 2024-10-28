@@ -32,7 +32,7 @@ public class ExpertFactory implements UserFactory {
                 .dateTimeSubmission(LocalDateTime.now())
                 .credit(Credit.builder().amount(0.0).build())
                 .expertStatus(ExpertStatus.New)
-                .roles(Set.of(roleService.findByName(RoleNames.Expert).get()))
+                .roles(Set.of(roleService.findByName(RoleNames.EXPERT).get()))
                 .build();
         expert.setImage(userSignupRequestDto.getInputStream());
         return expert;

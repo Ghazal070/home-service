@@ -2,10 +2,8 @@ package application.entity.users;
 
 
 import application.entity.Credit;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import application.entity.Order;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -19,6 +17,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -34,7 +34,8 @@ public class Customer extends Users {
     @Cascade({CascadeType.PERSIST})
     private Credit credit;
 
-
+    @OneToMany(mappedBy = "customer")
+    private Set<Order> orders = new HashSet<>();
     @Override
     public String toString() {
         return super.toString();

@@ -5,10 +5,12 @@ import application.dto.projection.UserOrderCount;
 import application.entity.Duty;
 import application.entity.Order;
 import application.service.*;
+import application.service.impl.UserRequestSpecificationImpl;
 import com.github.javafaker.Faker;
 import application.entity.users.Users;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.FileInputStream;
@@ -36,8 +38,7 @@ public class HomeServiceApp {
         AdminReportByUser reportByUser = context.getBean(AdminReportByUser.class, args);
         OrderSpecification orderSpecification = context.getBean(OrderSpecification.class, args);
         AdminReportRequestUser reportRequestUser = context.getBean(AdminReportRequestUser.class, args);
-
-
+        UserRequestSpecificationImpl requestSpecification = context.getBean(UserRequestSpecificationImpl.class, args);
 
         //signupCustomerTestMethod(customerService, signupService);
         //signupExpertTestMethod(expertService, signupService);
@@ -67,6 +68,12 @@ public class HomeServiceApp {
         //adminOrderSearch(orderSpecification);
 //        List<UserOrderCount> reportRequest = reportRequestUser.mergeUserReportRequest();
 //        reportRequest.forEach(System.out::println);
+        UserReportFilterAdmin filterAdmin = UserReportFilterAdmin.builder()
+                .registerDateStart(String.valueOf(LocalDateTime.now().minusMonths(2)))
+                .minTotalRequests(1)
+                .build();
+        List<UserOrderCountReportDto> usersByAdminSearch = requestSpecification.getUsersByAdminSearch(filterAdmin);
+        usersByAdminSearch.forEach(System.out::println);
 
 
     }

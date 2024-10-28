@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
                         }
                 ),
                 @SecurityRole.Role(
-                        name = RoleNames.Expert,
+                        name = RoleNames.EXPERT,
                         authorities = {
                                 @SequrityAuthority(
                                         name = {
