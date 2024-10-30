@@ -1,6 +1,7 @@
 package application.controller;
 
 import application.dto.UserChangePasswordDto;
+import application.dto.UserLoginDto;
 import application.dto.UserSignupRequestDto;
 import application.entity.users.Users;
 import application.exception.ValidationControllerException;
@@ -41,11 +42,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/customers/login")
-    @PreAuthorize("hasAuthority('customer-manage')")
-    public ResponseEntity<String> customerLogin(@RequestParam String username, @RequestParam String password) {
+    @PostMapping("/customers/login")
+//    @PreAuthorize("hasAuthority('customer-manage')")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<String> customerLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
         try {
-            customerService.login(username, password);
+            customerService.login(userLoginDto.getEmail(), userLoginDto.getPassword());
             return ResponseEntity.ok("Customer is Authenticate");
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);

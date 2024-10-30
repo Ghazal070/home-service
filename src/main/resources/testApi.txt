@@ -185,7 +185,12 @@ http://localhost:8081/v1/admins/filter/users/requests
 
 }
 
-
+======================================================
+http://localhost:8080/v1/users/customers/login
+{
+    "email":"customer@customer.com",
+    "password":"custom12"
+}
 
 
 

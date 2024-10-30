@@ -12,7 +12,9 @@ public class RequestMatcherBinderImpl implements RequestMatcherBinder {
         return new String[]{
                 "/v1/users/signup",
                 "v1/users/customers/activate",
-                "v1/users/experts/activate"
+                "v1/users/experts/activate",
+                "v1/users/admins/login",
+                "v1/users/customers/login",
         };
     }
 
