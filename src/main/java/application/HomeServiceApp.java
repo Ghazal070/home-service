@@ -66,8 +66,14 @@ public class HomeServiceApp {
         //List<OrderReportDto> orders = reportByUser.getOrdersByUser(389, "Expert");
         //orders.forEach(System.out::println);
         //adminOrderSearch(orderSpecification);
-//        List<UserOrderCount> reportRequest = reportRequestUser.mergeUserReportRequest();
-//        reportRequest.forEach(System.out::println);
+        //List<UserOrderCount> reportRequest = reportRequestUser.mergeUserReportRequest();
+        //reportRequest.forEach(System.out::println);
+        //requestFilterTest(requestSpecification);
+
+
+    }
+
+    private static void requestFilterTest(UserRequestSpecificationImpl requestSpecification) {
         UserReportFilterAdmin filterAdmin = UserReportFilterAdmin.builder()
                 .registerDateStart(String.valueOf(LocalDateTime.now().minusMonths(2)))
                 .minTotalRequests(1)
@@ -75,8 +81,6 @@ public class HomeServiceApp {
                 .build();
         List<UserOrderCountReportDto> usersByAdminSearch = requestSpecification.getUsersByAdminSearch(filterAdmin);
         usersByAdminSearch.forEach(System.out::println);
-
-
     }
 
     private static void adminOrderSearch(OrderSpecification orderSpecification) {

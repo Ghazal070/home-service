@@ -173,7 +173,17 @@ http://localhost:8081/v1/admins/orders/search
     "orderStatus":"ExpertOfferWanting",
     "dutyId":[416,358]
 }
+====================================================
+http://localhost:8081/v1/admins/filter/users/requests
+{
+"registerDateStart":"2024-10-20T14:44:42.158544",
+"registerDateEnd":,
+"minTotalRequests":1,
+"maxTotalRequests":,
+"minDoneOrders":1,
+"maxDoneOrders":
 
+}
 
 
 

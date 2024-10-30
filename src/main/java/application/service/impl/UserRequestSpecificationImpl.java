@@ -12,6 +12,7 @@ import application.mapper.UserOrderReportMapper;
 import application.repository.CustomerRepository;
 import application.repository.ExpertRepository;
 import application.repository.UserRepository;
+import application.service.UserRequestSpecification;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,13 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserRequestSpecificationImpl {
+public class UserRequestSpecificationImpl implements UserRequestSpecification {
     private final UserRepository<Users> userRepository;
     private final ExpertRepository expertRepository;
     private final CustomerRepository customerRepository;
     private final UserOrderReportMapper userOrderReportMapper;
 
+    @Override
     public List<UserOrderCountReportDto> getUsersByAdminSearch(UserReportFilterAdmin userReportFilterAdmin) {
         List<Predicate> predicates = new ArrayList<>();
         List<Users> users = userRepository.findAll(
@@ -177,4 +179,5 @@ public class UserRequestSpecificationImpl {
             }
         }
     }
+
 }

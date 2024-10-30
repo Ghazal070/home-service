@@ -27,7 +27,7 @@ public class AdminController {
     private final DutyService dutyService;
     private final AdminReportByUser adminReportByUser;
     private final OrderSpecification orderSpecification;
-    private final AdminReportRequestUser adminReportRequestUser;
+    private final UserRequestSpecification userRequestSpecification;
 
     @PostMapping("/duties")
     @PreAuthorize("hasAuthority('admin-manage')")
@@ -106,15 +106,17 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/filter/users/requests")
+    @PostMapping("/filter/users/requests")
     @PreAuthorize("hasAuthority('admin-manage')")
-    public ResponseEntity<List<UserOrderCount>> adminReportRequestUsers() {
+    public ResponseEntity<List<UserOrderCountReportDto>> adminReportRequestUsers(@RequestBody @Valid UserReportFilterAdmin userReportFilterAdmin) {
         try {
-            return ResponseEntity.ok(adminReportRequestUser.mergeUserReportRequest());
+            return ResponseEntity.ok(userRequestSpecification.getUsersByAdminSearch(userReportFilterAdmin));
         }catch (ValidationException exception){
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 
 }
