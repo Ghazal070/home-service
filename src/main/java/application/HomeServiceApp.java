@@ -189,7 +189,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(356)
+                            .parentId(473)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)
@@ -207,7 +207,7 @@ public class HomeServiceApp {
             adminService.createDuty(
                     DutyCreationDto.builder()
                             .title(sub)
-                            .parentId(357)
+                            .parentId(474)
                             .basePrice(faker.number().numberBetween(100_000, 1_000_000))
                             .description(sub + "---" + faker.lorem().characters(5, 20))
                             .selectable(true)

@@ -15,6 +15,7 @@ public class RequestMatcherBinderImpl implements RequestMatcherBinder {
                 "v1/users/experts/activate",
                 "v1/users/admins/login",
                 "v1/users/customers/login",
+                "v1/users/experts/login",
         };
     }
 

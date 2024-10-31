@@ -149,7 +149,7 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     @Override
     public String sendVerificationToken(String email) {
         String token = UUID.randomUUID().toString();
-        String confirmationUrl = "http://localhost:8081/v1/users/experts/activate?token=" + token;
+        String confirmationUrl = "http://localhost:8080/v1/users/experts/activate?token=" + token;
         String subject = "Activate Your Account";
         String text = "Email Verification, Click the link to verify your email::\n" + confirmationUrl;
         SimpleMailMessage message = new SimpleMailMessage();

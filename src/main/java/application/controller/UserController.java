@@ -27,6 +27,7 @@ public class UserController {
 
     private final CustomerService customerService;
     private final ExpertService expertService;
+    private final AdminService adminService;
     private final SignupService signupService;
     private final ObjectMapper objectMapper;
 
@@ -43,7 +44,6 @@ public class UserController {
     }
 
     @PostMapping("/customers/login")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<String> customerLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
         try {
             return ResponseEntity.ok(
@@ -54,14 +54,26 @@ public class UserController {
         }
     }
 
-    @GetMapping("/experts/login")
-    @PreAuthorize("hasAuthority('expert-manage')")
-    public ResponseEntity<String> expertLogin(@RequestParam String username, @RequestParam String password) {
+    @PostMapping("/experts/login")
+    public ResponseEntity<String> expertLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
         try {
-            expertService.login(username, password);
-            return ResponseEntity.ok("Expert is Authenticate");
+            return ResponseEntity.ok(
+                    expertService.login(userLoginDto.getEmail(), userLoginDto.getPassword())
+            );
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/admins/login")
+    public ResponseEntity<String> adminLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
+        try {
+            return ResponseEntity.ok(
+                    adminService.login(userLoginDto.getEmail(), userLoginDto.getPassword())
+            );
+        } catch (ValidationException exception) {
+            throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch (RuntimeException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 
