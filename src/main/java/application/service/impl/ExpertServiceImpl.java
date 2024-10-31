@@ -1,7 +1,6 @@
 package application.service.impl;
 
 import application.dto.OfferCreationDto;
-import application.dto.ReportCustomerByOrderDTO;
 import application.dto.ReportExpertByOrderDTO;
 import application.dto.ViewScoreExpertDto;
 import application.dto.projection.UserOrderCount;
@@ -11,6 +10,7 @@ import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
+import application.jwt.JwtService;
 import application.service.*;
 import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
@@ -18,6 +18,7 @@ import application.util.AuthHolder;
 import jakarta.validation.Validator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,8 @@ public class ExpertServiceImpl extends UserServiceImpl<ExpertRepository, Expert>
     private final CommentService commentService;
     private final JavaMailSender mailSender;
 
-    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, OrderService orderService, OfferService offerService, CommentService commentService, JavaMailSender mailSender) {
-        super(validator, repository, authHolder, passwordEncoder);
+    public ExpertServiceImpl(Validator validator, ExpertRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, OrderService orderService, OfferService offerService, CommentService commentService, JavaMailSender mailSender) {
+        super(validator, repository, authHolder, passwordEncoder, authenticationManager, jwtService);
         this.orderService = orderService;
         this.offerService = offerService;
         this.commentService = commentService;

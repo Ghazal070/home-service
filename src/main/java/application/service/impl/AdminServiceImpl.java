@@ -7,6 +7,7 @@ import application.dto.UsersSearchResponse;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.*;
+import application.jwt.JwtService;
 import application.service.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.ValidationException;
@@ -14,6 +15,7 @@ import jakarta.validation.Validator;
 import application.repository.AdminRepository;
 import application.util.AuthHolder;
 import lombok.SneakyThrows;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +33,8 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     private final UserSpecification userSpecification;
     private final RoleService roleService;
 
-    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification, RoleService roleService) {
-        super(validator, repository, authHolder, passwordEncoder);
+    public AdminServiceImpl(Validator validator, AdminRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, DutyService dutyService, ExpertService expertService, UserSpecification userSpecification, RoleService roleService) {
+        super(validator, repository, authHolder, passwordEncoder, authenticationManager, jwtService);
         this.dutyService = dutyService;
         this.expertService = expertService;
         this.userSpecification = userSpecification;

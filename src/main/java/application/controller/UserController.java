@@ -43,12 +43,12 @@ public class UserController {
     }
 
     @PostMapping("/customers/login")
-//    @PreAuthorize("hasAuthority('customer-manage')")
     @PreAuthorize("permitAll()")
     public ResponseEntity<String> customerLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
         try {
-            customerService.login(userLoginDto.getEmail(), userLoginDto.getPassword());
-            return ResponseEntity.ok("Customer is Authenticate");
+            return ResponseEntity.ok(
+                    customerService.login(userLoginDto.getEmail(), userLoginDto.getPassword())
+            );
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -101,10 +101,10 @@ public class UserController {
             Users users = signupService.signup(userSignupRequestDto);
             return users != null ? ResponseEntity.ok("Signup successful") :
                     new ResponseEntity<>("Signup failed", HttpStatus.BAD_REQUEST);
-        } catch (ValidationException exception) {
+        } catch (RuntimeException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read image file", e);
+            throw new ValidationControllerException("Failed to read image file", HttpStatus.BAD_REQUEST);
         }
     }
 

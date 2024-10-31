@@ -177,15 +177,20 @@ http://localhost:8081/v1/admins/orders/search
 http://localhost:8081/v1/admins/filter/users/requests
 {
 "registerDateStart":"2024-10-20T14:44:42.158544",
-"registerDateEnd":,
+"registerDateEnd":0,
 "minTotalRequests":1,
-"maxTotalRequests":,
+"maxTotalRequests":0,
 "minDoneOrders":1,
-"maxDoneOrders":
+"maxDoneOrders":0
 
 }
 
-
+======================================================
+http://localhost:8080/v1/users/customers/login
+{
+    "email":"customer@customer.com",
+    "password":"custom14"
+}
 
 
 

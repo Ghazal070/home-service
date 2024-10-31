@@ -241,7 +241,7 @@ public class HomeServiceApp {
     }
 
     private static void loginTestMethod(CustomerService customerService) {
-        Boolean login = customerService.login("elisabeth.hills@gmail.com", "wti94059");
+        String login = customerService.login("elisabeth.hills@gmail.com", "wti94059");
         //UserLoginProjection login = customerService.login("crystal.wunsch@gmail.com", "t4l29165");
     }
 

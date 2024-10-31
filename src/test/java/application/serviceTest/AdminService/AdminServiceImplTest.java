@@ -4,6 +4,7 @@ import application.dto.DutyCreationDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
+import application.jwt.JwtService;
 import application.service.*;
 import application.service.impl.AdminServiceImpl;
 import jakarta.validation.ValidationException;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -52,6 +54,11 @@ class AdminServiceImplTest {
     @Mock
     private RoleService roleService;
 
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtService jwtService;
     @InjectMocks
     private AdminServiceImpl underTest;
 
@@ -59,7 +66,7 @@ class AdminServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new AdminServiceImpl(validator, repository, authHolder,
-                passwordEncoder, dutyService, expertService, userSpecification, roleService);
+                passwordEncoder,authenticationManager,jwtService,dutyService, expertService, userSpecification, roleService);
     }
 
     @Test

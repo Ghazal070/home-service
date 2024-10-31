@@ -1,17 +1,17 @@
 package application.service.impl;
 
-import application.dto.OrderReportDto;
 import application.dto.UserChangePasswordDto;
-import application.dto.projection.UserLoginProjection;
 import application.entity.users.Users;
+import application.jwt.JwtService;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
 import application.service.PasswordEncoder;
 import application.service.UserService;
 import application.util.AuthHolder;
 import jakarta.validation.Validator;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
@@ -19,22 +19,23 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         extends BaseEntityServiceImpl<U, T, Integer> implements UserService<T> {
     protected final AuthHolder authHolder;
     protected final PasswordEncoder passwordEncoder;
+    protected final AuthenticationManager authenticationManager;
+    protected final JwtService jwtService;
 
 
-    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(Validator validator, U repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         super(validator, repository);
         this.authHolder = authHolder;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     public void convertByteToImage(Integer userId) {
@@ -67,7 +68,7 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
 
     @Override
     @Transactional(readOnly = true)
-    public Boolean login(String email, String password) {
+    public String login(String email, String password) {
         if (email.isBlank() || password.isBlank()) {
             throw new ValidationException("Email or Password must not be empty");
         }
@@ -80,9 +81,12 @@ public class UserServiceImpl<U extends UserRepository<T>, T extends Users>
         if (!matchPass){
             throw new ValidationException("Invalid login credentials password");
         }
-        authHolder.tokenId = user.get().getId();
-        authHolder.tokenName = user.get().getProfile().getEmail();
-        return true;
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password));
+        if (authenticate.isAuthenticated()){
+            return jwtService.generateToken(email);
+        }
+        else return "Authentication fail.";
     }
 
     @Override

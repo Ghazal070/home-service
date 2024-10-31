@@ -5,6 +5,7 @@ import application.dto.projection.UserLoginProjection;
 import application.entity.users.Expert;
 import application.entity.users.Profile;
 import application.entity.users.Users;
+import application.jwt.JwtService;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
 import application.service.PasswordEncoder;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -47,13 +49,18 @@ class UserServiceImplTest {
     private UserRepository repository;
 
     private Validator validator;
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private UserServiceImpl underTest;
 
     @BeforeEach
     void setUp() {
-        this.underTest = new UserServiceImpl<>(validator, repository, authHolder, passwordEncoder);
+        this.underTest = new UserServiceImpl<>(validator, repository, authHolder, passwordEncoder, authenticationManager, jwtService);
         new File(tempDir).mkdirs();
     }
 
@@ -110,9 +117,9 @@ class UserServiceImplTest {
         given(userLoginProjection.getProfile()).willReturn(profile);
         given(profile.getEmail()).willReturn(email);
 
-        Boolean actual = underTest.login(email, password);
+        String actual = underTest.login(email, password);
 
-        assertTrue(actual);
+        assertNotNull(actual);
         assertEquals(userLoginProjection, actual);
     }
 

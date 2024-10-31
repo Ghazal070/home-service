@@ -57,9 +57,8 @@ public class UserIntegrationTest {
         assertThat(newUser).isNotNull();
         assertThat(newUser.getProfile().getEmail()).isEqualTo(userSignupRequestDto.getEmail());
 
-        Boolean loginUser = customerService.login(userSignupRequestDto.getEmail(), originalPassword);
+        String loginUser = customerService.login(userSignupRequestDto.getEmail(), originalPassword);
         assertThat(loginUser).isNotNull();
-        assertThat(loginUser).isTrue();
 
         String newPassword = "PASS5678";
 
@@ -71,9 +70,9 @@ public class UserIntegrationTest {
         Boolean isUpdated = customerService.updatePassword(userChangePasswordDto,newUser.getId());
         assertThat(isUpdated).isTrue();
 
-        Boolean updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
+        String updatedLoginUser = customerService.login(userSignupRequestDto.getEmail(), newPassword);
         assertThat(updatedLoginUser).isNotNull();
-        assertThat(updatedLoginUser).isTrue();
+
 
         List<Duty> selectableDuties = dutyService.getSelectableDuties();
 

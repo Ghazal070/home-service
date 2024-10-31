@@ -9,6 +9,7 @@ import application.entity.enumeration.OrderStatus;
 import application.entity.enumeration.PaymentType;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
+import application.jwt.JwtService;
 import application.repository.CustomerRepository;
 import application.service.*;
 import application.util.AuthHolder;
@@ -16,6 +17,7 @@ import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +40,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
 
     Map<Integer, LocalDateTime> paymentSessions = new ConcurrentHashMap<>();
 
-    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService, JavaMailSender mailSender) {
-        super(validator, repository, authHolder, passwordEncoder);
+    public CustomerServiceImpl(Validator validator, CustomerRepository repository, AuthHolder authHolder, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, DutyService dutyService, OrderService orderService, OfferService offerService, CreditService creditService, CardService cardService, InvoiceService invoiceService, CommentService commentService, JavaMailSender mailSender) {
+        super(validator, repository, authHolder, passwordEncoder, authenticationManager, jwtService);
         this.dutyService = dutyService;
         this.orderService = orderService;
         this.offerService = offerService;

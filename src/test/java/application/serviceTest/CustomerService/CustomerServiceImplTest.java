@@ -7,6 +7,7 @@ import application.entity.Order;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
+import application.jwt.JwtService;
 import application.repository.CustomerRepository;
 import application.service.*;
 import application.service.impl.CustomerServiceImpl;
@@ -22,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -74,6 +76,11 @@ class CustomerServiceImplTest {
 
     @Mock
     private JavaMailSender mailSender;
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private CustomerServiceImpl underTest;
@@ -82,7 +89,7 @@ class CustomerServiceImplTest {
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         underTest = new CustomerServiceImpl(validator, repository, authHolder,
-                passwordEncoder, dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService, mailSender);
+                passwordEncoder, authenticationManager,jwtService,dutyService, orderService, offerService, creditService, cardService, invoiceService, commentService, mailSender);
     }
 
     @Test
