@@ -161,17 +161,17 @@ public class UserRequestSpecificationImpl implements UserRequestSpecification {
                                            List<UserOrderCount> orderCounts, Integer minDoneCount,
                                            Integer maxDoneCount, Root<Users> root) {
         for (UserOrderCount orderCount : orderCounts) {
-            Expression<Long> totalRequestsExpr = cb.literal(orderCount.getTotalRequests());
+            Expression<Long> doneOrderExpr = cb.literal(orderCount.getDoneOrders());
             Predicate userPredicate = cb.equal(root.get(Users_.ID), orderCount.getUserId());
 
             Predicate countPredicate = null;
 
             if (minDoneCount != null && maxDoneCount != null) {
-                countPredicate = cb.between(totalRequestsExpr, minDoneCount.longValue(), maxDoneCount.longValue());
+                countPredicate = cb.between(doneOrderExpr, minDoneCount.longValue(), maxDoneCount.longValue());
             } else if (minDoneCount != null) {
-                countPredicate = cb.greaterThanOrEqualTo(totalRequestsExpr, minDoneCount.longValue());
+                countPredicate = cb.greaterThanOrEqualTo(doneOrderExpr, minDoneCount.longValue());
             } else if (maxDoneCount != null) {
-                countPredicate = cb.lessThanOrEqualTo(totalRequestsExpr, maxDoneCount.longValue());
+                countPredicate = cb.lessThanOrEqualTo(doneOrderExpr, maxDoneCount.longValue());
             }
 
             if (countPredicate != null) {

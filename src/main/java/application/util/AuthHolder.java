@@ -1,7 +1,6 @@
 package application.util;
 
 
-import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.stereotype.Component;
 

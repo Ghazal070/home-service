@@ -84,7 +84,7 @@ public class DutyController {
         Boolean contain = dutyService.existsByTitle(title);
         return contain ? new ResponseEntity<>(
                 "%s exit".formatted(title)
-                , HttpStatus.BAD_REQUEST
+                , HttpStatus.FOUND
         ) : ResponseEntity.ok(
                 "%s is not exit".formatted(title)
         );

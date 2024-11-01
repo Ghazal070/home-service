@@ -1,12 +1,9 @@
 package application.config;
 
 
-import application.jwt.JwtFilter;
-import application.service.PasswordEncoder;
-import jakarta.mail.Session;
+import application.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

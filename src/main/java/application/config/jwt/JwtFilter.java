@@ -1,4 +1,4 @@
-package application.jwt;
+package application.config.jwt;
 
 import application.config.CustomUserDetailService;
 import jakarta.servlet.FilterChain;
@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.xml.crypto.dsig.spec.XPathType;
 import java.io.IOException;
 
 @Component

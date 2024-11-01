@@ -7,7 +7,7 @@ import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.service.CommentService;
 import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;
@@ -26,7 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 

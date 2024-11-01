@@ -62,6 +62,8 @@ public class UserController {
             );
         } catch (ValidationException exception) {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch (RuntimeException exception){
+            throw new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping("/admins/login")

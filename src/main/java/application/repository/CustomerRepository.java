@@ -17,7 +17,7 @@ public interface CustomerRepository extends UserRepository<Customer> {
                 c.dtype AS role,  
                 c.date_time_submission AS registerDate,  
                 COUNT(o.id) AS totalRequests,  
-                COUNT(CASE WHEN o.order_status = 'Done' THEN 1 END) AS doneOrders  
+                COUNT(CASE WHEN o.order_status IN ('Done', 'Payed') THEN 1 END) AS doneOrders  
             FROM  
                 users c  
             LEFT JOIN  

@@ -10,7 +10,7 @@ import application.entity.Order;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Expert;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.service.*;
 import jakarta.validation.ValidationException;
 import application.repository.ExpertRepository;

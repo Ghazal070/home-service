@@ -26,6 +26,7 @@ public class AdminController {
     private final AdminService adminService;
     private final DutyService dutyService;
     private final AdminReportByUser adminReportByUser;
+    private final AdminReportRequestUser adminReportRequestUser;
     private final OrderSpecification orderSpecification;
     private final UserRequestSpecification userRequestSpecification;
 
@@ -50,6 +51,7 @@ public class AdminController {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    //todo aop exception
 
     @PatchMapping("/experts/duties")
     @PreAuthorize("hasAuthority('admin-manage')")
@@ -116,7 +118,16 @@ public class AdminController {
         }
     }
 
-
+    @GetMapping("/reports/users/requests")
+    @PreAuthorize("hasAuthority('admin-manage')")
+    public ResponseEntity<List<UserOrderCount>> adminReportStaticUserRequest(){
+        try {
+            List<UserOrderCount> userOrderCounts = adminReportRequestUser.mergeUserReportRequest();
+            return ResponseEntity.ok(userOrderCounts);
+        }catch (ValidationException exception){
+            throw  new ValidationControllerException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 }

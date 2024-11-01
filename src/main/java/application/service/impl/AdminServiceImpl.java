@@ -7,16 +7,14 @@ import application.dto.UsersSearchResponse;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.*;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.service.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import application.repository.AdminRepository;
 import application.util.AuthHolder;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,9 +43,14 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         this.userSpecification = userSpecification;
         this.roleService = roleService;
     }
+//todo can wrap parent dependency in one dto and pass it
+    //todo test super builder and required args
+    //todo init seprate class in init
+    //todo class 100 line method 10 line
 
     @SneakyThrows
     @PostConstruct
+    //todo onConditional or order or enviremet variadle create defualt value **conditinal on property**
     public void init() {
         if (repository.count() == 0) {
             String rawPassword = "admin123";
@@ -75,6 +78,13 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     @Override
     public Duty createDuty(DutyCreationDto dutyCreationDto) {
         Duty parentDuty = null;
+        //todo if block condition null optional use or validate method or **design Pattern combinator
+//        parentDuty = Optional.ofNullable(dutyCreationDto.getParentId())
+//                .map(id->dutyService.findById(id).orElseThrow(
+//                        () -> new ValidationException("This parent duty does not exist.")))
+//                .orElse(null);
+//
+//)
         if (dutyCreationDto.getParentId() != null) {
             parentDuty = dutyService.findById(dutyCreationDto.getParentId())
                     .orElseThrow(() -> new ValidationException("This parent duty does not exist."));

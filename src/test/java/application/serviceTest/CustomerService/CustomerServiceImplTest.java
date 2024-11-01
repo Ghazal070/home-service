@@ -7,7 +7,7 @@ import application.entity.Order;
 import application.entity.enumeration.OrderStatus;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.repository.CustomerRepository;
 import application.service.*;
 import application.service.impl.CustomerServiceImpl;

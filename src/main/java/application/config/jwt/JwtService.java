@@ -1,4 +1,4 @@
-package application.jwt;
+package application.config.jwt;
 
 
 import io.jsonwebtoken.Claims;
@@ -41,7 +41,7 @@ public class JwtService {
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60*60*10000))
+                .expiration(new Date(System.currentTimeMillis() + 60*60*1000))
                 .and()
                 .signWith(getKey())
                 .compact();
@@ -69,6 +69,8 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+    //todo dont use get key use select key
+    //todo pasteto token https://permify.co/post/jwt-paseto/
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);

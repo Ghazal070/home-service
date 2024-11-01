@@ -22,7 +22,7 @@ public interface ExpertRepository extends UserRepository<Expert> {
             c.dtype AS role,  
             c.date_time_submission AS registerDate,  
             COUNT(o.id) AS totalRequests,  
-            COUNT(CASE WHEN ord.order_status = 'Done' THEN 1 END) AS doneOrders  
+            COUNT(CASE WHEN ord.order_status IN ('Done', 'Payed') THEN 1 END) AS doneOrders  
         FROM  
             users c  
         LEFT JOIN  

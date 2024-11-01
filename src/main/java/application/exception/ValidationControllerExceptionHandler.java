@@ -22,7 +22,8 @@ public class ValidationControllerExceptionHandler {
                .build();
        return new ResponseEntity<>(errorResponseDto,exception.getHttpStatus());
    }
-
+//todo @ExceptionHandler(value ={ValidationException.class})
+//todo @ExceptionHandler()
    @ExceptionHandler(value = {RuntimeException.class})
     public ModelAndView getRunTimeException(RuntimeException exception){
        ModelAndView view = new ModelAndView("runtime_exception");

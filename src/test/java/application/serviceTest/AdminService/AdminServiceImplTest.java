@@ -4,7 +4,7 @@ import application.dto.DutyCreationDto;
 import application.entity.Duty;
 import application.entity.enumeration.ExpertStatus;
 import application.entity.users.Expert;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.service.*;
 import application.service.impl.AdminServiceImpl;
 import jakarta.validation.ValidationException;

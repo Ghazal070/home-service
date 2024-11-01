@@ -2,7 +2,7 @@ package application.service.impl;
 
 import application.dto.UserChangePasswordDto;
 import application.entity.users.Users;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import jakarta.validation.ValidationException;
 import application.repository.UserRepository;
 import application.service.PasswordEncoder;

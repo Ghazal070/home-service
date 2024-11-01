@@ -9,7 +9,7 @@ import application.entity.enumeration.OrderStatus;
 import application.entity.enumeration.PaymentType;
 import application.entity.users.Customer;
 import application.entity.users.Expert;
-import application.jwt.JwtService;
+import application.config.jwt.JwtService;
 import application.repository.CustomerRepository;
 import application.service.*;
 import application.util.AuthHolder;
@@ -117,7 +117,8 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
             } else throw new ValidationException("Order status is not ComingToLocationWanting");
         } else throw new ValidationException("Order is null");
     }
-
+//todo dont check customer login and customer order spring sequrity @postAuthorize in find by id
+    //todo duplicate annotataion admin preAutorize create annotation
     @Override
     public Boolean orderDone(Integer offerId, String commentContent, Integer score) {
         Optional<Offer> optionalOffer = offerService.findById(offerId);
