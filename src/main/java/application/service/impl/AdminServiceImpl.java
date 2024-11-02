@@ -45,7 +45,7 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
     }
 //todo can wrap parent dependency in one dto and pass it
     //todo test super builder and required args
-    //todo init seprate class in init
+    //todo init separate class in init
     //todo class 100 line method 10 line
 
     @SneakyThrows

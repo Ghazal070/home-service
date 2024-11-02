@@ -118,7 +118,7 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         } else throw new ValidationException("Order is null");
     }
 //todo dont check customer login and customer order spring sequrity @postAuthorize in find by id
-    //todo duplicate annotataion admin preAutorize create annotation
+//todo duplicate admin preAuthorize create annotation
     @Override
     public Boolean orderDone(Integer offerId, String commentContent, Integer score) {
         Optional<Offer> optionalOffer = offerService.findById(offerId);
@@ -219,7 +219,6 @@ public class CustomerServiceImpl extends UserServiceImpl<CustomerRepository, Cus
         }
     }
 
-//todo admin filter base on register date
 
     private Boolean isExpiredDuration(Integer customerId, Map<Integer, LocalDateTime> paymentSessions) {
         Duration duration = Duration.ofMinutes(1);

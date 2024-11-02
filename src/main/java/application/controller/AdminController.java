@@ -51,7 +51,8 @@ public class AdminController {
             throw new ValidationControllerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    //todo aop exception
+    //todo return map in response
+    //todo search sub duty for one duty only end point
 
     @PatchMapping("/experts/duties")
     @PreAuthorize("hasAuthority('admin-manage')")

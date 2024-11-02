@@ -62,7 +62,7 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    //todo dont use get key use select key
+    //todo study more jwt token
     //todo pasteto token https://permify.co/post/jwt-paseto/
 
     public boolean validateToken(String token, UserDetails userDetails) {
