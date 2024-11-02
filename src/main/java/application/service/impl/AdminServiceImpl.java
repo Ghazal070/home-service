@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-
 public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         implements AdminService {
 
@@ -44,36 +43,12 @@ public class AdminServiceImpl extends UserServiceImpl<AdminRepository, Admin>
         this.roleService = roleService;
     }
 //todo can wrap parent dependency in one dto and pass it
-    //todo test super builder and required args
-    //todo init separate class in init
-    //todo class 100 line method 10 line
+// done test super builder and required args-->i cant find it
+// todo init separate class in init
+// todo optional in line
+// todo class 100 line method 10 line
 
-    @SneakyThrows
-    @PostConstruct
-    //todo onConditional or order or enviremet variadle create defualt value **conditinal on property**
-    public void init() {
-        if (repository.count() == 0) {
-            String rawPassword = "admin123";
-            Admin admin = Admin.builder()
-                    .firstName("admin")
-                    .lastName("admin")
-                    .profile(
-                            Profile.builder()
-                                    .email("admin@admin.com")
-                                    .password(passwordEncoder.encode(rawPassword))
-                                    .build()
-                    )
-                    .dateTimeSubmission(LocalDateTime.now())
-                    .image(new Byte[]{100, 120})
-                    .enabled(true)
-                    .roles(Set.of(
-                            roleService.findByName(
-                                    RoleNames.ADMIN)
-                                    .get()))
-                    .build();
-            repository.save(admin);
-        }
-    }
+
 
     @Override
     public Duty createDuty(DutyCreationDto dutyCreationDto) {
